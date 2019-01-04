@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assembly>
+    <id>jar-with-dependencies</id>
+    <formats>
+        <format>jar</format>
+    </formats>
+
+    <dependencySets>
+        <dependencySet>
+            <scope>runtime</scope>
+            <unpack>true</unpack>
+            <unpackOptions>
+                <excludes>
+                    <exclude>**/LICENSE*</exclude>
+                    <exclude>**/README*</exclude>
+                </excludes>
+            </unpackOptions>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.outputDirectory}</directory>
+            <outputDirectory>/</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>src/main/resources/META-INF/services</directory>
+            <outputDirectory>META-INF/services</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>

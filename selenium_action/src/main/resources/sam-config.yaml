@@ -1,0 +1,68 @@
+# default values for every action
+action:
+
+  # action type name
+  actionType: Action
+  
+  # message for logging an action
+  message: 
+  
+  waitType: enabled
+  
+  # max time in seconds before a polling wait times out
+  waitTime: 10
+  
+  # fully qualified class name to preCondition Provider
+  preConditionProvider: 
+
+  # fully qualified class name to postCondition Provider
+  preConditionProvider: 
+  
+  # screenshot every action by default
+  screenshot: false
+  
+  # make every action optional by default
+  optional: false
+  
+  clickType: click
+  selectType: visibleText
+  sendKeysType: sendKeys
+  sendKeysDelay: 500
+  
+click:
+
+  type: selenium
+  waitType: clickable
+  waitTime:
+  
+send:
+
+  type: sendKeys
+  waitType: visible
+  waitTime:
+  
+select:
+
+  type: visibleText
+  waitType: visible
+  waitTime:
+  
+move:
+
+  type: javascript
+  waitType: enabled
+  waitTime:
+  
+navigate:
+
+  type: refresh
+  waitType: none
+  waitTime:
+
+window:
+
+  type: title
+  waitType: window
+  waitTime:
+  
+  
