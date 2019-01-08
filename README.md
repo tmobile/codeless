@@ -16,9 +16,7 @@ Give examples
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+Before you use the ETP Codeless skeleton you must first clone it to your local machine. Follow the instructions below to install ETP Codeless skeleton.
 
 ```
 Give the example
