@@ -45,6 +45,8 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 	/** The Constant TEST_DATA_PREFIX. */
 	private static final String TEST_DATA_PREFIX = "D-";
 
+	private static final String DEFAULT_TEST_DATA = "D-DEFAULT";
+
 	private static final String SHEET_TEST_DATA = "SHEET-TEST_DATA";
 
 	/** The formatter. */
@@ -159,11 +161,22 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 	}
 
 	private void parseTestDataSheet(Sheet sheet) {
+		// look for a specific test data sheet or load default test data
+		String env = System.getProperty("dataSheet");
 		String fullname = sheet.getSheetName();
+
 		String name = fullname.substring(2, fullname.length());
 		String prefix = fullname.substring(0, 2);
 
 		if(!prefix.toUpperCase().equalsIgnoreCase(TEST_DATA_PREFIX)) {
+			return;
+		}
+
+		if(!StringUtils.isEmpty(env)) {
+			if(!name.toUpperCase().equalsIgnoreCase(env)) {
+				return;
+			}
+		}else if(!fullname.toUpperCase().equalsIgnoreCase(DEFAULT_TEST_DATA)){
 			return;
 		}
 

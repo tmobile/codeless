@@ -1,4 +1,4 @@
-package com.tmobile.ct.codeless.service.test.excel;
+package com.tmobile.ct.codeless.core.datastructure;
 
 /**
  * The Enum SuiteHeaders.
@@ -28,8 +28,14 @@ public enum SuiteHeaders {
 	/** The custom host. */
 	CUSTOMHOST,
 
-	/** The cusom operation. */
+	/** The custom operation. */
 	CUSTOMOPERATION,
+
+	/** The input operation. */
+	INPUT,
+
+	/** The target operation. */
+	TARGET,
 
 	/** The testdata. */
 	TESTDATA;

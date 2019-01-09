@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +23,10 @@ import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
+import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
+import com.tmobile.ct.codeless.core.datastructure.SuiteHeaders;
 import com.tmobile.ct.codeless.data.BasicTestData;
+import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.files.ClassPathUtil;
 import com.tmobile.ct.codeless.service.Call;
 import com.tmobile.ct.codeless.service.HttpRequest;
@@ -161,6 +166,7 @@ public class ExcelServiceCallBuilder {
 				break;
 			default:
 				if(StringUtils.isNotBlank(value)){
+					value = parseExport(value, test, input);
 					input.add(SuiteHeaders.TESTDATA.name(),  new MultiValue<String,String>(SuiteHeaders.TESTDATA.name(), value));
 				}
 			}
@@ -253,7 +259,7 @@ public class ExcelServiceCallBuilder {
 		testRow.testData.forEach(this::parseTestData);
 
 
-		if(request.getBody().getBody().indexOf("{{") > 0 && request.getBody().getBody().indexOf("}}") > 0 ){
+		if(request != null && request.getBody()!=null && request.getBody().getBody().indexOf("{{") > 0 && request.getBody().getBody().indexOf("}}") > 0 ){
 			setBodyFromEnv(operation);
 		}
 		call.setOperation(operation);
@@ -276,7 +282,7 @@ public class ExcelServiceCallBuilder {
 			customPath = path;
 		}
 		System.out.println("check request body before postman injection "+request.getBody().getBody() );
-		
+
 		System.out.println("custom path::"+ customPath);
 
 		Service serviceFromPostman = ServiceCache.getService(testRow.service, testRow.custom_host, testRow.custom_operation);
@@ -666,5 +672,39 @@ private void parseTestData(String excelData){
 		}
 	}
 
+	public String parseExport(String cellValue, Test test, ServiceCallInput input) {
+        if (cellValue.contains("export")) {
+            String[] values = cellValue.split("::");
+            List<String> stepName = input.get(SuiteHeaders.TESTNAME.name()).getValues();
+            if (values.length >= 2) {
+                String REF = "$REF";
+                REF += "~" + test.getName() + "~" + stepName.get(0) + "~";
+                String key = values[1];
+                for (int i = 2; i < values.length - 1; i++) {
+                    REF += values[i] + "~";
+                }
+                REF += values[values.length - 1];
+                SourcedValue<String> sourceValue = new SourcedValue<String>();
+                sourceValue.setValue(REF);
+                SourcedDataItem<String, String> item = new SourcedDataItem<String, String>(key, sourceValue);
+                if (test.getTestData() == null) {
+                    test.setTestData(new BasicTestData());
+                }
+                test.getTestData().put(key, item);
+            }
+        }
+        Pattern p = Pattern.compile("\\{\\{(.*)\\}\\}");
+        Matcher m = p.matcher(cellValue);
+        while (m.find()) {
+            SourcedDataItem<String, String> value = test.getTestData().getSourcedValue(m.group(1));
+            if (value != null) {
+                String Value = value.getValue().getValue();
+                String key = value.getKey();
+                cellValue = cellValue.replace("{{" + key + "}}", Value);
+            }
+        }
+        return cellValue;
+
+    }
 
 }

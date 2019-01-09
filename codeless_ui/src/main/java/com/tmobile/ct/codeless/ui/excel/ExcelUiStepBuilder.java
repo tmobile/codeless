@@ -13,6 +13,8 @@ import org.openqa.selenium.WebElement;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
+import com.tmobile.ct.codeless.testdata.TestDataInput;
+import com.tmobile.ct.codeless.testdata.TestDataProvider;
 import com.tmobile.ct.codeless.ui.UiStep;
 import com.tmobile.ct.codeless.ui.UiStepImpl;
 import com.tmobile.ct.codeless.ui.action.Click;
@@ -48,7 +50,9 @@ public class ExcelUiStepBuilder {
 	/** The formatter. */
 	private DataFormatter formatter = new DataFormatter();
 
-	private static String OVERRIDE_INPUT = "$VAR=";
+	private static String OVERRIDE_INPUT_START = "{{";
+
+	private static String OVERRIDE_INPUT_END = "}}";
 
 	/**
 	 * Builds the.
@@ -75,7 +79,8 @@ public class ExcelUiStepBuilder {
 	public UiStep build(UiStepInput input, TestData testData) {
 		UiStep step = new UiStepImpl();
 
-		ExcelUiTestRow testRow = buildTestRow(input, testData);
+		ExcelUiTestRow testRow = buildTestRow(input, testData, step);
+		testRow = parseTestData(testRow, step);
 		step.setName(testRow.getStep());
 
 		ActionConfig config = buildConfig(testRow.getTestData());
@@ -243,11 +248,22 @@ public class ExcelUiStepBuilder {
 	 * @param input the input
 	 * @return the excel ui test row
 	 */
-	public ExcelUiTestRow buildTestRow(UiStepInput input, TestData testData){
+	public ExcelUiTestRow buildTestRow(UiStepInput input, TestData testData ,UiStep step){
 		ExcelUiTestRow testRow = new ExcelUiTestRow();
 		input.stream().forEach(item -> {
 			SuiteHeaders header = SuiteHeaders.parse(item.getKey());
 			for (String value : item.getValue().getValues()) {
+
+				if(!StringUtils.isEmpty(value)) {
+					TestDataInput datainput = null;
+					String[] dataValue = StringUtils.substringsBetween(value, OVERRIDE_INPUT_START, OVERRIDE_INPUT_END);
+					if(dataValue != null && dataValue.length > 0 ) {
+						datainput= new TestDataInput();
+						datainput.add(item.getKey(), new MultiValue<String,TestDataProvider>(item.getKey(), new TestDataProvider(testData, dataValue[0])));
+						step.getTestDataInputs().add(datainput);
+					}
+				}
+
 				if (value != null && value.trim().length() > 0) {
 					switch (header) {
 					case STEP:
@@ -260,10 +276,6 @@ public class ExcelUiStepBuilder {
 						testRow.setTarget(value);
 						break;
 					case INPUT:
-						String dynamicValue = overrideTestInput(value,testData);
-						if(!StringUtils.isEmpty(dynamicValue)) {
-							value = dynamicValue;
-						}
 						testRow.setInput(value);
 						break;
 					case TESTDATA:
@@ -278,7 +290,27 @@ public class ExcelUiStepBuilder {
 		return testRow;
 	}
 
-	private String overrideTestInput(String value, TestData testData) {
+	private ExcelUiTestRow parseTestData(ExcelUiTestRow testRow, UiStep step) {
+
+		for(TestDataInput input : step.getTestDataInputs()) {
+			input.stream().forEach(key ->{
+				SuiteHeaders header = SuiteHeaders.parse(key.getKey());
+				TestDataProvider value = key.getValue().getValues().get(0);
+				switch(header){
+				case TARGET:
+					testRow.setTarget(value.find());
+					break;
+				case INPUT:
+					testRow.setInput(value.find());
+					break;
+				}
+			});
+		}
+
+		return testRow;
+	}
+
+	/*private String overrideTestInput(String value, TestData testData) {
 		if(value.length() < 5) { // should be at least length of $var= string
 			return null;
 		}
@@ -307,5 +339,5 @@ public class ExcelUiStepBuilder {
 			}
 		}
 		return null;
-	}
+	}*/
 }
