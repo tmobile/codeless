@@ -124,37 +124,6 @@ public class ExcelServiceCallBuilder {
 				operation = "/"+operation.substring(0, operation.length()-1);
 				input.add(SuiteHeaders.OPERATION.name(),  new MultiValue<String,String>(SuiteHeaders.OPERATION.name(), operation));
 				break;
-			case "TARGET_OVERRIDES":
-				if(null != test.getTestData()) {
-					String[] overrides = value.split(",");
-					for(String override : overrides) {
-						String keyValue[] = override.split("\\=") ;
-						if(OVERRIDE_HOST.toUpperCase().equalsIgnoreCase(keyValue[0]) && test.getTestData() != null && keyValue.length > 1) {
-							if(test.getTestData().asMap().containsKey(keyValue[1])) {
-								if(System.getProperty(keyValue[1]) != null) {
-									String sys_value = System.getProperty(keyValue[1]);
-									input.add(SuiteHeaders.CUSTOMHOST.name(), new MultiValue<String,String>(SuiteHeaders.CUSTOMHOST.name(), sys_value));
-									break;
-								}
-
-								if(System.getenv(keyValue[1]) != null) {
-									String env_value = System.getenv(keyValue[1]);
-									input.add(SuiteHeaders.CUSTOMHOST.name(), new MultiValue<String,String>(SuiteHeaders.CUSTOMHOST.name(), env_value));
-									break;
-								}
-
-								String custom_host = test.getTestData().get(keyValue[1]);
-								input.add(SuiteHeaders.CUSTOMHOST.name(), new MultiValue<String,String>(SuiteHeaders.CUSTOMHOST.name(), custom_host));
-							}
-						}else if(OVERRIDE_OPERATION.toUpperCase().equalsIgnoreCase(keyValue[0]) && test.getTestData() != null && keyValue.length > 1) {
-							if(test.getTestData().asMap().containsKey(keyValue[1])) {
-								String custom_operation = test.getTestData().get(keyValue[1]);
-								input.add(SuiteHeaders.CUSTOMOPERATION.name(), new MultiValue<String,String>(SuiteHeaders.CUSTOMOPERATION.name(), custom_operation));
-							}
-						}
-					}
-			}
-				break;
 			case "INPUT":
 				input.add(SuiteHeaders.METHOD.name(),  new MultiValue<String,String>(SuiteHeaders.METHOD.name(), value));
 				break;

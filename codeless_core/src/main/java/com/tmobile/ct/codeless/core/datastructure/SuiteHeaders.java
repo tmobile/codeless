@@ -25,12 +25,6 @@ public enum SuiteHeaders {
 	/** The expectedstatus. */
 	EXPECTEDSTATUS,
 
-	/** The custom host. */
-	CUSTOMHOST,
-
-	/** The custom operation. */
-	CUSTOMOPERATION,
-
 	/** The input operation. */
 	INPUT,
 
