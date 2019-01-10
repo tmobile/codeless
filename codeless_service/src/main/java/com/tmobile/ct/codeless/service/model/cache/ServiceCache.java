@@ -10,9 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.ct.codeless.files.ClassPathUtil;
 import com.tmobile.ct.codeless.service.HttpRequest;
-import com.tmobile.ct.codeless.service.httpclient.Host;
-import com.tmobile.ct.codeless.service.httpclient.OperationPath;
-import com.tmobile.ct.codeless.service.httpclient.ServicePath;
 import com.tmobile.ct.codeless.service.model.BasicOperation;
 import com.tmobile.ct.codeless.service.model.BasicService;
 import com.tmobile.ct.codeless.service.model.Operation;
@@ -45,9 +42,9 @@ public class ServiceCache {
 	 * @param name the name
 	 * @return the service
 	 */
-	public static Service getService(String name, String host, String operation){
+	public static Service getService(String name){
 		if(!cache.containsKey(name)){
-			buildCache(name, host, operation);
+			buildCache(name);
 		}
 		return cache.get(name);
 	}
@@ -67,7 +64,7 @@ public class ServiceCache {
 	 *
 	 * @param name the name
 	 */
-	private static void buildCache(String name,String customHost,String customOperation){
+	private static void buildCache(String name){
 		List<HttpRequest> requests = null;
 		String basePath = getModelDir() + File.separator + name + File.separator;
 		if(ClassPathUtil.exists(basePath+SWAGGER_YAML)){
@@ -83,21 +80,12 @@ public class ServiceCache {
 			List<Operation> operations = new ArrayList<>();
 
 			requests.forEach(req -> {
-				if(!StringUtils.isEmpty(customHost)) {
-					Host host = new Host(customHost.trim());
-					req.setHost(host);
-				}
 
-				if(!StringUtils.isEmpty(customOperation)) {
-					OperationPath overrideOperation = new OperationPath(customOperation.trim());
-					req.setOperationPath(overrideOperation);
-				}										
-								
 				String servicePathVal  = "";
 				if(req.getServicePath() != null && req.getServicePath().getValue() != null){
-				  servicePathVal = req.getServicePath().getValue();				  
+				  servicePathVal = req.getServicePath().getValue();
 				}
-				
+
 				Operation operation = new BasicOperation(req.getHttpMethod(),servicePathVal, req.getOperationPath().getValue(), req);
 				operations.add(operation);
 			});

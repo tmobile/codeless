@@ -211,12 +211,6 @@ public class ExcelServiceCallBuilder {
 				case TESTDATA:
 					testRow.testData.add(value);
 					break;
-				case CUSTOMHOST:
-					testRow.custom_host = value;
-					break;
-				case CUSTOMOPERATION:
-					testRow.custom_operation = value;
-					break;
 				default:
 					testRow.testData.add(value);
 					break;
@@ -228,13 +222,8 @@ public class ExcelServiceCallBuilder {
 			return null;
 		}
 
-		Service service = ServiceCache.getService(testRow.service, testRow.custom_host, testRow.custom_operation);
-		Operation operation = null;
-		if(!StringUtils.isEmpty(testRow.custom_operation)) {
-			operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.custom_operation);
-		}else {
-			operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
-		}
+		Service service = ServiceCache.getService(testRow.service);
+		Operation operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
 //		HttpRequest request = SerializationUtils.clone((HttpRequestImpl) operation.getRequest());
 
 		if(operation == null){
@@ -285,7 +274,7 @@ public class ExcelServiceCallBuilder {
 
 		System.out.println("custom path::"+ customPath);
 
-		Service serviceFromPostman = ServiceCache.getService(testRow.service, testRow.custom_host, testRow.custom_operation);
+		Service serviceFromPostman = ServiceCache.getService(testRow.service);
 
 		Operation oper = serviceFromPostman.getOperation( HttpMethod.POST, testRow.operation);
 		String postmanBody = oper.getRequest().getBody().getBody().toString();
