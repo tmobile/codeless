@@ -3,6 +3,8 @@ package com.tmobile.ct.codeless.service.test.excel;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +12,7 @@ import org.junit.Test;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.core.datastructure.SuiteHeaders;
+import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.service.Call;
 import com.tmobile.ct.codeless.service.model.cache.ServiceCache;
 
@@ -27,6 +30,8 @@ public class ExcelServiceCallBuilderTest {
 		suite = mock(Suite.class);
 
 		when(test.getSuite()).thenReturn(suite);
+		when(test.getName()).thenReturn("TestName");
+        when(test.getTestData()).thenReturn(new BasicTestData());
 
 		input = new ServiceCallInput();
 		input.add(SuiteHeaders.TESTNAME.name(), new MultiValue(SuiteHeaders.TESTNAME.name(), "test"));
@@ -54,6 +59,20 @@ public class ExcelServiceCallBuilderTest {
 		String queryParam = call.getHttpRequest().getQueryParams().get("amount1").getValues().get(0);
 		assertThat(queryParam).describedAs("query params").isEqualTo("60");
 	}
+
+	@Test
+    public void parseExportTest() {
+
+        ExcelServiceCallBuilder callBuilder = new ExcelServiceCallBuilder();
+        String stepName = input.get(SuiteHeaders.TESTNAME.name()).getValues().get(0);
+        String expectedResult = "$REF~TestName~" + stepName + "~header~authorization";
+
+        callBuilder.parseExport("export::abc::header::authorization", test, input);
+        String output = callBuilder.parseExport("{{abc}}", test, input);
+
+        assertNotNull(test.getTestData().getSourcedValue("abc"));
+        assertEquals(expectedResult, output);
+    }
 
 	// TODO Replace with mock infrastructure so calls can be executed
 
