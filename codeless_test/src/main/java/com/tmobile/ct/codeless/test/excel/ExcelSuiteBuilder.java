@@ -45,7 +45,7 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 	/** The Constant TEST_DATA_PREFIX. */
 	private static final String TEST_DATA_PREFIX = "D-";
 
-	private static final String DEFAULT_TEST_DATA = "D-DEFAULT";
+	private static final String DEFAULT_TEST_DATA = "D-DATASHEET";
 
 	private static final String SHEET_TEST_DATA = "SHEET-TEST_DATA";
 

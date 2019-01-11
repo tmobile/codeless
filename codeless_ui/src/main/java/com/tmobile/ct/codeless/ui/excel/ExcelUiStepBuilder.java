@@ -11,7 +11,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.openqa.selenium.WebElement;
 
 import com.tmobile.ct.codeless.core.Step;
-import com.tmobile.ct.codeless.core.TestData;
+import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.testdata.TestDataInput;
 import com.tmobile.ct.codeless.testdata.TestDataProvider;
@@ -60,14 +60,14 @@ public class ExcelUiStepBuilder {
 	 * @param row the row
 	 * @return the step
 	 */
-	public Step build(Row row, TestData testData){
+	public Step build(Row row, Test test){
 		UiStepInput input = new UiStepInput();
 		for(Cell cell : row){
 			String header = formatter.formatCellValue(cell.getSheet().getRow(0).getCell(cell.getColumnIndex())).trim().toUpperCase();
 			String value = formatter.formatCellValue(cell);
 			input.add(header, new MultiValue<String,String>(header, value));
 		}
-		return build(input,testData);
+		return build(input,test);
 	}
 
 	/**
@@ -76,10 +76,10 @@ public class ExcelUiStepBuilder {
 	 * @param input the input
 	 * @return the ui step
 	 */
-	public UiStep build(UiStepInput input, TestData testData) {
+	public UiStep build(UiStepInput input, Test test) {
 		UiStep step = new UiStepImpl();
 
-		ExcelUiTestRow testRow = buildTestRow(input, testData, step);
+		ExcelUiTestRow testRow = buildTestRow(input, test, step);
 		testRow = parseTestData(testRow, step);
 		step.setName(testRow.getStep());
 
@@ -248,7 +248,7 @@ public class ExcelUiStepBuilder {
 	 * @param input the input
 	 * @return the excel ui test row
 	 */
-	public ExcelUiTestRow buildTestRow(UiStepInput input, TestData testData ,UiStep step){
+	public ExcelUiTestRow buildTestRow(UiStepInput input, Test test ,UiStep step){
 		ExcelUiTestRow testRow = new ExcelUiTestRow();
 		input.stream().forEach(item -> {
 			SuiteHeaders header = SuiteHeaders.parse(item.getKey());
@@ -259,7 +259,7 @@ public class ExcelUiStepBuilder {
 					String[] dataValue = StringUtils.substringsBetween(value, OVERRIDE_INPUT_START, OVERRIDE_INPUT_END);
 					if(dataValue != null && dataValue.length > 0 ) {
 						datainput= new TestDataInput();
-						datainput.add(item.getKey(), new MultiValue<String,TestDataProvider>(item.getKey(), new TestDataProvider(testData, dataValue[0])));
+						datainput.add(item.getKey(), new MultiValue<String,TestDataProvider>(item.getKey(), new TestDataProvider(test, dataValue[0])));
 						step.getTestDataInputs().add(datainput);
 					}
 				}
