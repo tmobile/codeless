@@ -23,6 +23,16 @@ git clone https://github.com/tmobile/codeless.git
 After getting the project on you local, next step will be to build the project locally. One thing is
 this project comes with a pre build jar file under <INSTALL_ROOT>/example_usage/bin path.
 
+##### build
+Codeless project comes with four different projects and an example usage folder that has sample test cases and model files for the test cases. You can find the project herarchy and details of each components under wiki.
+
+> Steps to build the project
+Open command line and go to <INSTALL_ROOT> path and execute below maven command for quick build with out running unit tests.
+```
+mvn clean install -DskipTests=true
+```
+what above command will do is it generates a .jar file that has all four components. After generating the jar it puts the jar under example_usage/lib folder. This is the entry point for scripts under bin folder.
+
 ### Project Structure
 
 example_usage
@@ -39,9 +49,10 @@ until finished
 End with an example of getting some data out of the system or using it for a little demo
 
 ## Running the tests
-
-Explain how to run the automated tests for this system
-
+##### Windows machine
+run <INSTALL_ROOT>/bin/run.bat
+##### Mac machine
+run <INSTALL_ROOT>/bin/run.bat
 ### Break down into end to end tests
 
 Explain what these tests test and why
