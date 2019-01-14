@@ -50,21 +50,31 @@ There are five components under <INSTALL_ROOT>. This five components build as a 
 
 /example_usage has five folders. Here you define your suite test and test data's that your tests refer to. 
 
-/bin
+> /bin
+```
 ..run.bat
 ..run.sh
+```
 
-/lib
+> /lib
+```
 ..codeless_test-0.0.3-SNAPSHOT-jar-with-dependencies
+```
 
-/logs
+> /logs
+```
 ..debug/test_suite
+```
 
-/models
+> /models
+```
 ../test_model
+```
 
-/suites
+> /suites
+```
 ../test_suite
+```
 
 ## Running the tests
 ##### Windows machine
