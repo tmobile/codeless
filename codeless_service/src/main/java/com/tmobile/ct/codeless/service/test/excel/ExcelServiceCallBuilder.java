@@ -252,10 +252,12 @@ public class ExcelServiceCallBuilder {
 
 		testRow.testData.forEach(this::parseTestData);
 
-
-		if(request.getBody().getBody().indexOf("{{") > 0 && request.getBody().getBody().indexOf("}}") > 0 ){
-			setBodyFromEnv(operation);
+		if(request.getBody() != null){
+			if(request.getBody().getBody().indexOf("{{") > 0 && request.getBody().getBody().indexOf("}}") > 0 ){
+				setBodyFromEnv(operation);
+			}
 		}
+		
 		call.setOperation(operation);
 		call.setName(testRow.testName);
 		call.setAssertions(assertions);
