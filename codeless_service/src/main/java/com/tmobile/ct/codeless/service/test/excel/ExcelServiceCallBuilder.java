@@ -18,6 +18,7 @@ import org.apache.poi.ss.usermodel.Row;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tmobile.ct.codeless.assertion.AssertJAssertionBuilder;
+import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.ct.codeless.core.Assertion;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Test;
@@ -52,9 +53,13 @@ import com.tmobile.ct.codeless.service.httpclient.Body;
 import com.tmobile.ct.codeless.service.httpclient.Cookie;
 import com.tmobile.ct.codeless.service.httpclient.Form;
 import com.tmobile.ct.codeless.service.httpclient.Header;
+import com.tmobile.ct.codeless.service.httpclient.Host;
 import com.tmobile.ct.codeless.service.httpclient.HttpMethod;
+import com.tmobile.ct.codeless.service.httpclient.HttpProtocal;
+import com.tmobile.ct.codeless.service.httpclient.OperationPath;
 import com.tmobile.ct.codeless.service.httpclient.PathParam;
 import com.tmobile.ct.codeless.service.httpclient.QueryParam;
+import com.tmobile.ct.codeless.service.model.EndPoint;
 import com.tmobile.ct.codeless.service.model.Operation;
 import com.tmobile.ct.codeless.service.model.Service;
 import com.tmobile.ct.codeless.service.model.cache.ServiceCache;
@@ -99,6 +104,9 @@ public class ExcelServiceCallBuilder {
 
 	/** The Override operation. */
 	private static String OVERRIDE_OPERATION="$OPERATION";
+	
+	/** The Constant SWAGGER_YAML. */
+	private static final String SWAGGER_YAML = "swagger.yaml";
 
 	/**
 	 * Builds the hybrid.
@@ -215,87 +223,249 @@ public class ExcelServiceCallBuilder {
 		call = new Call(new RestAssuredHttpClient(), request, 0);
 
 		testRow.testData.forEach(this::parseTestData);
+		setDefaultEndpoint();
 
-
-		if(request != null && request.getBody()!=null && request.getBody().getBody().indexOf("{{") > 0 && request.getBody().getBody().indexOf("}}") > 0 ){
+		if(request.getBody() != null && request.getBody().getBody() != null && request.getBody().getBody().indexOf("{{") > 0 && request.getBody().getBody().indexOf("}}") > 0 ){
 			setBodyFromEnv(operation);
-		}
+		}								 		
+		setDefaultEndpoint();
+		
 		call.setOperation(operation);
 		call.setName(testRow.testName);
 		call.setAssertions(assertions);
 		return call;
 	}
 
-	private void setBodyFromEnv(Operation operation){
-		String body = request.getBody().getBody();
-		String path = operation.getPath();
-		String customPath = "";
-
-		if(path.indexOf(".") > 0){
-			String[] arr = path.split(".");
-			for(String item : arr){
-				customPath = customPath + "/" +item;
-			}
-		}else{
-			customPath = path;
-		}
-		System.out.println("check request body before postman injection "+request.getBody().getBody() );
-
-		System.out.println("custom path::"+ customPath);
-
-		Service serviceFromPostman = ServiceCache.getService(testRow.service);
-
-		Operation oper = serviceFromPostman.getOperation( HttpMethod.POST, testRow.operation);
-		String postmanBody = oper.getRequest().getBody().getBody().toString();
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			Map<String,Object> postmanMap = mapper.readValue(postmanBody, Map.class);
-			String[] jsonArr = body.substring(1, body.length()-1).split(",");
-
-			String finalString = "";
-			Map<String,Object> newMap = null;
-			for(String item : jsonArr){
-				if(item.indexOf("{{") > 0 && item.indexOf("}}") > 0){
-					String[] jsonObj = item.split(":");
-					String val = jsonObj[1].substring(1, jsonObj[1].length()-1);
-					val = val.substring(1, val.length()-1);
-
-					if(val.indexOf("{") == 0 && val.indexOf("}") > 0 ){
-						val =val.substring(1, val.length()-1);
+	/**
+	 * Sets endpoint from default tab of excel sheet
+	 */
+	private void setDefaultEndpoint(){
+		TestData defaultTestData = test.getTestData();	
+		Host host = new Host();
+		boolean isHostInExcel = false;
+		boolean isProtocolInExcel = false;
+		boolean isPortInExcel = false;
+		boolean isPathInExcel = false;
+		
+		if(defaultTestData != null){
+		for(String excelData : testRow.testData){
+			String[] parts = excelData.split("::");
+			
+			if(parts[0].equalsIgnoreCase("ENDPOINT")){
+				for(String part : parts){
+					switch(part){
+						case "host":
+							isHostInExcel = true;
+							break;
+						case "protocol":
+							isProtocolInExcel = true;
+							break;
+						case "port":
+							isPortInExcel = true;
+							break;
+						case "path":
+							isPathInExcel = true;
+							break;
 					}
-
-					String key = jsonObj[0].substring(1, jsonObj[0].length()-1);
-
-					postmanMap.remove(key);
-
-					postmanMap.put(key, val );
-					finalString = "{";
-					for (Map.Entry<String, Object> entry : postmanMap.entrySet()) {
-					    String finalKey = entry.getKey().toString();
-					    Object value = entry.getValue().toString();
-					    finalString = finalString +'"'+ finalKey +'"' +":" + '"' + value +'"' +",";
-					}
-
-					if(finalString.endsWith(","))
-					{
-						finalString = finalString.substring(0,finalString.length() - 1);
-					}
-					finalString = finalString +"}";
 				}
 			}
-
-			Body<String> newBody = new Body<String>();
-
-			System.out.println("postman map ************************************* " + postmanMap.toString());
-			newBody.setBody(finalString);
-			request.setBody(newBody);
-
-			System.out.println("check request body after postman injection "+request.getBody().getBody() );
-		} catch (IOException  e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		
+		if(defaultTestData.getSourcedValue("host") != null && !isHostInExcel){	
+			host.setValue(defaultTestData.getSourcedValue("host").getValue().getValue());
+			request.setHost(host);	
+		}
+		
+		if(defaultTestData.getSourcedValue("protocol") != null && !isProtocolInExcel){	
+			if(defaultTestData.getSourcedValue("protocol").getValue().getValue().equalsIgnoreCase(HttpProtocal.HTTP.toString())){
+				request.setProtocal(HttpProtocal.HTTP);
+			}else{
+				request.setProtocal(HttpProtocal.HTTPS);
+			}			
+		}
+		
+		if(defaultTestData.getSourcedValue("port") != null && !isPortInExcel){	
+			request.setPort(Integer.valueOf(defaultTestData.getSourcedValue("port").getValue().getValue()));	
+		}
+	
+		if(defaultTestData.getSourcedValue("path") != null && !isPathInExcel){	
+			OperationPath operationPath = new OperationPath();
+			String path =defaultTestData.getSourcedValue("path").getValue().getValue();
+			operationPath.setValue(path);
+			request.setOperationPath(operationPath);	
+		}
+		}
+	}
+	
+	/**
+	 * Parses the endpoint
+	 *
+	 * @param parts the parts
+	 * @param excelData the excel data
+	 */
+	private void parseEndpoint(String[] parts, String excelData) {
+		EndPoint endpointFromExcel = new EndPoint();
+		
+		int counter = 0;
+		for(String endPointPart : parts ){
+			switch(endPointPart){
+				case "protocol":
+					endpointFromExcel.setProtocall(parts[counter+1]);
+					break;
+				case "host":
+					endpointFromExcel.setHost(parts[counter+1]);
+					break;
+				case "port":
+					endpointFromExcel.setPort(parts[counter+1]);
+					break;
+				case "path":
+					endpointFromExcel.setPath(parts[counter+1]);
+					break;
+			}
+			counter++;
+		}					
+		
+		String endpoint = "";
+		String endpointHost = "";
+		
+	
+		if(endpointFromExcel.getProtocall() != null ){
+			endpointHost = endpointFromExcel.getProtocall();			
+		}
+	
+		Host host = new Host();
+		endpointHost = endpointHost + "://" ;
+		if((endpointFromExcel.getHost() != null)){
+			endpointHost = endpointHost + endpointFromExcel.getHost(); 
+			host.setValue(endpointFromExcel.getHost());	
+		}		
+		
+		if(endpointFromExcel.getPort() != null){
+			endpoint = endpointHost + ":" + endpointFromExcel.getPort();
+			endpointHost = endpoint;
+		}else{
+			endpoint = endpointHost;
+		}												
+		
+		String basePath = getModelDir() + File.separator + testRow.service + File.separator;
+		if(ClassPathUtil.exists(basePath+SWAGGER_YAML)){
+			request.getHost().setValue(endpointHost);	
+		}
+		else{
+			request.setHost(host);	
+		}
+		
+		OperationPath operationPath = new OperationPath();
+		String path = "";
+		if(endpointFromExcel.getPath() != null){	
+			path = endpointFromExcel.getPath();	
+			operationPath.setValue(path);
+			request.setOperationPath(operationPath);
+		}
+		
+		
+		endpoint = endpoint + "/" + path;			
+		
+		HttpProtocal protocall = null;
+		if(endpointFromExcel.getProtocall() != null && endpointFromExcel.getProtocall().equalsIgnoreCase(HttpProtocal.HTTPS.toString())){
+			protocall = HttpProtocal.HTTPS;
+		}else{
+			protocall = HttpProtocal.HTTP;
+		}
+		request.setProtocal(protocall);
+		
+		if(endpointFromExcel.getPort() != null){
+			request.setPort(Integer.valueOf(endpointFromExcel.getPort()));
+		}
+		
+		if(request.getEndpoint() != null){
+			request.getEndpoint().setValue(endpoint);
+		}
+	}
+	
+	/**
+	 * Gets the model dir.
+	 *
+	 * @return the model dir
+	 */
+	private static String getModelDir(){		
+		String modelDir = CodelessConfiguration.getModelDir();
+		
+		return modelDir;
+	}
 
+	
+	private String findBodyTemplateinTD(){
+		for(String testData : testRow.testData){
+			if(testData.toUpperCase().startsWith("BODYTEMPLATE")){		
+				String[] tempVals = testData.split("::");		
+				String requestBody = "";
+				
+				for(int counter = 1; counter < tempVals.length; counter += 2){
+					requestBody = requestBody + tempVals[counter] +  ":" + tempVals[counter+1] + ",";					
+				}
+				
+				if(requestBody.endsWith(",")){
+					requestBody= requestBody.substring(0, requestBody.length()-1);
+				}
+															
+				return requestBody;				
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Sets Request body from testData in excelsheet
+	 * @param operation
+	 */
+	private void setBodyFromEnv(Operation operation){
+		String postmanBody = request.getBody().getBody().toString();
+		String bodyTemplateFromTD = findBodyTemplateinTD();					
+		ObjectMapper mapper = new ObjectMapper();
+		
+		if(bodyTemplateFromTD != null){		
+			try {
+				Map<String,Object> postmanMap = mapper.readValue(postmanBody, Map.class);
+				String[] jsonArr = bodyTemplateFromTD.split(",");
+				String formattedBody = "{";
+				
+				for(String item : jsonArr){
+					for (Map.Entry<String, Object> entry : postmanMap.entrySet()) {
+					    String key = entry.getKey();
+					    String value = entry.getValue().toString();				    				    			
+					    String tempVal = value.substring(1, value.length()-1);				    					
+						String[] jsonObj = item.split(":");
+						boolean notFinalValue = false;					
+						tempVal = tempVal.substring(1, tempVal.length()-1);
+						
+						if(value.indexOf("{{") >= 0 && value.indexOf("}}") > 0){																		
+							if(tempVal.equalsIgnoreCase(jsonObj[0])){
+								value = jsonObj[1];							
+							}else{
+								notFinalValue = true;
+							}
+						}					
+						
+						if(formattedBody.indexOf(key) < 0 && !notFinalValue){
+							formattedBody = formattedBody +'"'+ key +'"' +":" + '"' + value +'"' +",";		
+						}
+					}
+				}
+				
+				if(formattedBody.endsWith(","))
+				{
+					formattedBody = formattedBody.substring(0,formattedBody.length() - 1);
+				}
+				formattedBody = formattedBody +"}";
+				
+				Body<String> newBody = new Body<String>();
+				newBody.setBody(formattedBody);
+				request.setBody(newBody);	
+			} catch (IOException  e) {			
+				e.printStackTrace();
+			}
+		}
 
 
 	}
@@ -354,8 +524,8 @@ private void parseTestData(String excelData){
 
 		String[] parts = excelData.trim().split("::");
 
-		if(parts.length > 5){
-			System.err.println("ExcelParser: Test Data cell has parts > 5, "+parts);
+		if(parts.length > 9){
+			System.err.println("ExcelParser: Test Data cell has parts > 9, "+parts);
 			return;
 		}
 
@@ -395,6 +565,9 @@ private void parseTestData(String excelData){
 			break;
 		case "BODYTEMPLATE":
 			parseBodyTemplate(parts, excelData);
+			break;
+		case "ENDPOINT":
+			parseEndpoint(parts, excelData);	
 		}
 	}
 
