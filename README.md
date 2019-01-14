@@ -52,38 +52,38 @@ There are five components under <INSTALL_ROOT>. This five components build as a 
 
 ```
 /bin
-
 ..run.bat
 ..run.sh
 
 /lib
-..codeless_test-0.0.3-SNAPSHOT-jar-with-dependencies
+..codeless_test-0.0.3-SNAPSHOT-jar-with-dependencies.jar
 
 /logs
-
 ..debug/test_suite
 
-
 > /models
-
 ../test_model
 
 > /suites
-
 ../test_suite
 ```
 
 ## Running the tests
-#### Executing Tests
-Following sections cover how to execute example tests provided by this skeleton
-
+From the command line change to <INSTALL_ROOT>/bin
 #### Execute UI Tests
-Example UI tests included with this skeleton. These tests use PageObject models defined by yaml in the <INSTALL_ROOT>/model folder. They are for the T-Mobile web (<INSTALL_ROOT>/model/TMO) and MyTmobile web (<INSTALL_ROOT>/model/MyTMO) applications.
+Example ui tests are included in example_usage/suites/. These tests use PageObject models defined by yaml in the <INSTALL_ROOT>/model folder.
 
 Make sure you have followed the install and configuration instructions from above.
 From the command line change to <INSTALL_ROOT>/bin
 Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
 Type run.<os> demo_ui.xlsx I.E. run.cmd demo_ui.xlsx for Windows and ./run.sh demo_ui.xlsx for Mac/Linux
+
+#### Execute Service Tests
+Example API service tests included in example_usage/suites/. These tests use a model defined by yaml in the <INSTALL_ROOT>/example_usage/model folder.
+
+Make sure you have followed the install and configuration instructions from above.
+Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
+Type run.<os> demo_service.xlsx I.E. run.cmd demo_service.xlsx for Windows and ./run.sh demo_service.xlsx for Mac/Linux
 
 ### And coding style tests
 
