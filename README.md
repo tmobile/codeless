@@ -11,7 +11,7 @@ Below instructions will get you a copy of the project up and running on your loc
 | Prerequisite | Command to Run | Description |
 | ------------ | -------------- | -----------  |
 | Java Runtime Environment (JRE) 1.8.x | java -version | As it is a Java project, Java need to be installed locally.
-| Microsoft Excell |  | ETP Codeless currently support excel based test cases
+| Microsoft Excel |  | ETP Codeless currently support excel based test cases
 
 
 ### Installing
