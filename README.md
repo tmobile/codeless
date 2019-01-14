@@ -11,8 +11,8 @@ Below instructions will get you a copy of the project up and running on your loc
 | Prerequisite | Command to Run | Description |
 | ------------ | -------------- | -----------  |
 | Java Runtime Environment (JRE) 1.8.x | java -version | As it is a Java project, Java need to be installed locally.
-| Apache Maven | mvn -version | Need to install Maven to build the project |
-| Git | git clone <code_location> | Project code need to be in local machine |
+| Microsoft Excell |  | ETP Codeless currently support excel based test cases
+
 
 ### Installing
 
@@ -97,8 +97,14 @@ Give an example
 ```
 
 ## Built With
+#### Project build process Prerequisites
 
-JAVA
+| Prerequisite | Command to Run | Description |
+| ------------ | -------------- | -----------  |
+| Jdk |  | Edit source code |
+| Git | git clone <code_location> | Project code need to be in local machine |
+| Apache Maven | mvn -version | Need to install Maven to build the project if project has been edited |
+
 
 ## Contributing
 
