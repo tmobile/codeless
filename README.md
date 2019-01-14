@@ -4,62 +4,89 @@ ETP Codeless is a stand-alone Java project created by T-Mobile. ETP codeless pro
 
 ## Getting Started
 
-Below instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+Below instructions will get you a copy of the project up and running on your local machine for testing purposes.
 
 ### Prerequisites
 
 | Prerequisite | Command to Run | Description |
 | ------------ | -------------- | -----------  |
 | Java Runtime Environment (JRE) 1.8.x | java -version | As it is a Java project, Java need to be installed locally.
-| Apache Maven | mvn -version | Need to install Maven to build the project |
-| Git | git clone <code_location> | Project code need to be in local machine |
+| Microsoft Excel |  | ETP Codeless currently support excel based test cases
+
 
 ### Installing
 
-Before you use the ETP Codeless project you must first clone it to your local machine. 
-You can clone the project using your favorite git GUI tool or from the command line with: 
+Before using ETP Codeless project you must first clone it to your local machine. 
+You can clone the project using your favorite git GUI tool or from the command line with using git command: 
 git clone https://github.com/tmobile/codeless.git
 
 After getting the project on you local, next step will be to build the project locally. One thing is
-this project comes with a pre build jar file under <INSTALL_ROOT>/example_usage/bin path.
+this project comes with is a pre build jar file under <INSTALL_ROOT>/example_usage/bin path. Using that you can run
+a sample spread sheet tests provided located under <INSTALL_ROOT>/example_usage/suites.
 
 ##### build
-Codeless project comes with four different projects and an example usage folder that has sample test cases and model files for the test cases. You can find the project herarchy and details of each components under wiki.
+This section is for a user who would like to change source file to contribute to the ETP codeless community or who like to extend
+the base features of the framework.
+ETP Codeless framework comes with five different components and example_usage folder that has sample test cases and model files.
 
 > Steps to build the project
-Open command line and go to <INSTALL_ROOT> path and execute below maven command for quick build with out running unit tests.
+Open command line and go to <INSTALL_ROOT> path and execute below maven command for quick build.
 ```
-mvn clean install -DskipTests=true
+mvn clean install
 ```
-what above command will do is it generates a .jar file that has all four components. After generating the jar it puts the jar under example_usage/lib folder. This is the entry point for scripts under bin folder.
+After above command runs, it generates a .jar file that has all five components and puts the jar under <INSTALL_ROOT>/example_usage/lib folder.
 
 ### Project Structure
 
-example_usage
-```
-Below outlines the main package structure/components of the ETP Codeless example_usage which users would interact with. Please refer here for a quick guide on what the individual components are under example_usage.
-```
+There are five components under <INSTALL_ROOT>. This five components build as a jar file to run a codeless test suites.
 
-And repeat
+> /codeless_core: defines core components of framwork.
+
+> /codeless_ui: defines different components that generates selenium ui automation test steps.
+
+> /codeless_service:  defines different components that are needed for API automation testing.
+
+> /codeless_test: this module is a gateway that interacts both with codeless_ui/service modules.
+
+> /selenium_action: defines different selenium page actions that are supported by the framework.
+
+/example_usage has five folders. Here you define your suite test and test data's that your tests refer to and also logs for
+each test suite executed. 
 
 ```
-until finished
-```
+/bin
+..run.bat
+..run.sh
 
-End with an example of getting some data out of the system or using it for a little demo
+/lib
+..codeless_test-0.0.3-SNAPSHOT-jar-with-dependencies.jar
+
+/logs
+..debug/test_suite
+
+> /models
+../test_model
+
+> /suites
+../test_suite
+```
 
 ## Running the tests
-##### Windows machine
-run <INSTALL_ROOT>/bin/run.bat
-##### Mac machine
-run <INSTALL_ROOT>/bin/run.bat
-### Break down into end to end tests
+From the command line change to <INSTALL_ROOT>/bin
+#### Execute UI Tests
+Example ui tests are included in example_usage/suites/. These tests use PageObject models defined by yaml in the <INSTALL_ROOT>/model folder.
 
-Explain what these tests test and why
+Make sure you have followed the install and configuration instructions above.
+From the command line change to <INSTALL_ROOT>/bin
+Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
+Type run.<os> demo_ui.xlsx I.E. run.cmd demo_ui.xlsx for Windows and ./run.sh demo_ui.xlsx for Mac/Linux
 
-```
-Give an example
-```
+#### Execute Service Tests
+Example API service tests included in example_usage/suites/. These tests use a swagger definations under <INSTALL_ROOT>/example_usage/model folder.
+
+Make sure you have followed the install and configuration instructions from above.
+Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
+Type run.<os> demo_service.xlsx I.E. run.cmd demo_service.xlsx for Windows and ./run.sh demo_service.xlsx for Mac/Linux
 
 ### And coding style tests
 
@@ -69,11 +96,14 @@ Explain what these tests test and why
 Give an example
 ```
 
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
 ## Built With
+#### Project build process Prerequisites
+
+| Prerequisite | Command to Run | Description |
+| ------------ | -------------- | -----------  |
+| Jdk |  | Edit source code |
+| Git | git clone <code_location> | Project code need to be in local machine |
+| Apache Maven | mvn -version | Need to install Maven to build the project if project has been edited |
 
 
 ## Contributing
