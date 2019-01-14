@@ -21,7 +21,8 @@ You can clone the project using your favorite git GUI tool or from the command l
 git clone https://github.com/tmobile/codeless.git
 
 After getting the project on you local, next step will be to build the project locally. One thing is
-this project comes with a pre build jar file under <INSTALL_ROOT>/example_usage/bin path.
+this project comes with a pre build jar file under <INSTALL_ROOT>/example_usage/bin path. So that you can run
+a sample spread sheet tests located under <INSTALL_ROOT>/example_usage/suites.
 
 ##### build
 Codeless project comes with four different projects and an example usage folder that has sample test cases and model files for the test cases. You can find the project herarchy and details of each components under wiki.
@@ -29,15 +30,35 @@ Codeless project comes with four different projects and an example usage folder 
 > Steps to build the project
 Open command line and go to <INSTALL_ROOT> path and execute below maven command for quick build with out running unit tests.
 ```
-mvn clean install -DskipTests=true
+mvn clean install
 ```
-what above command will do is it generates a .jar file that has all four components. After generating the jar it puts the jar under example_usage/lib folder. This is the entry point for scripts under bin folder.
+what above command will do is, it generates a .jar file that has all five components. After generating the jar it puts the jar under <INSTALL_ROOT>/example_usage/lib folder. This is the entry point to run your codeless spread sheet tests.
 
 ### Project Structure
 
-example_usage
-```
-Below outlines the main package structure/components of the ETP Codeless example_usage which users would interact with. Please refer here for a quick guide on what the individual components are under example_usage.
+There are five components under <INSTALL_ROOT>. This five components build as a jar file to run a codeless test suites.
+> /codeless_core
+> /codeless_ui
+> /codeless_service
+> /codeless_test
+> /selenium_action
+
+/example_usage has five folders. Here you define your suite test and test data's that your tests refer to. 
+/bin
+..run.bat
+..run.sh
+
+/lib
+..codeless_test-0.0.3-SNAPSHOT-jar-with-dependencies
+
+/logs
+..debug/test_suite
+
+/models
+../test_model
+
+/suites
+../test_suite
 ```
 
 And repeat
