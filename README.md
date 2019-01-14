@@ -50,44 +50,40 @@ There are five components under <INSTALL_ROOT>. This five components build as a 
 
 /example_usage has five folders. Here you define your suite test and test data's that your tests refer to. 
 
-> /bin
 ```
+/bin
+
 ..run.bat
 ..run.sh
-```
 
-> /lib
-```
+/lib
 ..codeless_test-0.0.3-SNAPSHOT-jar-with-dependencies
-```
 
-> /logs
-```
+/logs
+
 ..debug/test_suite
-```
+
 
 > /models
-```
+
 ../test_model
-```
 
 > /suites
-```
+
 ../test_suite
 ```
 
 ## Running the tests
-##### Windows machine
-run <INSTALL_ROOT>/bin/run.bat
-##### Mac machine
-run <INSTALL_ROOT>/bin/run.bat
-### Break down into end to end tests
+#### Executing Tests
+Following sections cover how to execute example tests provided by this skeleton
 
-Explain what these tests test and why
+#### Execute UI Tests
+Example UI tests included with this skeleton. These tests use PageObject models defined by yaml in the <INSTALL_ROOT>/model folder. They are for the T-Mobile web (<INSTALL_ROOT>/model/TMO) and MyTmobile web (<INSTALL_ROOT>/model/MyTMO) applications.
 
-```
-Give an example
-```
+Make sure you have followed the install and configuration instructions from above.
+From the command line change to <INSTALL_ROOT>/bin
+Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
+Type run.<os> demo_ui.xlsx I.E. run.cmd demo_ui.xlsx for Windows and ./run.sh demo_ui.xlsx for Mac/Linux
 
 ### And coding style tests
 
