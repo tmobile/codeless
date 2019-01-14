@@ -37,13 +37,19 @@ what above command will do is, it generates a .jar file that has all five compon
 ### Project Structure
 
 There are five components under <INSTALL_ROOT>. This five components build as a jar file to run a codeless test suites.
+
 > /codeless_core
+
 > /codeless_ui
+
 > /codeless_service
+
 > /codeless_test
+
 > /selenium_action
 
 /example_usage has five folders. Here you define your suite test and test data's that your tests refer to. 
+
 /bin
 ..run.bat
 ..run.sh
@@ -59,15 +65,6 @@ There are five components under <INSTALL_ROOT>. This five components build as a 
 
 /suites
 ../test_suite
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Running the tests
 ##### Windows machine
@@ -89,10 +86,6 @@ Explain what these tests test and why
 ```
 Give an example
 ```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 
