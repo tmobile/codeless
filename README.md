@@ -76,13 +76,13 @@ From the command line change to <INSTALL_ROOT>/bin
 #### Execute UI Tests
 Example ui tests are included in example_usage/suites/. These tests use PageObject models defined by yaml in the <INSTALL_ROOT>/model folder.
 
-Make sure you have followed the install and configuration instructions from above.
+Make sure you have followed the install and configuration instructions above.
 From the command line change to <INSTALL_ROOT>/bin
 Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
 Type run.<os> demo_ui.xlsx I.E. run.cmd demo_ui.xlsx for Windows and ./run.sh demo_ui.xlsx for Mac/Linux
 
 #### Execute Service Tests
-Example API service tests included in example_usage/suites/. These tests use a model defined by yaml in the <INSTALL_ROOT>/example_usage/model folder.
+Example API service tests included in example_usage/suites/. These tests use a swagger definations under <INSTALL_ROOT>/example_usage/model folder.
 
 Make sure you have followed the install and configuration instructions from above.
 Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
