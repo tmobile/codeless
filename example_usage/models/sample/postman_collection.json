@@ -1,0 +1,25 @@
+{
+	"variables": [],
+	"info": {
+		"name": "dummyAPI",
+		"_postman_id": "3e8d1c94-fec9-c480-6519-483e97cb5198",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "dummyAPIs-POST",
+			"request": {
+				"url": "http://dummy.default.com/api/create",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"{{namevar}}\",\"salary\":\"{{salaryvar}}\",\"age\":\"{{agevar}}\"}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
