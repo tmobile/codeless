@@ -40,13 +40,13 @@ After above command runs, it generates a .jar file that has all five components 
 
 There are five components under <INSTALL_ROOT>. This five components build as a jar file to run a codeless test suites.
 
-> /codeless_core: defines core components of framwork.
+> /codeless_core: defines core components of framwork common for both other modules defined below.
 
 > /codeless_ui: defines different components that generates selenium ui automation test steps.
 
 > /codeless_service:  defines different components that are needed for API automation testing.
 
-> /codeless_test: this module is a gateway that interacts both with codeless_ui/service modules.
+> /codeless_test: this module is a interacts both with codeless_ui/service modules to run the automation test.
 
 > /selenium_action: defines different selenium page actions that are supported by the framework.
 
@@ -74,19 +74,12 @@ each test suite executed.
 ## Running the tests
 From the command line change to <INSTALL_ROOT>/bin
 #### Execute UI Tests
-Example ui tests are included in example_usage/suites/. These tests use PageObject models defined by yaml in the <INSTALL_ROOT>/model folder.
+Example tests are included in example_usage/suites/. These tests use PageObject models defined by yaml and a swagger definations under <INSTALL_ROOT>/model folder respective of the test step.
 
 Make sure you have followed the install and configuration instructions above.
 From the command line change to <INSTALL_ROOT>/bin
 Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
-Type run.<os> demo_ui.xlsx I.E. run.cmd demo_ui.xlsx for Windows and ./run.sh demo_ui.xlsx for Mac/Linux
-
-#### Execute Service Tests
-Example API service tests included in example_usage/suites/. These tests use a swagger definations under <INSTALL_ROOT>/example_usage/model folder.
-
-Make sure you have followed the install and configuration instructions from above.
-Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
-Type run.<os> demo_service.xlsx I.E. run.cmd demo_service.xlsx for Windows and ./run.sh demo_service.xlsx for Mac/Linux
+Type run.<os> sampletest.xlsx I.E. run.cmd sampletest.xlsx for Windows and ./run.sh sampletest.xlsx for Mac/Linux
 
 ### And coding style tests
 
