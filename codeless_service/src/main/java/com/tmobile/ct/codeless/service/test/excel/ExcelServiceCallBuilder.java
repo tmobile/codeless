@@ -825,13 +825,16 @@ private void parseTestData(String excelData){
             }
         }
         Pattern p = Pattern.compile("\\{\\{(.*)\\}\\}");
-        Matcher m = p.matcher(cellValue);
-        while (m.find()) {
-            SourcedDataItem<String, String> value = test.getTestData().getSourcedValue(m.group(1));
-            if (value != null) {
-                String Value = value.getValue().getValue();
-                String key = value.getKey();
-                cellValue = cellValue.replace("{{" + key + "}}", Value);
+        String[] parts = cellValue.split("::");
+        for (int i = 0; i < parts.length; i++) {
+            Matcher m = p.matcher(parts[i]);
+            while (m.find()) {
+                SourcedDataItem<String, String> value = test.getTestData().getSourcedValue(m.group(1));
+                if (value != null) {
+                    String Value = value.getValue().getValue();
+                    String key = value.getKey();
+                    cellValue = cellValue.replace(parts[i], Value);
+                }
             }
         }
         return cellValue;
