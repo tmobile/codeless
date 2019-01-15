@@ -14,7 +14,7 @@ Below instructions will get you a copy of the project up and running on your loc
 | Microsoft Excel |  | ETP Codeless currently support excel based test cases
 
 
-### Installing
+### Installation and build process
 
 Before using ETP Codeless project you must first clone it to your local machine. 
 You can clone the project using your favorite git GUI tool or from the command line with using git command: 
@@ -29,7 +29,7 @@ This section is for a user who would like to change source file to contribute to
 the base features of the framework.
 ETP Codeless framework comes with five different components and example_usage folder that has sample test cases and model files.
 
-> Steps to build the project
+* To build the project
 Open command line and go to <INSTALL_ROOT> path and execute below maven command for quick build.
 ```
 mvn clean install
@@ -40,15 +40,15 @@ After above command runs, it generates a .jar file that has all five components 
 
 There are five components under <INSTALL_ROOT>. This five components build as a jar file to run a codeless test suites.
 
-> /codeless_core: defines core components of framwork.
+* `/codeless_core:` defines core components of framwork common for both other modules defined below.
 
-> /codeless_ui: defines different components that generates selenium ui automation test steps.
+* `/codeless_ui:` defines different components that generates selenium ui automation test steps.
 
-> /codeless_service:  defines different components that are needed for API automation testing.
+* `/codeless_service:`  defines different components that are needed for API automation testing.
 
-> /codeless_test: this module is a gateway that interacts both with codeless_ui/service modules.
+* `/codeless_test:` this module is a interacts both with codeless_ui/service modules to run the automation test.
 
-> /selenium_action: defines different selenium page actions that are supported by the framework.
+* `/selenium_action:` defines different selenium page actions that are supported by the framework.
 
 /example_usage has five folders. Here you define your suite test and test data's that your tests refer to and also logs for
 each test suite executed. 
@@ -73,20 +73,23 @@ each test suite executed.
 
 ## Running the tests
 From the command line change to <INSTALL_ROOT>/bin
-#### Execute UI Tests
-Example ui tests are included in example_usage/suites/. These tests use PageObject models defined by yaml in the <INSTALL_ROOT>/model folder.
+#### Execute Tests
+Example tests are included in example_usage/suites/. These tests use PageObject models defined by yaml and a swagger definations under <INSTALL_ROOT>/model folder respective of the test step.
 
 Make sure you have followed the install and configuration instructions above.
 From the command line change to <INSTALL_ROOT>/bin
 Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
-Type run.<os> demo_ui.xlsx I.E. run.cmd demo_ui.xlsx for Windows and ./run.sh demo_ui.xlsx for Mac/Linux
+Type run.<os> sampletest.xlsx I.E. run.cmd sampletest.xlsx for Windows and ./run.sh sampletest.xlsx for Mac/Linux
+  
+  * refer wiki for all combinations and permitations of test execution.
+  
+##### Execution outputs
 
-#### Execute Service Tests
-Example API service tests included in example_usage/suites/. These tests use a swagger definations under <INSTALL_ROOT>/example_usage/model folder.
+* Extent Report: gives report for each test and test steps (request and response values of each service steps).
 
-Make sure you have followed the install and configuration instructions from above.
-Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
-Type run.<os> demo_service.xlsx I.E. run.cmd demo_service.xlsx for Windows and ./run.sh demo_service.xlsx for Mac/Linux
+* Screen Shots: Codeless framework take screen shots if a test step failed and puts dump it to a folder      <INSTALL_ROOT>/example_usage/lib/FailedTestsScreenshots
+
+* Logs: For each test suite the framework generates debug log under <INSTALL_ROOT>/example_usage/logs/ folder which can be useful when triaging issues.
 
 ### And coding style tests
 
