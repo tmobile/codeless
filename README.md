@@ -85,11 +85,11 @@ Type run.<os> sampletest.xlsx I.E. run.cmd sampletest.xlsx for Windows and ./run
   
 ##### Execution outputs
 
-> Extent Report: gives report for each test and test steps (request and response values of each service steps).
+* Extent Report: gives report for each test and test steps (request and response values of each service steps).
 
-> Screen Shots: Codeless framework take screen shots if a test step failed and puts dump it to a folder      <INSTALL_ROOT>/example_usage/lib/FailedTestsScreenshots
+* Screen Shots: Codeless framework take screen shots if a test step failed and puts dump it to a folder      <INSTALL_ROOT>/example_usage/lib/FailedTestsScreenshots
 
-> Logs: For each test suite the framework generates debug log under <INSTALL_ROOT>/example_usage/logs/ folder which can be useful when triaging issues.
+* Logs: For each test suite the framework generates debug log under <INSTALL_ROOT>/example_usage/logs/ folder which can be useful when triaging issues.
 
 ### And coding style tests
 
