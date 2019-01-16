@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.tmobile.ct.codeless.core.Executor;
 import com.tmobile.ct.codeless.service.Call;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.model.swagger.SwaggerReader;
@@ -26,7 +25,7 @@ public class SwaggerParserTest {
 		requests.stream().forEach(req ->{
 			if(req.getOperationPath().getValue().equalsIgnoreCase("/store/inventory")){
 				Call call = new Call(new RestAssuredHttpClient(), req, 0);
-				new Executor().run(call);
+				call.run();
 			}
 		});
 	}
