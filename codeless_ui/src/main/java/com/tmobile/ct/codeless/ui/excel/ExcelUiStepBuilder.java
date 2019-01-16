@@ -309,35 +309,4 @@ public class ExcelUiStepBuilder {
 
 		return testRow;
 	}
-
-	/*private String overrideTestInput(String value, TestData testData) {
-		if(value.length() < 5) { // should be at least length of $var= string
-			return null;
-		}
-		String prefix = value.substring(0, 5);
-
-		if(OVERRIDE_INPUT.toUpperCase().equalsIgnoreCase(prefix) && testData != null) {
-			String postfix = value.substring(5,value.length());
-			// check test data in system properties first
-			String sys_value = System.getProperty(postfix);
-			if(!StringUtils.isEmpty(sys_value)) {
-				return sys_value;
-			}
-
-			// check test data in system environments
-			String sysEnv = System.getenv(postfix);
-			if(!StringUtils.isEmpty(sysEnv)) {
-				return sysEnv;
-			}
-
-			// check test data for override value
-			if(testData.asMap().containsKey(postfix)) {
-				String overrideValue = testData.get(postfix);
-				if(!StringUtils.isEmpty(overrideValue.trim())) {
-					return overrideValue;
-				}
-			}
-		}
-		return null;
-	}*/
 }
