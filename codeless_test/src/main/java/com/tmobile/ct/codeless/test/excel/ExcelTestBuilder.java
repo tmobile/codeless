@@ -80,7 +80,7 @@ public class ExcelTestBuilder implements TestBuilder{
 			parseConfigStep(row);
 			return null;
 		}else{
-			step = new ExcelUiStepBuilder().build(row, test.getTestData());
+			step = new ExcelUiStepBuilder().build(row, test);
 		}
 		step.setTest(test);
 		return step;

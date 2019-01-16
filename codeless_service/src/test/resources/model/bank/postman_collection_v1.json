@@ -1,0 +1,123 @@
+{
+	"id": "62a75d55-e35d-0e8a-cc31-fe078325b729",
+	"name": "bank",
+	"description": "",
+	"order": [
+		"0603273a-eaf4-86cc-91d4-6474a33f210e",
+		"b049b610-c094-0e78-8aeb-ba2c51cd7046",
+		"b11616d4-54bb-c83a-5969-9fbd53bec993"
+	],
+	"folders": [],
+	"folders_order": [],
+	"timestamp": 1536333793371,
+	"owner": 0,
+	"public": false,
+	"requests": [
+		{
+			"id": "0603273a-eaf4-86cc-91d4-6474a33f210e",
+			"headers": "Authorization: test\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "test",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:8080/balance",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "62a75d55-e35d-0e8a-cc31-fe078325b729",
+			"data": null,
+			"dataMode": "params",
+			"name": "get balance",
+			"description": "localhost:8080/balance",
+			"descriptionFormat": "html",
+			"time": 1536333801002,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {}
+		},
+		{
+			"id": "b049b610-c094-0e78-8aeb-ba2c51cd7046",
+			"headers": "Authorization: test\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "test",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:8080/deposit?amount=100",
+			"queryParams": [
+				{
+					"key": "amount",
+					"value": "100",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "62a75d55-e35d-0e8a-cc31-fe078325b729",
+			"data": null,
+			"dataMode": "params",
+			"name": "deposit",
+			"description": "localhost:8080/deposit?amount=100",
+			"descriptionFormat": "html",
+			"time": 1536333831962,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {}
+		},
+		{
+			"id": "b11616d4-54bb-c83a-5969-9fbd53bec993",
+			"headers": "Authorization: test\n",
+			"headerData": [
+				{
+					"key": "Authorization",
+					"value": "test",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:8080/withdraw?amount=50",
+			"queryParams": [
+				{
+					"key": "amount",
+					"value": "50",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "62a75d55-e35d-0e8a-cc31-fe078325b729",
+			"data": null,
+			"dataMode": "params",
+			"name": "withdraw",
+			"description": "localhost:8080/withdraw?amount=50",
+			"descriptionFormat": "html",
+			"time": 1536333879789,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {}
+		}
+	]
+}

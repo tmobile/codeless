@@ -1,0 +1,98 @@
+{
+	"variables": [],
+	"info": {
+		"name": "bank",
+		"_postman_id": "62a75d55-e35d-0e8a-cc31-fe078325b729",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get balance",
+			"request": {
+				"url": "localhost:8080/balance",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "test",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "localhost:8080/balance"
+			},
+			"response": []
+		},
+		{
+			"name": "deposit",
+			"request": {
+				"url": {
+					"raw": "localhost:8080/deposit?amount=100",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"deposit"
+					],
+					"query": [
+						{
+							"key": "amount",
+							"value": "100",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "test",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "localhost:8080/deposit?amount=100"
+			},
+			"response": []
+		},
+		{
+			"name": "withdraw",
+			"request": {
+				"url": {
+					"raw": "localhost:8080/withdraw?amount=50",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"withdraw"
+					],
+					"query": [
+						{
+							"key": "amount",
+							"value": "50",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "test",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": "localhost:8080/withdraw?amount=50"
+			},
+			"response": []
+		}
+	]
+}

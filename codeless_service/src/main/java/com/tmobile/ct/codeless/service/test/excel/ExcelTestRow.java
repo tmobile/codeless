@@ -28,12 +28,6 @@ public class ExcelTestRow {
 	/** The expected status. */
 	public String expectedStatus;
 
-	/** The host override. */
-	public String custom_host;
-
-	/** The operation override. */
-	public String custom_operation;
-
 	/** The test data. */
 	public List<String> testData = new ArrayList<>();
 
