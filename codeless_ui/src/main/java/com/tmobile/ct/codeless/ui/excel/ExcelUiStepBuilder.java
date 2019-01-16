@@ -11,8 +11,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.openqa.selenium.WebElement;
 
 import com.tmobile.ct.codeless.core.Step;
-import com.tmobile.ct.codeless.core.TestData;
+import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
+import com.tmobile.ct.codeless.testdata.TestDataInput;
+import com.tmobile.ct.codeless.testdata.TestDataProvider;
 import com.tmobile.ct.codeless.ui.UiStep;
 import com.tmobile.ct.codeless.ui.UiStepImpl;
 import com.tmobile.ct.codeless.ui.action.Click;
@@ -48,7 +50,9 @@ public class ExcelUiStepBuilder {
 	/** The formatter. */
 	private DataFormatter formatter = new DataFormatter();
 
-	private static String OVERRIDE_INPUT = "$VAR=";
+	private static String OVERRIDE_INPUT_START = "{{";
+
+	private static String OVERRIDE_INPUT_END = "}}";
 
 	/**
 	 * Builds the.
@@ -56,14 +60,14 @@ public class ExcelUiStepBuilder {
 	 * @param row the row
 	 * @return the step
 	 */
-	public Step build(Row row, TestData testData){
+	public Step build(Row row, Test test){
 		UiStepInput input = new UiStepInput();
 		for(Cell cell : row){
 			String header = formatter.formatCellValue(cell.getSheet().getRow(0).getCell(cell.getColumnIndex())).trim().toUpperCase();
 			String value = formatter.formatCellValue(cell);
 			input.add(header, new MultiValue<String,String>(header, value));
 		}
-		return build(input,testData);
+		return build(input,test);
 	}
 
 	/**
@@ -72,10 +76,11 @@ public class ExcelUiStepBuilder {
 	 * @param input the input
 	 * @return the ui step
 	 */
-	public UiStep build(UiStepInput input, TestData testData) {
+	public UiStep build(UiStepInput input, Test test) {
 		UiStep step = new UiStepImpl();
 
-		ExcelUiTestRow testRow = buildTestRow(input, testData);
+		ExcelUiTestRow testRow = buildTestRow(input, test, step);
+		testRow = parseTestData(testRow, step);
 		step.setName(testRow.getStep());
 
 		ActionConfig config = buildConfig(testRow.getTestData());
@@ -243,11 +248,22 @@ public class ExcelUiStepBuilder {
 	 * @param input the input
 	 * @return the excel ui test row
 	 */
-	public ExcelUiTestRow buildTestRow(UiStepInput input, TestData testData){
+	public ExcelUiTestRow buildTestRow(UiStepInput input, Test test ,UiStep step){
 		ExcelUiTestRow testRow = new ExcelUiTestRow();
 		input.stream().forEach(item -> {
 			SuiteHeaders header = SuiteHeaders.parse(item.getKey());
 			for (String value : item.getValue().getValues()) {
+
+				if(!StringUtils.isEmpty(value)) {
+					TestDataInput datainput = null;
+					String[] dataValue = StringUtils.substringsBetween(value, OVERRIDE_INPUT_START, OVERRIDE_INPUT_END);
+					if(dataValue != null && dataValue.length > 0 ) {
+						datainput= new TestDataInput();
+						datainput.add(item.getKey(), new MultiValue<String,TestDataProvider>(item.getKey(), new TestDataProvider(test, dataValue[0])));
+						step.getTestDataInputs().add(datainput);
+					}
+				}
+
 				if (value != null && value.trim().length() > 0) {
 					switch (header) {
 					case STEP:
@@ -260,10 +276,6 @@ public class ExcelUiStepBuilder {
 						testRow.setTarget(value);
 						break;
 					case INPUT:
-						String dynamicValue = overrideTestInput(value,testData);
-						if(!StringUtils.isEmpty(dynamicValue)) {
-							value = dynamicValue;
-						}
 						testRow.setInput(value);
 						break;
 					case TESTDATA:
@@ -278,34 +290,23 @@ public class ExcelUiStepBuilder {
 		return testRow;
 	}
 
-	private String overrideTestInput(String value, TestData testData) {
-		if(value.length() < 5) { // should be at least length of $var= string
-			return null;
-		}
-		String prefix = value.substring(0, 5);
+	private ExcelUiTestRow parseTestData(ExcelUiTestRow testRow, UiStep step) {
 
-		if(OVERRIDE_INPUT.toUpperCase().equalsIgnoreCase(prefix) && testData != null) {
-			String postfix = value.substring(5,value.length());
-			// check test data in system properties first
-			String sys_value = System.getProperty(postfix);
-			if(!StringUtils.isEmpty(sys_value)) {
-				return sys_value;
-			}
-
-			// check test data in system environments
-			String sysEnv = System.getenv(postfix);
-			if(!StringUtils.isEmpty(sysEnv)) {
-				return sysEnv;
-			}
-
-			// check test data for override value
-			if(testData.asMap().containsKey(postfix)) {
-				String overrideValue = testData.get(postfix);
-				if(!StringUtils.isEmpty(overrideValue.trim())) {
-					return overrideValue;
+		for(TestDataInput input : step.getTestDataInputs()) {
+			input.stream().forEach(key ->{
+				SuiteHeaders header = SuiteHeaders.parse(key.getKey());
+				TestDataProvider value = key.getValue().getValues().get(0);
+				switch(header){
+				case TARGET:
+					testRow.setTarget(value.find());
+					break;
+				case INPUT:
+					testRow.setInput(value.find());
+					break;
 				}
-			}
+			});
 		}
-		return null;
+
+		return testRow;
 	}
 }

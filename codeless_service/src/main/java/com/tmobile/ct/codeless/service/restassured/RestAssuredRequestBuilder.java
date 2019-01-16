@@ -6,23 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.Authentication;
 import com.tmobile.ct.codeless.service.httpclient.Body;
 import com.tmobile.ct.codeless.service.httpclient.Cookies;
-import com.tmobile.ct.codeless.service.httpclient.Endpoint;
-import com.tmobile.ct.codeless.service.httpclient.Form;
 import com.tmobile.ct.codeless.service.httpclient.Forms;
 import com.tmobile.ct.codeless.service.httpclient.Headers;
 import com.tmobile.ct.codeless.service.httpclient.Host;
 import com.tmobile.ct.codeless.service.httpclient.HttpProtocal;
 import com.tmobile.ct.codeless.service.httpclient.MultiPart;
 import com.tmobile.ct.codeless.service.httpclient.OperationPath;
-import com.tmobile.ct.codeless.service.httpclient.PathParam;
 import com.tmobile.ct.codeless.service.httpclient.PathParams;
-import com.tmobile.ct.codeless.service.httpclient.QueryParam;
 import com.tmobile.ct.codeless.service.httpclient.QueryParams;
 import com.tmobile.ct.codeless.service.httpclient.ServicePath;
 
@@ -30,7 +25,6 @@ import io.restassured.authentication.AuthenticationScheme;
 import io.restassured.builder.MultiPartSpecBuilder;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
-import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.MultiPartSpecification;
 import io.restassured.specification.RequestSpecification;
 
@@ -45,7 +39,7 @@ public class RestAssuredRequestBuilder {
 	 * Instantiates a new rest assured request builder.
 	 */
 	private RestAssuredRequestBuilder(){}
-	
+
 	/**
 	 * Builds the.
 	 *
@@ -54,14 +48,14 @@ public class RestAssuredRequestBuilder {
 	 */
 	public static RequestSpecification build(HttpRequest request){
 		RequestSpecBuilder reqSpecBuilder = new RequestSpecBuilder();
-		
+
 		//inject http protocal into host
 		try {
-			
+
 			if(!request.getHost().getValue().toUpperCase().startsWith("HTTP://") && !request.getHost().getValue().toUpperCase().startsWith("HTTPS://")){
 				request.setHost(new Host("http://"+request.getHost().getValue()));
 			}
-			
+
 			URL url = new URL(request.getHost().getValue());
 			if(!Optional.ofNullable(url.getProtocol()).isPresent()){
 				String host = Optional.ofNullable(request.getProtocal()).map(HttpProtocal::name).orElse(HttpProtocal.HTTP.name()) + request.getHost().getValue();
@@ -70,8 +64,8 @@ public class RestAssuredRequestBuilder {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 		Optional.ofNullable(request.getHeaders()).map(RestAssuredRequestBuilder::mapHeaders).ifPresent(reqSpecBuilder::addHeaders);
 		Optional.ofNullable(request.getQueryParams()).map(RestAssuredRequestBuilder::mapQueryParams).ifPresent(reqSpecBuilder::addQueryParams);
 		Optional.ofNullable(request.getPathParams()).map(RestAssuredRequestBuilder::mapPathParams).ifPresent(reqSpecBuilder::addPathParams);
@@ -83,15 +77,15 @@ public class RestAssuredRequestBuilder {
 		Optional.ofNullable(request.getPort()).ifPresent(reqSpecBuilder::setPort);
 		Optional.ofNullable(request.getServicePath()).map(RestAssuredRequestBuilder::mapServicePath).ifPresent(reqSpecBuilder::setBasePath);
 		Optional.ofNullable(request.getMultiParts()).ifPresent(x -> x.stream().forEach( part -> reqSpecBuilder.addMultiPart(mapMultiPart(part))));
-		
-		
-		
+
+
+
 		reqSpecBuilder.log(LogDetail.ALL);
 //		reqSpecBuilder.addFilter(new ResponseLoggingFilter());
-		
+
 		return reqSpecBuilder.build();
 	}
-	
+
 	/**
 	 * Map body.
 	 *
@@ -102,7 +96,7 @@ public class RestAssuredRequestBuilder {
 	public static <T> T mapBody(Body<T> body){
 		return body.getBody();
 	}
-	
+
 	/**
 	 * Map operation path.
 	 *
@@ -177,7 +171,15 @@ public class RestAssuredRequestBuilder {
 	 * @return the map
 	 */
 	private static Map<String, ?> mapPathParams(PathParams pathParams) {
-		return pathParams.toValuesMap();
+		Map<String,String> params = new HashMap<String,String>();
+		 pathParams.stream().forEach(param -> {
+	            String key = param.getValue().getKey();
+	            List<String> value = param.getValue().getValues();
+	            if(value != null && value.size() > 0) {
+	                params.put(key,value.get(0));
+	            }
+	        });
+	        return params;
 	}
 
 	/**

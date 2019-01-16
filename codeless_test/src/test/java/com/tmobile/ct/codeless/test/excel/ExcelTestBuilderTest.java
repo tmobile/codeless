@@ -22,7 +22,7 @@ public class ExcelTestBuilderTest {
 	public void parseRowTest() throws Exception{
 		Path currentRelativePath = Paths.get("");
 		String s = currentRelativePath.toAbsolutePath().toString();
-		File workbookFile = new File(s+"/src/test/resources/suites/etr_ui.xlsx");
+		File workbookFile = new File(s+"/src/test/resources/suites/test_google.xlsx");
 		Workbook workbook;
 
 		try {

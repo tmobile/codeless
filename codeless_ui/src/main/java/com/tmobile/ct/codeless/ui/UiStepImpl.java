@@ -1,5 +1,6 @@
 package com.tmobile.ct.codeless.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -11,6 +12,7 @@ import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.core.Test;
+import com.tmobile.ct.codeless.testdata.TestDataInput;
 import com.tmobile.ct.codeless.ui.action.UiAction;
 import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
@@ -26,45 +28,49 @@ public class UiStepImpl implements UiStep {
 
 	/** The name. */
 	private String name;
-	
+
 	/** The step. */
 	private ExcelUiTestRow step;
-	
+
 	/** The control element. */
 	private ControlElement controlElement;
-	
+
 	/** The assertion builder. */
 	private List<UiAssertionBuilder> assertionBuilder;
-	
+
 	/** The test. */
 	private Test test;
-	
+
 	/** The action. */
 	private UiAction action;
-	
+
 	/** The failure cause. */
 	private Throwable failureCause;
-	
+
 	/** The status. */
 	private Status status;
-	
+
 	/** The result. */
 	private Result result;
-	
+
 	/** The retries. */
 	private Integer retries = 0;
-	
+
 	/** The max retries. */
 	private Integer maxRetries = 0;
-	
+
 	/** The driver. */
 	private CompletableFuture<WebDriver> driver = new CompletableFuture<>();
-	
+
+	private List<TestDataInput> testDataInputs;
+
 	/**
 	 * Instantiates a new ui step impl.
 	 */
-	public UiStepImpl(){}
-	
+	public UiStepImpl(){
+		this.testDataInputs = new ArrayList<TestDataInput>();
+	}
+
 	/**
 	 * Instantiates a new ui step impl.
 	 *
@@ -73,23 +79,23 @@ public class UiStepImpl implements UiStep {
 	public UiStepImpl(UiAction action){
 		this.action = action;
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.core.Executable#run()
 	 */
 	@Override
 	public void run() {
-		
+
 		try {
-			
+
 			if(test.getWebDriver() == null){
 				Config config = test.getConfig();
 			    WebDriverFactory.setConfig(config);
 				WebDriver driver = WebDriverFactory.getWebDriver();
 				test.setWebDriver(driver);
 			}
-			
+
 			setWebDriver(test.getWebDriver());
 			this.action.run();
 			validate();
@@ -109,7 +115,7 @@ public class UiStepImpl implements UiStep {
 			markComplete();
 		}
 	}
-	
+
 	/**
 	 * Mark complete.
 	 */
@@ -133,7 +139,7 @@ public class UiStepImpl implements UiStep {
 	 */
 	private void logPass() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
@@ -194,6 +200,7 @@ public class UiStepImpl implements UiStep {
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.core.Validatable#getAssertions()
 	 */
+	@Override
 	public List<Assertion> getAssertions() {
 		return null;
 	}
@@ -201,6 +208,7 @@ public class UiStepImpl implements UiStep {
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.core.Validatable#setAssertions(java.util.List)
 	 */
+	@Override
 	public void setAssertions(List<Assertion> assertions) {
 	}
 
@@ -243,7 +251,7 @@ public class UiStepImpl implements UiStep {
 	@Override
 	public void setName(String name) {
 	this.name = name;
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -331,17 +339,19 @@ public class UiStepImpl implements UiStep {
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.ui.UiStep#setAction(com.tmobile.ct.codeless.ui.action.UiAction)
 	 */
+	@Override
 	public void setAction(UiAction action) {
 		this.action = action;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.ui.UiStep#getWebDriver()
 	 */
+	@Override
 	public Future<WebDriver> getWebDriver(){
 		return driver;
 	}
-	
+
 	/**
 	 * Sets the web driver.
 	 *
@@ -350,5 +360,16 @@ public class UiStepImpl implements UiStep {
 	public void setWebDriver(WebDriver driver){
 		this.driver.complete(driver);
 	}
+
+	@Override
+	public List<TestDataInput> getTestDataInputs() {
+		return testDataInputs;
+	}
+
+	public void setTestDataInputs(List<TestDataInput> testDataInputs) {
+		this.testDataInputs = testDataInputs;
+	}
+
+
 
 }
