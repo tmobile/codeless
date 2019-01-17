@@ -142,3 +142,4 @@ Desktop.ini
 # ESLint
 ######################
 .eslintcache
+/ExtentReport.html

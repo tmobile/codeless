@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.tmobile.ct.codeless.core.Config;
+import com.tmobile.ct.codeless.core.Execution;
+import com.tmobile.ct.codeless.core.Result;
+import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.data.BasicConfig;
@@ -30,6 +34,10 @@ public class ExcelSuite implements Suite{
 	/** The test map. */
 	private Map<String, Test> testMap = new HashMap<>();
 
+	private Execution execution;
+
+	private String id;
+
 	/**
 	 * Instantiates a new excel suite.
 	 *
@@ -39,6 +47,7 @@ public class ExcelSuite implements Suite{
 		this.name = name;
 		this.config = new BasicConfig();
 		this.tests = new ArrayList<>();
+		this.id = UUID.randomUUID().toString();
 	}
 	
 	/* (non-Javadoc)
@@ -106,6 +115,46 @@ public class ExcelSuite implements Suite{
 	@Override
 	public Test getTestByName(String name) {
 		return testMap.get(name);
+	}
+
+	@Override
+	public Result getResult() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Status getStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setResult(Result result) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setStatus(Status status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setExecution(Execution execution) {
+		this.execution = execution;
+	}
+
+	@Override
+	public Execution getExecution() {
+		return execution;
+	}
+
+	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

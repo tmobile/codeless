@@ -8,8 +8,10 @@ import java.util.List;
  *
  * @author Rob Graff
  */
-public interface Suite {
+public interface Suite extends Trackable {
 
+	String getId();
+	
 	/**
 	 * Sets the name.
 	 *
@@ -67,4 +69,8 @@ public interface Suite {
 	 * @return the test by name
 	 */
 	Test getTestByName(String name);
+	
+	void setExecution(Execution execution);
+	
+	Execution getExecution();
 }

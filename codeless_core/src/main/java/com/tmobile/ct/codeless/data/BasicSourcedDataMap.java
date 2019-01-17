@@ -2,6 +2,7 @@ package com.tmobile.ct.codeless.data;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.SourcedData;
@@ -53,5 +54,10 @@ public class BasicSourcedDataMap extends HashMap<String, SourcedDataItem<String,
 	@Override
 	public SourcedDataItem<String, String> getSourcedValue(String key) {
 		return super.get(key);
+	}
+
+	@Override
+	public Optional<String> getOptional(String key) {
+		return Optional.ofNullable(Optional.ofNullable(super.get(key)).map(x -> x.getValue().getValue()).orElse(null));
 	}
 }

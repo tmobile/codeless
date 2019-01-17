@@ -18,13 +18,17 @@ import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
 public class TestStepReporter {
 
 	public static void reporter(Step step) throws Exception {
-
-		if (step instanceof ServiceCall) {
-			logServiceStepResult(step);
-
-		} else {
-			logUiStepResult(step);
-
+		try{
+			if (step instanceof ServiceCall) {
+				logServiceStepResult(step);
+	
+			} else {
+				logUiStepResult(step);
+	
+			}
+		}catch(Exception e){
+			System.err.println("TestStepReporter Failure");
+			e.printStackTrace();
 		}
 	}
 

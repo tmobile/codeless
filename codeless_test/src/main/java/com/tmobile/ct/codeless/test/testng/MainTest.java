@@ -14,7 +14,9 @@ import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
+import com.tmobile.ct.codeless.core.Execution;
 import com.tmobile.ct.codeless.core.Suite;
+import com.tmobile.ct.codeless.test.ExecutionContainer;
 import com.tmobile.ct.codeless.test.excel.ExcelSuiteBuilder;
 import com.tmobile.ct.codeless.test.excel.SuiteContainer;
 
@@ -32,15 +34,14 @@ public class MainTest {
 	 */
 	public static void main(String[] args) {
 
-		System.setProperty("EXEC.JAR", "true");
-		System.setProperty("EXEC.ABSOLUTE.DIR",
-				new File(MainTest.class.getProtectionDomain().getCodeSource().getLocation().getFile()).getParent());
+		configSetup(args);
 
-		CodelessConfiguration.load();
-		parseArgs(args);
-
-		// get test suite
-		String suitePath = Optional.ofNullable(System.getProperty("SUITE.FILE")).orElse("suites/demo_actions.xlsx");
+		// create the execution container
+		Execution execution = new TestngExecution();
+		ExecutionContainer.setExecution(execution);
+		
+		// build test suite
+		String suitePath = Optional.ofNullable(System.getProperty("SUITE.FILE")).orElse("suites/test_google.xlsx");
 
 		Suite suite = new ExcelSuiteBuilder().build(suitePath);
 
@@ -48,38 +49,21 @@ public class MainTest {
 			throw new RuntimeException("Invliad Test Suite, No Tests Found");
 		}
 
-		SuiteContainer.setSuite(suite);
+		suite.setExecution(execution);
 
-		// build testng suite
-		TestNG testng = new TestNG();
+		// run execution
+		execution.addSuite(suite);
+		execution.run();
 
-		XmlSuite codeless = new XmlSuite();
-		codeless.setName(Optional.ofNullable(System.getProperty("SUITE.FILE")).orElse(suite.getName()));
+	}
 
-		XmlTest first_test = new XmlTest();
-		first_test.setName("codeless service test");
-		first_test.setSuite(codeless);
+	private static void configSetup(String[] args) {
+		System.setProperty("EXEC.JAR", "true");
+		System.setProperty("EXEC.ABSOLUTE.DIR",
+				new File(MainTest.class.getProtectionDomain().getCodeSource().getLocation().getFile()).getParent());
 
-		List<XmlClass> fistlogin_classes = new ArrayList<XmlClass>();
-		fistlogin_classes.add(new XmlClass("com.tmobile.ct.codeless.test.testng.TestngTest"));
-
-		first_test.getClasses().addAll(fistlogin_classes);
-		codeless.addTest(first_test);
-
-		// add config props to testng test suite
-		Map<String, String> params = new HashMap<>();
-//        params.put("webdriver.runlocal", "false");
-//        params.put("buildMode", "dev");
-//        params.put("testEnv", "QLAB06");
-//        params.put("metrics.test.type", "E2E");
-		params.putAll(suite.getConfig().asMap());
-		codeless.setParameters(params);
-
-		List<XmlSuite> suites = new ArrayList<XmlSuite>();
-		suites.add(codeless);
-		testng.setXmlSuites(suites);
-		testng.run();
-
+		CodelessConfiguration.load();
+		parseArgs(args);
 	}
 
 	/**

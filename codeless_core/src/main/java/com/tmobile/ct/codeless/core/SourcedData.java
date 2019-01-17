@@ -1,6 +1,7 @@
 package com.tmobile.ct.codeless.core;
 
 import java.util.Map;
+import java.util.Optional;
 
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 
@@ -49,4 +50,7 @@ public interface SourcedData {
 	 * @return the config
 	 */
 	Map<String,SourcedDataItem<String,String>> getConfig();
+	
+	
+	Optional<String> getOptional(String key);
 }

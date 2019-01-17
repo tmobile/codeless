@@ -6,8 +6,9 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.tmobile.ct.codeless.core.Executor;
+
 import com.tmobile.ct.codeless.core.Suite;
+import com.tmobile.ct.codeless.test.BasicExecutor;
 
 
 public class ExcelSuiteBuilderTest {
@@ -29,7 +30,7 @@ public class ExcelSuiteBuilderTest {
 	@Test
 	public void itShouldRunSuite(){
 		Suite suites = new ExcelSuiteBuilder().build("/suites/test_google.xlsx");
-		Executor exec = new Executor();
+		BasicExecutor exec = new BasicExecutor();
 			suites.getTests().forEach(test -> 
 				test.getSteps().forEach( step ->
 					exec.run(step)));

@@ -1,19 +1,25 @@
 package com.tmobile.ct.codeless.test.testng;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.testng.IExecutionListener;
 import org.testng.ITestContext;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
 
-import com.tmobile.ct.codeless.core.Executor;
+import com.tmobile.ct.codeless.core.Execution;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
+import com.tmobile.ct.codeless.test.BasicExecutor;
+import com.tmobile.ct.codeless.test.ExecutionContainer;
 import com.tmobile.ct.codeless.test.excel.SuiteContainer;
 import com.tmobile.ct.codeless.test.extentreport.ExtentTestManager;
 import com.tmobile.ct.codeless.test.extentreport.TestStepReporter;
@@ -26,13 +32,13 @@ import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
  * @author Sai Chandra Korpu
  */
 @Listeners(com.tmobile.ct.codeless.test.testng.listeners.TestListener.class)
-public class TestngTest {
-
-	/** The suite. */
+public class TestngTest{
+	
 	Suite suite;
 
-	/** The executor. */
-	Executor executor = new Executor();
+	BasicExecutor executor = new BasicExecutor();
+
+	Execution execution;
 
 	/**
 	 * Suite setup.
@@ -41,7 +47,7 @@ public class TestngTest {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@BeforeSuite
-	public void suiteSetup(ITestContext context) throws IOException {
+	public void beforeSuite(ITestContext context) throws IOException {
 
 		File directory = null;
 		if (!new File(System.getProperty("user.dir") + "/FailedTestsScreenshots").exists()) {
@@ -53,29 +59,33 @@ public class TestngTest {
 			directory = new File(System.getProperty("user.dir") + "/FailedTestsScreenshots");
 			FileUtils.cleanDirectory(directory);
 		}
+		
+		// get suite container from execution
+		String id = context.getCurrentXmlTest().getParameter("codeless.suite.id");
+		execution = ExecutionContainer.getExecution();
+		
+		suite = execution.getSuite(id);
+		execution.getSuiteHooks().forEach(hook ->{
+			hook.beforeSuite(suite);
+		});
 
+	}
+	
+	@AfterSuite
+	public void afterSuite(){
+		execution.getSuiteHooks().forEach(hook ->{
+			hook.afterSuite(suite);
+		});
 	}
 
 	/**
-	 * Beforetest.
-	 *
-	 * @param testObject the test object
-	 */
-	@BeforeMethod
-	public void beforetest(Object[] testObject) {
-
-	}
-
-	/**
-	 * Codeless data provider.
+	 * Codeless data provider - data driver spawn 1 method for each Test object in the Suite
 	 *
 	 * @return the object[][]
 	 */
 	@DataProvider(name = "codeless", parallel = false)
 	public Object[][] codelessDataProvider() {
-
-		suite = SuiteContainer.getSuite();
-
+		
 		if (suite == null || suite.getTests() == null || suite.getTests().size() == 0) {
 			throw new RuntimeException("Invliad Test Suite, No Tests Found");
 		}
@@ -100,22 +110,45 @@ public class TestngTest {
 	@org.testng.annotations.Test(dataProvider = "codeless")
 	public void executeTest(Test test) throws Exception {
 
-		ExtentTestManager.getTest().setDescription(test.getName());
-		System.out.println("\n=== Running Test " + test.getName() + " ===");
-		for (Step u : test.getSteps()) {
-			try {
-				executor.run(u);
-				TestStepReporter.reporter(u);
+		// before test
+		execution.getTestHooks().forEach(hook -> {
+			hook.beforeTest(test);
+		});
 
-			} catch (Exception e) {
+		try {
 
-				TestStepReporter.reporter(u);
+			ExtentTestManager.getTest().setDescription(test.getName());
 
+			// execute steps
+			for (Step step : test.getSteps()) {
+
+				execution.getStepHooks().forEach(hook -> {
+					hook.beforeStep(step);
+				});
+
+				try {
+					executor.run(step);
+				} catch (Exception e) {
+					throw e;
+				} finally {
+
+					TestStepReporter.reporter(step);
+					execution.getStepHooks().forEach(hook -> {
+						hook.afterStep(step);
+					});
+				}
 			}
-		}
+			WebDriverFactory.teardown();
 
-		WebDriverFactory.teardown();
-		System.out.println("=== End Test " + test.getName() + " ===\n");
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			
+			// after test
+			execution.getTestHooks().forEach(hook -> {
+				hook.afterTest(test);
+			});
+		}
 	}
 
 }
