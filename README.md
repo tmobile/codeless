@@ -16,7 +16,7 @@ Below instructions will get you a copy of the project up and running on your loc
 ##### Running sample test
 
 Before using ETP Codeless project you must first clone it to your local machine. you can download the project from github
-with out using any git tool. https://github.com/tmobile/codeless
+with out using any git tool. go to https://github.com/tmobile/codeless to download the ETP Codeless project.
 
 You can also clone the project using your favorite git GUI tool or from the command line with using git command:
 ```
