@@ -13,11 +13,13 @@ Below instructions will get you a copy of the project up and running on your loc
 | Java Runtime Environment (JRE) 1.8.x | java -version | As it is a Java project, Java need to be installed locally.
 | Microsoft Excel |  | ETP Codeless currently support excel based test cases
 
-##### running sample test
+##### Running sample test
 
 Before using ETP Codeless project you must first clone it to your local machine. 
-You can clone the project using your favorite git GUI tool or from the command line with using git command: 
+You can clone the project using your favorite git GUI tool or from the command line with using git command:
+```
 git clone https://github.com/tmobile/codeless.git
+```
 
 on command line promopt change to <INSTALL_ROOT>/bin
 
