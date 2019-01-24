@@ -15,18 +15,17 @@ Below instructions will get you a copy of the project up and running on your loc
 
 ##### Running sample test
 
-Before using ETP Codeless project you must first clone it to your local machine. 
-You can clone the project using your favorite git GUI tool or from the command line with using git command:
+Before using ETP Codeless project you must first clone it to your local machine. you can download the project from github
+with out using any git tool. https://github.com/tmobile/codeless
+
+You can also clone the project using your favorite git GUI tool or from the command line with using git command:
 ```
 git clone https://github.com/tmobile/codeless.git
 ```
 
-on command line promopt change to <INSTALL_ROOT>/bin
+There are example tests included in example_usage/suites/. This tests use PageObject models defined in yaml format and a swagger definations used by service tests located under <INSTALL_ROOT>/model folder respective of the test step.
 
-There are example tests included in example_usage/suites/. These tests use PageObject models defined by yaml and a swagger definations under <INSTALL_ROOT>/model folder respective of the test step.
-
-Make sure you have followed the install and configuration instructions above.
-From the command line change to <INSTALL_ROOT>/bin
+From the command line change to <INSTALL_ROOT>/example_usage/bin
 Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
 Type run.<os> sampletest.xlsx I.E. run.cmd sampletest.xlsx for Windows and ./run.sh sampletest.xlsx for Mac/Linux
   
