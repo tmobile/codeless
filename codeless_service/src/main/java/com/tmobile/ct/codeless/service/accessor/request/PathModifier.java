@@ -1,21 +1,22 @@
 package com.tmobile.ct.codeless.service.accessor.request;
 
+import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
-import com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor;
 import com.tmobile.ct.codeless.service.httpclient.PathParam;
+import com.tmobile.ct.codeless.testdata.RequestModifier;
 
 /**
  * The Class PathModifier.
  *
  * @author Rob Graff
  */
-public class PathModifier implements RequestModifier<PathParam> {
+public class PathModifier implements RequestModifier<PathParam, HttpRequest> {
 
 	/** The key. */
 	private String key;
-	
-	/** The response accessor. */
-	private ResponseAccessor responseAccessor;
+
+	/** The dataSource to override. */
+	private TestDataSource dataSource;
 
 	/**
 	 * Instantiates a new path modifier.
@@ -23,9 +24,9 @@ public class PathModifier implements RequestModifier<PathParam> {
 	 * @param key the key
 	 * @param responseAccessor the response accessor
 	 */
-	public PathModifier(String key, ResponseAccessor responseAccessor) {
+	public PathModifier(String key, TestDataSource dataSource){
 		this.key = key;
-		this.responseAccessor = responseAccessor;
+		this.dataSource = dataSource;
 	}
 
 	/* (non-Javadoc)
@@ -33,15 +34,7 @@ public class PathModifier implements RequestModifier<PathParam> {
 	 */
 	@Override
 	public void modify(HttpRequest request) {
-		request.getPathParams().put(key, new PathParam(key, responseAccessor.getActual()));
-		
-	}
+		request.getPathParams().put(key, new PathParam(key, dataSource.fullfill()));
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.service.accessor.request.RequestModifier#setResponseAccessor(com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor)
-	 */
-	@Override
-	public void setResponseAccessor(ResponseAccessor responseAccessor) {
-		this.responseAccessor = responseAccessor;
 	}
 }

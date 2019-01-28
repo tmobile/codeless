@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.SourcedData;
+import com.tmobile.ct.codeless.core.TestDataSource;
 
 
 /**
@@ -13,13 +13,13 @@ import com.tmobile.ct.codeless.core.SourcedData;
  *
  * @author Rob Graff
  */
-public class BasicSourcedDataMap extends HashMap<String, SourcedDataItem<String,String>> implements SourcedData{
+public class BasicSourcedDataMap extends HashMap<String, SourcedDataItem<String,TestDataSource>> implements SourcedData{
 
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.core.SourcedData#getConfig()
 	 */
 	@Override
-	public synchronized Map<String, SourcedDataItem<String,String>> getConfig() {
+	public synchronized Map<String, SourcedDataItem<String,TestDataSource>> getConfig() {
 		return this;
 	}
 
@@ -27,7 +27,7 @@ public class BasicSourcedDataMap extends HashMap<String, SourcedDataItem<String,
 	 * @see com.tmobile.ct.codeless.core.SourcedData#setConfig(java.util.Map)
 	 */
 	@Override
-	public synchronized void setConfig(Map<String, SourcedDataItem<String,String>> config) {
+	public synchronized void setConfig(Map<String, SourcedDataItem<String,TestDataSource>> config) {
 		this.clear();
 		this.putAll(config);
 	}
@@ -36,7 +36,7 @@ public class BasicSourcedDataMap extends HashMap<String, SourcedDataItem<String,
 	 * @see java.util.HashMap#put(java.lang.Object, java.lang.Object)
 	 */
 	@Override
-	public SourcedDataItem<String,String> put(String key, SourcedDataItem<String,String> item) {
+	public SourcedDataItem<String,TestDataSource> put(String key, SourcedDataItem<String,TestDataSource> item) {
 		return super.put(key, item);
 	}
 
@@ -44,7 +44,7 @@ public class BasicSourcedDataMap extends HashMap<String, SourcedDataItem<String,
 	 * @see com.tmobile.ct.codeless.core.SourcedData#get(java.lang.String)
 	 */
 	@Override
-	public String get(String key) {
+	public TestDataSource get(String key) {
 		return super.get(key).getValue().getValue();
 	}
 
@@ -52,12 +52,12 @@ public class BasicSourcedDataMap extends HashMap<String, SourcedDataItem<String,
 	 * @see com.tmobile.ct.codeless.core.SourcedData#getSourcedValue(java.lang.String)
 	 */
 	@Override
-	public SourcedDataItem<String, String> getSourcedValue(String key) {
+	public SourcedDataItem<String, TestDataSource> getSourcedValue(String key) {
 		return super.get(key);
 	}
 
 	@Override
 	public Optional<String> getOptional(String key) {
-		return Optional.ofNullable(Optional.ofNullable(super.get(key)).map(x -> x.getValue().getValue()).orElse(null));
+		return Optional.ofNullable(Optional.ofNullable(super.get(key)).map(x -> x.getValue().getValue().fullfill()).orElse(null));
 	}
 }

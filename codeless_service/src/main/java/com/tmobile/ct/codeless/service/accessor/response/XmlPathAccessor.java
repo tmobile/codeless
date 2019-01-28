@@ -1,5 +1,6 @@
 package com.tmobile.ct.codeless.service.accessor.response;
 
+import com.tmobile.ct.codeless.core.Accessor;
 import com.tmobile.ct.codeless.service.assertion.ServiceAssertionActualProvider;
 import com.tmobile.ct.codeless.service.core.ServiceCall;
 import com.tmobile.ct.codeless.service.reference.ServiceCallReference;
@@ -12,20 +13,20 @@ import io.restassured.path.xml.XmlPath;
  * @author Rob Graff
  * @param <T> the generic type
  */
-public class XmlPathAccessor<T> implements ResponseAccessor<T>, ServiceAssertionActualProvider<T>{
+public class XmlPathAccessor<T> implements Accessor<T, ServiceCall>, ServiceAssertionActualProvider<T>{
 
 	/** The xml path. */
 	private String xmlPath;
-	
+
 	/** The type class. */
 	private Class<T> typeClass;
-	
+
 	/** The call ref. */
 	private ServiceCallReference callRef;
-	
+
 	/** The call. */
 	private ServiceCall call;
-	
+
 	/**
 	 * Instantiates a new xml path accessor.
 	 *
@@ -39,7 +40,7 @@ public class XmlPathAccessor<T> implements ResponseAccessor<T>, ServiceAssertion
 		this.typeClass = typeClass;
 		this.callRef = callRef;
 	}
-	
+
 	/**
 	 * Instantiates a new xml path accessor.
 	 *
@@ -52,7 +53,7 @@ public class XmlPathAccessor<T> implements ResponseAccessor<T>, ServiceAssertion
 		this.typeClass = typeClass;
 	}
 
-	
+
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.service.assertion.ServiceAssertionActualProvider#getActual(com.tmobile.ct.codeless.service.core.ServiceCall)
 	 */

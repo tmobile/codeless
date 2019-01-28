@@ -8,8 +8,10 @@ import org.openqa.selenium.WebDriver;
 import com.tmobile.ct.codeless.core.Retryable;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Trackable;
+import com.tmobile.ct.codeless.testdata.RequestModifier;
 import com.tmobile.ct.codeless.testdata.TestDataInput;
 import com.tmobile.ct.codeless.ui.action.UiAction;
+import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
 
 /**
  * The Interface UiStep.
@@ -33,4 +35,10 @@ public interface UiStep extends Step, Trackable, Retryable {
 	void setAction(UiAction action);
 
 	List<TestDataInput> getTestDataInputs();
+
+	List<RequestModifier> getRequestModifiers();
+
+	void setAssertionBuilder(List<UiAssertionBuilder> assertionBuilder);
+
+	List<UiAssertionBuilder> getAssertionBuilder();
 }
