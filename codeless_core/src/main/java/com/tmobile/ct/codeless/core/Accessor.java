@@ -1,5 +1,11 @@
 package com.tmobile.ct.codeless.core;
 
+/**
+ * The Class Accessor.
+ *
+ * @author Fikreselam Elala
+ */
+
 public interface Accessor<T, U> {
 
 	/**
