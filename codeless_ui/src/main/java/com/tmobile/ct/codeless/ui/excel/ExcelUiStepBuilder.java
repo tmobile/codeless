@@ -123,11 +123,14 @@ public class ExcelUiStepBuilder {
 				for (String data : assertions_data) {
 					String[] originalParts = data.trim().split("::");
 					String assertionMethodName = originalParts[0];
-					SeleniumMethodType type = SeleniumMethodType.valueOf(originalParts[1]);
 					String seleniumMethodName = null;
 					Method seleniumMethod = null;
 					String parameter = "";
 					String expected = "";
+
+					if(originalParts.length < 2) return;
+
+					SeleniumMethodType type = SeleniumMethodType.valueOf(originalParts[1]);
 
 					if (originalParts.length > 2) {
 						seleniumMethodName = originalParts[2];

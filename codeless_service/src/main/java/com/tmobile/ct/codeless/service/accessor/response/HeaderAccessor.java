@@ -93,4 +93,9 @@ public class HeaderAccessor implements Accessor<Header, ServiceCall>, ServiceAss
 		return getActual(call);
 	}
 
+	@Override
+	public String value() {
+		return key;
+	}
+
 }

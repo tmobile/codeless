@@ -29,4 +29,11 @@ public interface Accessor<T, U> {
 	 */
 	String getActual();
 
+	/**
+	 * Gets type value.
+	 *
+	 * @return value
+	 */
+	String value();
+
 }

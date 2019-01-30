@@ -96,4 +96,9 @@ public class XmlPathAccessor<T> implements Accessor<T, ServiceCall>, ServiceAsse
 		return String.valueOf(getActual(this.callRef.find()));
 	}
 
+	@Override
+	public String value() {
+		return xmlPath;
+	}
+
 }

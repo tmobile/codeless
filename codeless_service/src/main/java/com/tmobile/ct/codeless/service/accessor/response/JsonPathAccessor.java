@@ -92,4 +92,9 @@ public class JsonPathAccessor<T> implements Accessor<T, ServiceCall>, ServiceAss
 		return String.valueOf(getActual(this.callRef.find()));
 	}
 
+	@Override
+	public String value() {
+		return jsonPath;
+	}
+
 }

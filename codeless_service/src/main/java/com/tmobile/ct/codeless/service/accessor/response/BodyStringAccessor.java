@@ -82,4 +82,10 @@ public class BodyStringAccessor implements Accessor<String, ServiceCall>, Servic
 
 		return getActual(call);
 	}
+
+	@Override
+	public String value() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

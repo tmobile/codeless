@@ -68,4 +68,9 @@ public class StaticAccessor implements Accessor<String, ServiceCall>, ServiceAss
 	public String getActual() {
 		return value;
 	}
+
+	@Override
+	public String value() {
+		return value;
+	}
 }
