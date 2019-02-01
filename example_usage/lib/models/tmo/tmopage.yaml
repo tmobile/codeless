@@ -1,6 +1,0 @@
-menu:
-  by: "xpath"
-  locator: "/html/body/header/nav/div[2]/button"
-joinlink:
-  by: "xpath"
-  locator: "//*[@id='overlay-menu']/div/ul/li[1]/ul/li[2]/a"
