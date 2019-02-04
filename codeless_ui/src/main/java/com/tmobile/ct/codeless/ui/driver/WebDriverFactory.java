@@ -136,9 +136,14 @@ public class WebDriverFactory {
 		String plateformVersion = Optional.fromNullable(testConfig.get(WEBDRIVER_VERSION.concat("."+plateformType.toLowerCase()))).or(EMPTY);
 		SupportedPlatform platform = SupportedPlatform.findFor(platformType);
 		String hub = Optional.fromNullable(testConfig.get("webdriver.hub")).or(EMPTY);
+		String parentTunnel = Optional.fromNullable(testConfig.get("webdriver.parentTunnel")).or(EMPTY);
+		String tunnelIdentifier = Optional.fromNullable(testConfig.get("webdriver.tunnelIdentifier")).or(EMPTY);
 		Map<String, String> additionalProperties = new HashMap<String, String>();
 		additionalProperties.put("platform", hubOS);
 		additionalProperties.put("version", plateformVersion);
+		additionalProperties.put("parentTunnel",parentTunnel);
+		additionalProperties.put("tunnelIdentifier", tunnelIdentifier);
+		
 
 		DesiredCapabilities desiredCap = platform.createCapabilities().merge(new DesiredCapabilities(additionalProperties));
 
