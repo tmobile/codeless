@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -77,7 +78,6 @@ public class WebDriverFactory {
 	private static WebDriver createLocalDriver() {
 		String webDriver = "";
 		String webDriverPath = "";
-		String path = System.getProperty("user.dir");
 		platformType = Optional.fromNullable(testConfig.get("platform-type")).or(EMPTY);
 		String runLocal = Optional.fromNullable(testConfig.get("webdriver.runlocal")).or(EMPTY);
 		if ("false".equalsIgnoreCase(runLocal)) {
@@ -87,7 +87,7 @@ public class WebDriverFactory {
 		case "firefox": {
 			webDriver = "webdriver.gecko.driver";
 			if (testConfig.get("webdriver.path.firefox") == null)	return null;
-			webDriverPath = path + "\\" + testConfig.get("webdriver.path.firefox").replace("/", "\\");
+			webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.firefox"));
 			System.setProperty(webDriver, webDriverPath);
 			driver = new FirefoxDriver();
 			break;
@@ -95,7 +95,7 @@ public class WebDriverFactory {
 		case "microsoftedge": {
 			webDriver = "webdriver.ie.driver";
 			if (testConfig.get("webdriver.path.ie") == null)	return null;
-			webDriverPath = path + "\\" + testConfig.get("webdriver.path.ie").replace("/", "\\");
+			webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.ie"));
 			System.setProperty(webDriver, webDriverPath);
 			driver = new InternetExplorerDriver();
 			break;
@@ -103,7 +103,7 @@ public class WebDriverFactory {
 		default: {
 			webDriver = "webdriver.chrome.driver";
 			if (testConfig.get("webdriver.path.chrome") == null)	return null;
-			webDriverPath = path + "\\" + testConfig.get("webdriver.path.chrome").replace("/", "\\");
+			webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.chrome"));
 			System.setProperty(webDriver, webDriverPath);
 			driver = new ChromeDriver();
 			break;
@@ -111,6 +111,19 @@ public class WebDriverFactory {
 		}
 		initWebDriver();
 		return driver;
+	}
+	
+	private static String getWebDriverPath(String webDriverPath) {
+
+		String opertatingSystem = System.getProperty("os.name").toLowerCase();
+		String path = System.getProperty("user.dir");
+		if (opertatingSystem.contains("windows")) {
+
+			webDriverPath = path + "\\" + webDriverPath.replace("/", "\\");
+			return webDriverPath;
+
+		}
+		return  path + "//" + webDriverPath;
 	}
 
 	/**
