@@ -1,0 +1,6 @@
+searchbox:
+  by: "name"
+  locator: "q"
+searchbutton:
+  by: "id"
+  locator: "searchbox-searchbutton"
