@@ -2,6 +2,7 @@ package com.tmobile.ct.codeless.service.accessor.response;
 
 import java.util.concurrent.ExecutionException;
 
+import com.tmobile.ct.codeless.core.Accessor;
 import com.tmobile.ct.codeless.service.assertion.ServiceAssertionActualProvider;
 import com.tmobile.ct.codeless.service.core.ServiceCall;
 import com.tmobile.ct.codeless.service.httpclient.Header;
@@ -12,17 +13,17 @@ import com.tmobile.ct.codeless.service.reference.ServiceCallReference;
  *
  * @author Rob Graff
  */
-public class HeaderAccessor implements ResponseAccessor<Header>, ServiceAssertionActualProvider<String> {
+public class HeaderAccessor implements Accessor<Header, ServiceCall>, ServiceAssertionActualProvider<String> {
 
 	/** The key. */
 	private String key;
-	
+
 	/** The call. */
 	private ServiceCall call;
-	
+
 	/** The call ref. */
 	private ServiceCallReference callRef;
-	
+
 	/**
 	 * Instantiates a new header accessor.
 	 *
@@ -33,7 +34,7 @@ public class HeaderAccessor implements ResponseAccessor<Header>, ServiceAssertio
 		this.callRef = callRef;
 		this.key = key;
 	}
-	
+
 	/**
 	 * Instantiates a new header accessor.
 	 *
@@ -81,15 +82,20 @@ public class HeaderAccessor implements ResponseAccessor<Header>, ServiceAssertio
 	@Override
 	public String getActual() {
 		ServiceCall call = this.callRef.find();
-		
+
 		try {
 			call.isComplete().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 			Thread.currentThread().interrupt();
 		}
-		
+
 		return getActual(call);
+	}
+
+	@Override
+	public String value() {
+		return key;
 	}
 
 }

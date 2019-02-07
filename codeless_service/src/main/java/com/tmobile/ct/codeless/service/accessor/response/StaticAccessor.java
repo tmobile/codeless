@@ -1,5 +1,6 @@
 package com.tmobile.ct.codeless.service.accessor.response;
 
+import com.tmobile.ct.codeless.core.Accessor;
 import com.tmobile.ct.codeless.service.assertion.ServiceAssertionActualProvider;
 import com.tmobile.ct.codeless.service.core.ServiceCall;
 
@@ -8,7 +9,7 @@ import com.tmobile.ct.codeless.service.core.ServiceCall;
  *
  * @author Rob Graff
  */
-public class StaticAccessor implements ResponseAccessor<String>, ServiceAssertionActualProvider<String>{
+public class StaticAccessor implements Accessor<String, ServiceCall>, ServiceAssertionActualProvider<String>{
 
 
 	/** The value. */
@@ -22,12 +23,12 @@ public class StaticAccessor implements ResponseAccessor<String>, ServiceAssertio
 	public StaticAccessor(String value){
 		this.value = value;
 	}
-	
+
 	/**
 	 * Instantiates a new static accessor.
 	 */
 	public StaticAccessor(){}
-	
+
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.service.assertion.ServiceAssertionActualProvider#getActual(com.tmobile.ct.codeless.service.core.ServiceCall)
 	 */
@@ -65,6 +66,11 @@ public class StaticAccessor implements ResponseAccessor<String>, ServiceAssertio
 	 */
 	@Override
 	public String getActual() {
+		return value;
+	}
+
+	@Override
+	public String value() {
 		return value;
 	}
 }

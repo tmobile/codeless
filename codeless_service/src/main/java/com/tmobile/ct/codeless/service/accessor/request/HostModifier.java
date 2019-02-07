@@ -1,27 +1,27 @@
 package com.tmobile.ct.codeless.service.accessor.request;
 
+import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
-import com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor;
 import com.tmobile.ct.codeless.service.httpclient.Host;
+import com.tmobile.ct.codeless.testdata.RequestModifier;
 
 /**
  * The Class HostModifier.
  *
  * @author Rob Graff
  */
-public class HostModifier implements RequestModifier<Host> {
+public class HostModifier implements RequestModifier<Host, HttpRequest> {
 
-	/** The response accessor. */
-	private ResponseAccessor responseAccessor;
+	/** The dataSource to override. */
+	private TestDataSource dataSource;
 
 	/**
 	 * Instantiates a new host modifier.
 	 *
 	 * @param responseAccessor the response accessor
 	 */
-	public HostModifier(ResponseAccessor responseAccessor) {
-
-		this.responseAccessor = responseAccessor;
+	public HostModifier(TestDataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	/* (non-Javadoc)
@@ -29,15 +29,7 @@ public class HostModifier implements RequestModifier<Host> {
 	 */
 	@Override
 	public void modify(HttpRequest request) {
-		request.setHost(new Host(responseAccessor.getActual()));
+		request.setHost(new Host(dataSource.fullfill()));
 
-	}
-
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.service.accessor.request.RequestModifier#setResponseAccessor(com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor)
-	 */
-	@Override
-	public void setResponseAccessor(ResponseAccessor responseAccessor) {
-		this.responseAccessor = responseAccessor;
 	}
 }
