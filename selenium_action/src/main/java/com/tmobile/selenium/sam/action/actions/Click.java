@@ -70,6 +70,29 @@ public class Click extends Action implements IAction {
 	private void javascript() {
 		((JavascriptExecutor) driver).executeScript("arguments[0].click();", element.get());
 	}
+	
+	/**
+	 * scrollIntoView.
+	 */
+	private void scrollIntoView() {
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element.get());
+	}
+	
+	/**
+	 * scrollDown.
+	 */
+	private void scrollDown() {
+
+		new Actions(driver).moveToElement(element.get()).click().sendKeys(Keys.ARROW_DOWN).build().perform();
+	}
+	
+	/**
+	 * scrollUp.
+	 */
+	private void scrollUp() {
+
+		new Actions(driver).moveToElement(element.get()).click().sendKeys(Keys.ARROW_UP).build().perform();
+	}
 
 	/**
 	 * Send enter.
