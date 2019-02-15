@@ -15,7 +15,6 @@ public class TestngBuilder {
 
 	TestNG testng = new TestNG();
 	List<XmlSuite> suites = new ArrayList<>();
-	
 	public TestngBuilder() {
 	}
 	
@@ -27,18 +26,17 @@ public class TestngBuilder {
 	public TestngBuilder addSuite(String suiteName, String testName, String suiteId, String testClass, Map<String,String> params){
 		XmlSuite xmlSuite = new XmlSuite();
 		xmlSuite.setName(suiteName);
-
 		XmlTest xmlTest = new XmlTest();
 		xmlTest.setName(testName);
 		xmlTest.setSuite(xmlSuite);
-
 		List<XmlClass> xmlClasses = new ArrayList<XmlClass>();
 		xmlClasses.add(new XmlClass(testClass));
-
 		xmlTest.getClasses().addAll(xmlClasses);
 		xmlSuite.addTest(xmlTest);
-		params.put("codeless.suite.id", suiteId);
+		//params.put("codeless.suite.id", suiteId);    //not needed? this param is always null.  suiteId is set later in execution through testng
 		xmlSuite.setParameters(params);
+		System.out.println("check parameters:" +xmlSuite.getParameters());
+		System.out.println("check all parameters:" +xmlSuite.getAllParameters());
 		
 		addSuite(xmlSuite);
 		
@@ -46,6 +44,7 @@ public class TestngBuilder {
 	}
 	
 	public TestNG build(){
+		testng.initializeEverything();
 		testng.setXmlSuites(suites);
 		return testng;
 	}
