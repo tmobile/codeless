@@ -14,7 +14,4 @@ public enum ClickType {
 	javascript, 
 	sendEnter, 
 	action, 
-	scrollIntoView, 
-	scrollDown,
-	scrollUp
 }
