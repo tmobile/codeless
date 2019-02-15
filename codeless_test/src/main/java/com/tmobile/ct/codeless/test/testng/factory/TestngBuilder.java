@@ -44,7 +44,6 @@ public class TestngBuilder {
 	}
 	
 	public TestNG build(){
-		testng.initializeEverything();
 		testng.setXmlSuites(suites);
 		return testng;
 	}
