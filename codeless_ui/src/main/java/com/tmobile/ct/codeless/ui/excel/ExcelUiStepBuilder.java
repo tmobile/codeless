@@ -1,5 +1,7 @@
 package com.tmobile.ct.codeless.ui.excel;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,11 +14,15 @@ import org.openqa.selenium.WebElement;
 
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Test;
+import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
+import com.tmobile.ct.codeless.testdata.RequestModifier;
 import com.tmobile.ct.codeless.testdata.TestDataInput;
 import com.tmobile.ct.codeless.testdata.TestDataProvider;
 import com.tmobile.ct.codeless.ui.UiStep;
 import com.tmobile.ct.codeless.ui.UiStepImpl;
+import com.tmobile.ct.codeless.ui.accessor.request.AssertionModifer;
+import com.tmobile.ct.codeless.ui.accessor.request.InputModifer;
 import com.tmobile.ct.codeless.ui.action.Click;
 import com.tmobile.ct.codeless.ui.action.Close;
 import com.tmobile.ct.codeless.ui.action.Cookie;
@@ -29,6 +35,10 @@ import com.tmobile.ct.codeless.ui.action.Type;
 import com.tmobile.ct.codeless.ui.action.UiAction;
 import com.tmobile.ct.codeless.ui.action.Wait;
 import com.tmobile.ct.codeless.ui.action.Window;
+import com.tmobile.ct.codeless.ui.assertion.SeleniumMethodType;
+import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
+import com.tmobile.ct.codeless.ui.assertion.UiAssertionMethod;
+import com.tmobile.ct.codeless.ui.assertion.UiSeleniumMethod;
 import com.tmobile.ct.codeless.ui.model.ControlElement;
 import com.tmobile.ct.codeless.ui.model.controls.WebElementProxyFactory;
 import com.tmobile.ct.codeless.ui.model.yaml.YamlReader;
@@ -54,6 +64,8 @@ public class ExcelUiStepBuilder {
 
 	private static String OVERRIDE_INPUT_END = "}}";
 
+	Test test;
+
 	/**
 	 * Builds the.
 	 *
@@ -61,6 +73,7 @@ public class ExcelUiStepBuilder {
 	 * @return the step
 	 */
 	public Step build(Row row, Test test){
+		this.test = test;
 		UiStepInput input = new UiStepInput();
 		for(Cell cell : row){
 			String header = formatter.formatCellValue(cell.getSheet().getRow(0).getCell(cell.getColumnIndex())).trim().toUpperCase();
@@ -91,6 +104,80 @@ public class ExcelUiStepBuilder {
 
 		return step;
 	}
+
+	/**
+	 * Parses the assertion.
+	 *
+	 * @param testData the test data
+	 * @param step
+	 * @param step the step
+	 * @return the list
+	 */
+	private List<UiAssertionBuilder> parseAssertion(ExcelUiTestRow testData, UiStep step) {
+
+		List<UiAssertionBuilder> assertions = new ArrayList<>();
+		if (testData.getTestData() != null && testData.getTestData().size() > 0) {
+			testData.getTestData().forEach(d -> {
+
+				String[] assertions_data = d.trim().split("[,]");
+				for (String data : assertions_data) {
+					String[] originalParts = data.trim().split("::");
+					String assertionMethodName = originalParts[0];
+					String seleniumMethodName = null;
+					Method seleniumMethod = null;
+					String parameter = "";
+					String expected = "";
+
+					if(originalParts.length < 2) return;
+
+					SeleniumMethodType type = SeleniumMethodType.valueOf(originalParts[1]);
+
+					if (originalParts.length > 2) {
+						seleniumMethodName = originalParts[2];
+					}
+
+					try {
+						if (originalParts.length >= 4) {
+							expected = originalParts[3];
+
+							if (originalParts.length == 5) {
+								parameter = originalParts[4];
+							}
+						} else if (originalParts.length == 3) {
+							if (originalParts.length == 4) {
+								parameter = originalParts[3];
+							}
+						}
+
+						if (seleniumMethodName != null) {
+							seleniumMethod = UiSeleniumMethod.getSeleniumMethod(seleniumMethodName, parameter, type);
+						}
+
+						if(seleniumMethod != null) {
+							String dataValue[] = StringUtils.substringsBetween(expected,"{{", "}}");
+
+							if(dataValue != null && dataValue.length>0) {
+								TestDataSource tData = test.getTestData().get(dataValue[0]);
+								RequestModifier modifier = new AssertionModifer(dataValue[0],tData);
+								step.getRequestModifiers().add(modifier);
+
+							}
+							Method assertionMethod = UiAssertionMethod.getAssertionMethod(assertionMethodName, expected);
+							UiAssertionBuilder assertion = new UiAssertionBuilder(assertionMethod, expected, seleniumMethod,
+									type, parameter);
+							assertions.add(assertion);
+						}
+
+					} catch (NoSuchMethodException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+
+		return assertions;
+	}
+
 
 	/**
 	 * Builds the action.
@@ -287,6 +374,8 @@ public class ExcelUiStepBuilder {
 				}
 			}
 		});
+		List<UiAssertionBuilder> assertions = parseAssertion(testRow,step);
+		step.setAssertionBuilder(assertions);
 		return testRow;
 	}
 
@@ -295,18 +384,37 @@ public class ExcelUiStepBuilder {
 		for(TestDataInput input : step.getTestDataInputs()) {
 			input.stream().forEach(key ->{
 				SuiteHeaders header = SuiteHeaders.parse(key.getKey());
-				TestDataProvider value = key.getValue().getValues().get(0);
+				TestDataProvider tdata= key.getValue().getValues().get(0);
+				String value = tdata.getKey();
+				TestDataSource testData = test.getTestData().get(value);
+
+				if(testData == null) {
+					return;
+				}
+
+				RequestModifier modifier = null;
+
 				switch(header){
 				case TARGET:
-					testRow.setTarget(value.find());
+					testRow.setTarget(testData.fullfill());
 					break;
 				case INPUT:
-					testRow.setInput(value.find());
+					modifier = new InputModifer(value,testData);
+					break;
+				default:
+
 					break;
 				}
+
+				step.getRequestModifiers().add(modifier);
+
 			});
 		}
 
 		return testRow;
+	}
+
+	private RequestModifier getModifer() {
+		return null;
 	}
 }

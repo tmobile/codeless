@@ -5,7 +5,6 @@ import java.util.concurrent.Future;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.tmobile.selenium.sam.action.factory.ClickFactory;
 import com.tmobile.selenium.sam.action.factory.WaitFactory;
 import com.tmobile.selenium.sam.config.ActionConfig;
 
@@ -32,12 +31,18 @@ public class Wait extends BaseAction implements UiAction {
 	 */
 	@Override
 	public void run() {
-		
+
 		try{
 			new WaitFactory(getDriver(), config).forElement(element).execute();
 		}catch(Exception e){
 			fail(e);
 			throw e;
 		}
+	}
+
+	@Override
+	public void setText(String input) {
+		// TODO Auto-generated method stub
+
 	}
 }

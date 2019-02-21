@@ -2,11 +2,9 @@ package com.tmobile.ct.codeless.service.accessor.response;
 
 import java.util.concurrent.ExecutionException;
 
-import com.tmobile.ct.codeless.service.HttpResponse;
+import com.tmobile.ct.codeless.core.Accessor;
 import com.tmobile.ct.codeless.service.assertion.ServiceAssertionActualProvider;
 import com.tmobile.ct.codeless.service.core.ServiceCall;
-import com.tmobile.ct.codeless.service.httpclient.Body;
-import com.tmobile.ct.codeless.service.httpclient.Header;
 import com.tmobile.ct.codeless.service.reference.ServiceCallReference;
 
 /**
@@ -14,11 +12,11 @@ import com.tmobile.ct.codeless.service.reference.ServiceCallReference;
  *
  * @author Rob Graff
  */
-public class BodyStringAccessor implements ResponseAccessor<String>, ServiceAssertionActualProvider<String>{
+public class BodyStringAccessor implements Accessor<String, ServiceCall>, ServiceAssertionActualProvider<String>{
 
 	/** The call ref. */
 	private ServiceCallReference callRef;
-	
+
 	/** The call. */
 	private ServiceCall call;
 
@@ -30,12 +28,12 @@ public class BodyStringAccessor implements ResponseAccessor<String>, ServiceAsse
 	public BodyStringAccessor(ServiceCallReference callRef){
 		this.callRef = callRef;
 	}
-	
+
 	/**
 	 * Instantiates a new body string accessor.
 	 */
 	public BodyStringAccessor(){}
-	
+
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.service.assertion.ServiceAssertionActualProvider#getActual(com.tmobile.ct.codeless.service.core.ServiceCall)
 	 */
@@ -74,14 +72,20 @@ public class BodyStringAccessor implements ResponseAccessor<String>, ServiceAsse
 	@Override
 	public String getActual() {
 		ServiceCall call = this.callRef.find();
-	
+
 		try {
 			call.isComplete().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 			Thread.currentThread().interrupt();
 		}
-		
+
 		return getActual(call);
+	}
+
+	@Override
+	public String value() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

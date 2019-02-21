@@ -1,6 +1,4 @@
-package com.tmobile.ct.codeless.service.accessor.response;
-
-import com.tmobile.ct.codeless.service.core.ServiceCall;
+package com.tmobile.ct.codeless.testdata;
 
 /**
  * The Interface ResponseAccessor.
@@ -8,22 +6,22 @@ import com.tmobile.ct.codeless.service.core.ServiceCall;
  * @author Rob Graff
  * @param <T> the generic type
  */
-public interface ResponseAccessor<T> {
-	
+public interface ResponseAccessor<T, U> {
+
 	/**
 	 * Sets the service call.
 	 *
 	 * @param call the new service call
 	 */
-	void setServiceCall(ServiceCall call);
-	
+	void setServiceCall(U call);
+
 	/**
 	 * Read.
 	 *
 	 * @return the t
 	 */
 	T read();
-	
+
 	/**
 	 * Gets the actual.
 	 *
