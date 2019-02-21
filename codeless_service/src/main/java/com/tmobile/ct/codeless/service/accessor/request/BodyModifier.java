@@ -1,9 +1,9 @@
 package com.tmobile.ct.codeless.service.accessor.request;
 
+import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
-import com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor;
 import com.tmobile.ct.codeless.service.httpclient.Body;
-import com.tmobile.ct.codeless.service.httpclient.Header;
+import com.tmobile.ct.codeless.testdata.RequestModifier;
 
 
 /**
@@ -11,38 +11,28 @@ import com.tmobile.ct.codeless.service.httpclient.Header;
  *
  * @author Rob Graff
  */
-public class BodyModifier implements RequestModifier<Body>{
+public class BodyModifier implements RequestModifier<Body, HttpRequest>{
 
 
-	/** The response accessor. */
-	private ResponseAccessor responseAccessor;
-	
+	/** The dataSource to override. */
+	private TestDataSource dataSource;
+
 	/**
 	 * Instantiates a new body modifier.
 	 *
 	 * @param responseAccessor the response accessor
 	 */
-	public BodyModifier( ResponseAccessor responseAccessor){
-
-		this.responseAccessor = responseAccessor;
+	public BodyModifier(TestDataSource dataSource){
+		this.dataSource = dataSource;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.service.accessor.request.RequestModifier#modify(com.tmobile.ct.codeless.service.HttpRequest)
 	 */
 	@Override
 	public void modify(HttpRequest request) {
-		String body = responseAccessor.getActual();
-		request.setBody(new Body<String>(body, String.class));
-		
-	}
+		request.setBody(new Body<String>(dataSource.fullfill(), String.class));
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.service.accessor.request.RequestModifier#setResponseAccessor(com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor)
-	 */
-	@Override
-	public void setResponseAccessor(ResponseAccessor responseAccessor) {
-		this.responseAccessor = responseAccessor;
 	}
 
 }

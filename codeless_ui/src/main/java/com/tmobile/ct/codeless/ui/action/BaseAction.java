@@ -20,16 +20,16 @@ public class BaseAction {
 
 	/** The driver. */
 	protected Future<WebDriver> driver;
-	
+
 	/** The config. */
 	protected ActionConfig config;
-	
+
 	/** The element. */
 	protected WebElement element;
-	
+
 	/** The failure exception. */
 	protected Throwable failureException;
-	
+
 	/**
 	 * Instantiates a new base action.
 	 *
@@ -42,7 +42,7 @@ public class BaseAction {
 		this.config = config;
 		this.element = element;
 	}
-	
+
 	/**
 	 * Gets the driver.
 	 *
@@ -57,7 +57,7 @@ public class BaseAction {
 			throw ex;
 		}
 	}
-	
+
 	/**
 	 * Fail.
 	 *
@@ -65,7 +65,7 @@ public class BaseAction {
 	 */
 	public void fail(Throwable e) {
 		this.failureException = e;
-		
+
 	}
 
 	/**
@@ -76,4 +76,13 @@ public class BaseAction {
 	public Throwable getFailureCause() {
 		return failureException;
 	}
+
+	public WebElement getElement() {
+		return element;
+	}
+
+	public void setElement(WebElement element) {
+		this.element = element;
+	}
+
 }

@@ -17,8 +17,8 @@ public interface SourcedData {
 	 *
 	 * @param config the config
 	 */
-	void setConfig(Map<String,SourcedDataItem<String,String>> config);
-	
+	void setConfig(Map<String,SourcedDataItem<String,TestDataSource>> config);
+
 	/**
 	 * Put.
 	 *
@@ -26,31 +26,30 @@ public interface SourcedData {
 	 * @param item the item
 	 * @return the sourced data item
 	 */
-	SourcedDataItem<String,String> put(String key, SourcedDataItem<String,String> item);
-	
+	SourcedDataItem<String,TestDataSource> put(String key, SourcedDataItem<String,TestDataSource> item);
+
 	/**
 	 * Gets the sourced value.
 	 *
 	 * @param key the key
-	 * @return the sourced value
 	 */
-	SourcedDataItem<String,String> getSourcedValue(String key);
-	
+	SourcedDataItem<String,TestDataSource> getSourcedValue(String key);
+
 	/**
 	 * Gets the.
 	 *
 	 * @param key the key
 	 * @return the string
 	 */
-	String get(String key);
-	
+	TestDataSource get(String key);
+
 	/**
 	 * Gets the config.
 	 *
 	 * @return the config
 	 */
-	Map<String,SourcedDataItem<String,String>> getConfig();
-	
-	
+	Map<String,SourcedDataItem<String,TestDataSource>> getConfig();
+
+
 	Optional<String> getOptional(String key);
 }

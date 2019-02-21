@@ -20,11 +20,13 @@ import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.SuiteBuilder;
 import com.tmobile.ct.codeless.core.TestData;
+import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
 import com.tmobile.ct.codeless.data.BasicConfig;
 import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.files.ClassPathUtil;
+import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 
 /**
  * The Class ExcelSuiteBuilder.
@@ -148,12 +150,14 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 				continue; // dont save empty rows
 			}
 
-			SourcedValue<String> value = new SourcedValue<>();
+			StaticTestDataSource staticSource = new StaticTestDataSource(key, formatter.formatCellValue(row.getCell(1)));
+
+			SourcedValue<TestDataSource> value = new SourcedValue<>();
 			value.setSource(ExcelConfig.class.getName());
 			value.setSourceClass(ExcelConfig.class);
-			value.setValue(formatter.formatCellValue(row.getCell(1)));
+			value.setValue(staticSource);
 
-			SourcedDataItem<String,String> item = new SourcedDataItem<>(key, value);
+			SourcedDataItem<String,TestDataSource> item = new SourcedDataItem<>(key, value);
 			config.put(key, item);
 
 		}
@@ -184,16 +188,36 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 		for(Row row: sheet){
 
 			String key = formatter.formatCellValue(row.getCell(0));
+			String key_value = "";
+			StaticTestDataSource staticSource = null;
+
 			if(StringUtils.isBlank(key)){
 				continue; // dont save empty rows
 			}
 
-			SourcedValue<String> value = new SourcedValue<>();
+			// check test data in system properties first
+			key_value = System.getProperty(key);
+			if(!StringUtils.isEmpty(key_value)) {
+				staticSource = new StaticTestDataSource(key,key_value);
+			}
+
+			// check test data in system environments
+			if(staticSource == null) {
+				key_value = System.getProperty(key);
+				if(!StringUtils.isEmpty(key_value)) {
+					staticSource = new StaticTestDataSource(key,key_value);
+				}
+			}
+			if(staticSource == null) {
+				staticSource = new StaticTestDataSource(key,formatter.formatCellValue(row.getCell(1)));
+			}
+
+			SourcedValue<TestDataSource> value = new SourcedValue<>();
 			value.setSource(SHEET_TEST_DATA);
 			value.setSourceClass(ExcelConfig.class);
-			value.setValue(formatter.formatCellValue(row.getCell(1)));
+			value.setValue(staticSource);
 
-			SourcedDataItem<String,String> item = new SourcedDataItem<>(key, value);
+			SourcedDataItem<String,TestDataSource> item = new SourcedDataItem<>(key, value);
 			testData.put(key, item);
 
 		}
