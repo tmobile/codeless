@@ -5,7 +5,6 @@ import java.util.concurrent.Future;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.tmobile.selenium.sam.action.factory.GoFactory;
 import com.tmobile.selenium.sam.action.factory.WindowFactory;
 import com.tmobile.selenium.sam.config.ActionConfig;
 
@@ -43,5 +42,10 @@ public class Window extends BaseAction implements UiAction {
 			fail(e);
 			throw e;
 		}
+	}
+
+	@Override
+	public void setText(String input) {
+		this.input = input;
 	}
 }

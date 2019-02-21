@@ -43,4 +43,9 @@ public class GoTo extends BaseAction implements UiAction {
 			throw e;
 		}
 	}
+
+	@Override
+	public void setText(String url) {
+		this.url = url;
+	}
 }

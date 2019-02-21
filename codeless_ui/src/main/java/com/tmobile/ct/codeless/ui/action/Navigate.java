@@ -5,9 +5,6 @@ import java.util.concurrent.Future;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.tmobile.selenium.sam.action.factory.GoFactory;
-import com.tmobile.selenium.sam.action.factory.WindowFactory;
-import com.tmobile.selenium.sam.action.types.NavigateType;
 import com.tmobile.selenium.sam.config.ActionConfig;
 
 /**
@@ -39,5 +36,11 @@ public class Navigate extends BaseAction implements UiAction {
 			fail(e);
 			throw e;
 		}
+	}
+
+	@Override
+	public void setText(String input) {
+		// TODO Auto-generated method stub
+
 	}
 }

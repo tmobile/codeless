@@ -5,8 +5,6 @@ import java.util.concurrent.Future;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.tmobile.selenium.sam.action.factory.ClickFactory;
-import com.tmobile.selenium.sam.action.factory.GoFactory;
 import com.tmobile.selenium.sam.action.factory.SendFactory;
 import com.tmobile.selenium.sam.config.ActionConfig;
 
@@ -39,10 +37,19 @@ public class Type extends BaseAction implements UiAction {
 	@Override
 	public void run() {
 		try{
-			new SendFactory(getDriver(), config).sendTo(element).text(text).execute();
+			new SendFactory(getDriver(), config).sendTo(element).text(this.text).execute();
+			/*CtSeleniumPageActions pageObjects = new CtSeleniumPageActions(test.getWebDriver());
+			pageObjects.buildAssertions(g, element);*/
 		}catch(Exception e){
 			fail(e);
 			throw e;
 		}
 	}
+
+	@Override
+	public void setText(String input) {
+		this.text = input;
+	}
+
+
 }

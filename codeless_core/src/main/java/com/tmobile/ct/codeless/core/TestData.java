@@ -14,6 +14,8 @@ public interface TestData extends SourcedData{
 	 *
 	 * @return the map
 	 */
-	Map<String, String> asMap();
+	Map<String, TestDataSource> asMap();
+
+	String getValue(String key);
 
 }
