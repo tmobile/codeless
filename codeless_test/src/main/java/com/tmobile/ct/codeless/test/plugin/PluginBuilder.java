@@ -15,7 +15,7 @@ import com.tmobile.ct.codeless.core.plugin.Plugin;
 public class PluginBuilder implements ConfigPluginParser{
 
 	private static final String PLUGINS_KEY = "codeless.plugins";
-
+	
 	@Override
 	public List<Plugin> getPlugins(Config config) {
 		Optional<String> plugins = config.getOptional(PLUGINS_KEY);
@@ -23,18 +23,18 @@ public class PluginBuilder implements ConfigPluginParser{
 			.map(x -> instanciatePlugins(x))
 			.orElse(null);
 	}
-
+	
 	public List<Plugin> instanciatePlugins(List<String> classes){
 		List<Plugin> plugins = new ArrayList<>(classes.size());
 		for(String clazz : classes){
 			try{
 				Class<?> obj = Class.forName(clazz);
-
+				
 				if(ClassUtils.isAssignable(obj, Plugin.class)){
 					plugins.add((Plugin) obj.newInstance());
 				}
 			}catch(Exception e){
-
+				
 			}
 		}
 		return plugins;

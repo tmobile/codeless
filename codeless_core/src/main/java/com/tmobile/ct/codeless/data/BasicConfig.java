@@ -24,7 +24,7 @@ public class BasicConfig extends BasicSourcedDataMap implements Config{
 		});
 		return props;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.core.Config#asMap()
 	 */
@@ -32,7 +32,7 @@ public class BasicConfig extends BasicSourcedDataMap implements Config{
 	public Map<String,String> asMap(){
 		HashMap<String,String> map = new HashMap<>();
 		super.keySet().forEach(key ->{
-			map.put(key, super.get(key).fullfill());
+			map.put(key, super.get(key));
 		});
 		return map;
 	}

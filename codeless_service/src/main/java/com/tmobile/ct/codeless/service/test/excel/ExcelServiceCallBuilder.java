@@ -19,12 +19,10 @@ import org.apache.poi.ss.usermodel.Row;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tmobile.ct.codeless.assertion.AssertJAssertionBuilder;
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
-import com.tmobile.ct.codeless.core.Accessor;
 import com.tmobile.ct.codeless.core.Assertion;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestData;
-import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
 import com.tmobile.ct.codeless.core.datastructure.SuiteHeaders;
@@ -41,9 +39,11 @@ import com.tmobile.ct.codeless.service.accessor.request.FormModifier;
 import com.tmobile.ct.codeless.service.accessor.request.HeaderModifier;
 import com.tmobile.ct.codeless.service.accessor.request.PathModifier;
 import com.tmobile.ct.codeless.service.accessor.request.QueryParamsModifier;
+import com.tmobile.ct.codeless.service.accessor.request.RequestModifier;
 import com.tmobile.ct.codeless.service.accessor.response.BodyStringAccessor;
 import com.tmobile.ct.codeless.service.accessor.response.HeaderAccessor;
 import com.tmobile.ct.codeless.service.accessor.response.JsonPathAccessor;
+import com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor;
 import com.tmobile.ct.codeless.service.accessor.response.ResponseTimeAssertion;
 import com.tmobile.ct.codeless.service.accessor.response.StaticAccessor;
 import com.tmobile.ct.codeless.service.accessor.response.StatusCodeAssertion;
@@ -63,13 +63,10 @@ import com.tmobile.ct.codeless.service.model.EndPoint;
 import com.tmobile.ct.codeless.service.model.Operation;
 import com.tmobile.ct.codeless.service.model.Service;
 import com.tmobile.ct.codeless.service.model.cache.ServiceCache;
+import com.tmobile.ct.codeless.service.reference.CallRefBySuite;
 import com.tmobile.ct.codeless.service.reference.CallRefByTest;
 import com.tmobile.ct.codeless.service.reference.ServiceCallReference;
 import com.tmobile.ct.codeless.service.restassured.RestAssuredHttpClient;
-import com.tmobile.ct.codeless.testdata.RequestModifier;
-import com.tmobile.ct.codeless.testdata.RuntimeTestDataSource;
-import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
-
 
 /**
  * The Class ExcelServiceCallBuilder.
@@ -96,15 +93,18 @@ public class ExcelServiceCallBuilder {
 	/** The request. */
 	HttpRequest<String> request;
 
-	/** Request modifers holder befor building service object. */
-	List<RequestModifier> modifers;
-
 	/** The assertions. */
 	private List<Assertion> assertions = new ArrayList<>();
 
 	/** The test. */
 	private Test test;
 
+	/** The Override host. */
+	private static String OVERRIDE_HOST="$HOST";
+
+	/** The Override operation. */
+	private static String OVERRIDE_OPERATION="$OPERATION";
+	
 	/** The Constant SWAGGER_YAML. */
 	private static final String SWAGGER_YAML = "swagger.yaml";
 
@@ -211,9 +211,6 @@ public class ExcelServiceCallBuilder {
 		request = null;
 		try {
 			request = mapper.readValue(mapper.writeValueAsBytes(operation.getRequest()),HttpRequestImpl.class);
-			if(modifers != null) {
-				request.setRequestModifiers(modifers);
-			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -230,9 +227,9 @@ public class ExcelServiceCallBuilder {
 
 		if(request.getBody() != null && request.getBody().getBody() != null && request.getBody().getBody().indexOf("{{") > 0 && request.getBody().getBody().indexOf("}}") > 0 ){
 			setBodyFromEnv(operation);
-		}
+		}								 		
 		setDefaultEndpoint();
-
+		
 		call.setOperation(operation);
 		call.setName(testRow.testName);
 		call.setAssertions(assertions);
@@ -243,17 +240,17 @@ public class ExcelServiceCallBuilder {
 	 * Sets endpoint from default tab of excel sheet
 	 */
 	private void setDefaultEndpoint(){
-		TestData defaultTestData = test.getTestData();
+		TestData defaultTestData = test.getTestData();	
 		Host host = new Host();
 		boolean isHostInExcel = false;
 		boolean isProtocolInExcel = false;
 		boolean isPortInExcel = false;
 		boolean isPathInExcel = false;
-
+		
 		if(defaultTestData != null){
 		for(String excelData : testRow.testData){
 			String[] parts = excelData.split("::");
-
+			
 			if(parts[0].equalsIgnoreCase("ENDPOINT")){
 				for(String part : parts){
 					switch(part){
@@ -273,33 +270,33 @@ public class ExcelServiceCallBuilder {
 				}
 			}
 		}
-
-		if(defaultTestData.getSourcedValue("host") != null && !isHostInExcel){
-			host.setValue(defaultTestData.getSourcedValue("host").getValue().getValue().fullfill());
-			request.setHost(host);
+		
+		if(defaultTestData.getSourcedValue("host") != null && !isHostInExcel){	
+			host.setValue(defaultTestData.getSourcedValue("host").getValue().getValue());
+			request.setHost(host);	
 		}
-
-		if(defaultTestData.getSourcedValue("protocol") != null && !isProtocolInExcel){
-			if(defaultTestData.getSourcedValue("protocol").getValue().getValue().fullfill().equalsIgnoreCase(HttpProtocal.HTTP.toString())){
+		
+		if(defaultTestData.getSourcedValue("protocol") != null && !isProtocolInExcel){	
+			if(defaultTestData.getSourcedValue("protocol").getValue().getValue().equalsIgnoreCase(HttpProtocal.HTTP.toString())){
 				request.setProtocal(HttpProtocal.HTTP);
 			}else{
 				request.setProtocal(HttpProtocal.HTTPS);
-			}
+			}			
 		}
-
-		if(defaultTestData.getSourcedValue("port") != null && !isPortInExcel){
-			request.setPort(Integer.valueOf(defaultTestData.getSourcedValue("port").getValue().getValue().fullfill()));
+		
+		if(defaultTestData.getSourcedValue("port") != null && !isPortInExcel){	
+			request.setPort(Integer.valueOf(defaultTestData.getSourcedValue("port").getValue().getValue()));	
 		}
-
-		if(defaultTestData.getSourcedValue("path") != null && !isPathInExcel){
+	
+		if(defaultTestData.getSourcedValue("path") != null && !isPathInExcel){	
 			OperationPath operationPath = new OperationPath();
-			TestDataSource path =defaultTestData.getSourcedValue("path").getValue().getValue();
-			operationPath.setValue(path.fullfill());
-			request.setOperationPath(operationPath);
+			String path =defaultTestData.getSourcedValue("path").getValue().getValue();
+			operationPath.setValue(path);
+			request.setOperationPath(operationPath);	
 		}
 		}
 	}
-
+	
 	/**
 	 * Parses the endpoint
 	 *
@@ -308,7 +305,7 @@ public class ExcelServiceCallBuilder {
 	 */
 	private void parseEndpoint(String[] parts, String excelData) {
 		EndPoint endpointFromExcel = new EndPoint();
-
+		
 		int counter = 0;
 		for(String endPointPart : parts ){
 			switch(endPointPart){
@@ -326,49 +323,49 @@ public class ExcelServiceCallBuilder {
 					break;
 			}
 			counter++;
-		}
-
+		}					
+		
 		String endpoint = "";
 		String endpointHost = "";
-
-
+		
+	
 		if(endpointFromExcel.getProtocall() != null ){
-			endpointHost = endpointFromExcel.getProtocall();
+			endpointHost = endpointFromExcel.getProtocall();			
 		}
-
+	
 		Host host = new Host();
 		endpointHost = endpointHost + "://" ;
 		if((endpointFromExcel.getHost() != null)){
-			endpointHost = endpointHost + endpointFromExcel.getHost();
-			host.setValue(endpointFromExcel.getHost());
-		}
-
+			endpointHost = endpointHost + endpointFromExcel.getHost(); 
+			host.setValue(endpointFromExcel.getHost());	
+		}		
+		
 		if(endpointFromExcel.getPort() != null){
 			endpoint = endpointHost + ":" + endpointFromExcel.getPort();
 			endpointHost = endpoint;
 		}else{
 			endpoint = endpointHost;
-		}
-
+		}												
+		
 		String basePath = getModelDir() + File.separator + testRow.service + File.separator;
 		if(ClassPathUtil.exists(basePath+SWAGGER_YAML)){
-			request.getHost().setValue(endpointHost);
+			request.getHost().setValue(endpointHost);	
 		}
 		else{
-			request.setHost(host);
+			request.setHost(host);	
 		}
-
+		
 		OperationPath operationPath = new OperationPath();
 		String path = "";
-		if(endpointFromExcel.getPath() != null){
-			path = endpointFromExcel.getPath();
+		if(endpointFromExcel.getPath() != null){	
+			path = endpointFromExcel.getPath();	
 			operationPath.setValue(path);
 			request.setOperationPath(operationPath);
 		}
-
-
-		endpoint = endpoint + "/" + path;
-
+		
+		
+		endpoint = endpoint + "/" + path;			
+		
 		HttpProtocal protocall = null;
 		if(endpointFromExcel.getProtocall() != null && endpointFromExcel.getProtocall().equalsIgnoreCase(HttpProtocal.HTTPS.toString())){
 			protocall = HttpProtocal.HTTPS;
@@ -376,43 +373,43 @@ public class ExcelServiceCallBuilder {
 			protocall = HttpProtocal.HTTP;
 		}
 		request.setProtocal(protocall);
-
+		
 		if(endpointFromExcel.getPort() != null){
 			request.setPort(Integer.valueOf(endpointFromExcel.getPort()));
 		}
-
+		
 		if(request.getEndpoint() != null){
 			request.getEndpoint().setValue(endpoint);
 		}
 	}
-
+	
 	/**
 	 * Gets the model dir.
 	 *
 	 * @return the model dir
 	 */
-	private static String getModelDir(){
+	private static String getModelDir(){		
 		String modelDir = CodelessConfiguration.getModelDir();
-
+		
 		return modelDir;
 	}
 
-
+	
 	private String findBodyTemplateinTD(){
 		for(String testData : testRow.testData){
-			if(testData.toUpperCase().startsWith("BODYTEMPLATE")){
-				String[] tempVals = testData.split("::");
+			if(testData.toUpperCase().startsWith("BODYTEMPLATE")){		
+				String[] tempVals = testData.split("::");		
 				String requestBody = "";
-
+				
 				for(int counter = 1; counter < tempVals.length; counter += 2){
-					requestBody = requestBody + tempVals[counter] +  ":" + tempVals[counter+1] + ",";
+					requestBody = requestBody + tempVals[counter] +  ":" + tempVals[counter+1] + ",";					
 				}
-
+				
 				if(requestBody.endsWith(",")){
 					requestBody= requestBody.substring(0, requestBody.length()-1);
 				}
-
-				return requestBody;
+															
+				return requestBody;				
 			}
 		}
 		return null;
@@ -424,48 +421,48 @@ public class ExcelServiceCallBuilder {
 	 */
 	private void setBodyFromEnv(Operation operation){
 		String postmanBody = request.getBody().getBody().toString();
-		String bodyTemplateFromTD = findBodyTemplateinTD();
+		String bodyTemplateFromTD = findBodyTemplateinTD();					
 		ObjectMapper mapper = new ObjectMapper();
-
-		if(bodyTemplateFromTD != null){
+		
+		if(bodyTemplateFromTD != null){		
 			try {
 				Map<String,Object> postmanMap = mapper.readValue(postmanBody, Map.class);
 				String[] jsonArr = bodyTemplateFromTD.split(",");
 				String formattedBody = "{";
-
+				
 				for(String item : jsonArr){
 					for (Map.Entry<String, Object> entry : postmanMap.entrySet()) {
 					    String key = entry.getKey();
-					    String value = entry.getValue().toString();
-					    String tempVal = value.substring(1, value.length()-1);
+					    String value = entry.getValue().toString();				    				    			
+					    String tempVal = value.substring(1, value.length()-1);				    					
 						String[] jsonObj = item.split(":");
-						boolean notFinalValue = false;
+						boolean notFinalValue = false;					
 						tempVal = tempVal.substring(1, tempVal.length()-1);
-
-						if(value.indexOf("{{") >= 0 && value.indexOf("}}") > 0){
+						
+						if(value.indexOf("{{") >= 0 && value.indexOf("}}") > 0){																		
 							if(tempVal.equalsIgnoreCase(jsonObj[0])){
-								value = jsonObj[1];
+								value = jsonObj[1];							
 							}else{
 								notFinalValue = true;
 							}
-						}
-
+						}					
+						
 						if(formattedBody.indexOf(key) < 0 && !notFinalValue){
-							formattedBody = formattedBody +'"'+ key +'"' +":" + '"' + value +'"' +",";
+							formattedBody = formattedBody +'"'+ key +'"' +":" + '"' + value +'"' +",";		
 						}
 					}
 				}
-
+				
 				if(formattedBody.endsWith(","))
 				{
 					formattedBody = formattedBody.substring(0,formattedBody.length() - 1);
 				}
 				formattedBody = formattedBody +"}";
-
+				
 				Body<String> newBody = new Body<String>();
 				newBody.setBody(formattedBody);
-				request.setBody(newBody);
-			} catch (IOException  e) {
+				request.setBody(newBody);	
+			} catch (IOException  e) {			
 				e.printStackTrace();
 			}
 		}
@@ -536,7 +533,7 @@ private void parseTestData(String excelData){
 		String key = parts[1];
 		String value = parts[2];
 
-		//value = parseRefValue(excelData);
+		value = parseRefValue(excelData);
 
 		if(StringUtils.isBlank(type)){
 			return;
@@ -570,7 +567,7 @@ private void parseTestData(String excelData){
 			parseBodyTemplate(parts, excelData);
 			break;
 		case "ENDPOINT":
-			parseEndpoint(parts, excelData);
+			parseEndpoint(parts, excelData);	
 		}
 	}
 
@@ -582,16 +579,9 @@ private void parseTestData(String excelData){
 	 */
 	private void parseBodyTemplate(String[] parts, String excelData) {
 		if(StringUtils.isNotBlank(parts[2]) && !parts[2].startsWith("$REF~")){
-			Accessor accessor = new StaticAccessor(parts[2]);
-			TestDataSource testdata = new StaticTestDataSource(parts[1], parts[2]);
-			RequestModifier modifier = new BodyTemplateModifier(parts[1], testdata);
-			//request.getRequestModifiers().add(modifier);
-			if(modifers == null) {
-				modifers = new ArrayList<>();
-				modifers.add(modifier);
-			}else {
-				modifers.add(modifier);
-			}
+			ResponseAccessor accessor = new StaticAccessor(parts[2]);
+			RequestModifier modifier = new BodyTemplateModifier(parts[1], accessor);
+			request.getRequestModifiers().add(modifier);
 		}
 	}
 
@@ -625,7 +615,7 @@ private void parseTestData(String excelData){
 	 * @param excelData the excel data
 	 * @return the string
 	 */
-	/*private String parseRefValue(String excelData) {
+	private String parseRefValue(String excelData) {
 
 		String[] excelparts = excelData.trim().split("::");
 
@@ -699,7 +689,7 @@ private void parseTestData(String excelData){
 
 		request.getRequestModifiers().add(modifier);
 		return value;
-	}*/
+	}
 
 	/**
 	 * Parses the assertion.
@@ -814,115 +804,36 @@ private void parseTestData(String excelData){
 	}
 
 	public String parseExport(String cellValue, Test test, ServiceCallInput input) {
-		String[] values = cellValue.split("::");
         if (cellValue.contains("export")) {
+            String[] values = cellValue.split("::");
             List<String> stepName = input.get(SuiteHeaders.TESTNAME.name()).getValues();
             if (values.length >= 2) {
-
-            	ServiceCallReference callRef;
-        		callRef = new CallRefByTest(test, stepName.get(0));
-
-        		String key = values[1];
-        		String accessType = values[2];
-        		String accessorValue = values[3];
-
-        		Accessor accessor = null;
-        		switch(accessType.trim().toUpperCase()){
-        		case "HEADER":
-        			accessor = new HeaderAccessor(callRef, key);
-        			break;
-        		case "BODYSTRING":
-        			accessor = new BodyStringAccessor(callRef);
-        			break;
-        		case "JSONPATH":
-        			accessor = new JsonPathAccessor(callRef, accessorValue, String.class);
-        			break;
-        		case "XMLPATH":
-        			accessor = new XmlPathAccessor(callRef, key, String.class);
-        			break;
-        		}
-
-
-        		TestDataSource testdata = new RuntimeTestDataSource(accessor);
-
-        		if (test.getTestData() == null) {
+                String REF = "$REF";
+                REF += "~" + test.getName() + "~" + stepName.get(0) + "~";
+                String key = values[1];
+                for (int i = 2; i < values.length - 1; i++) {
+                    REF += values[i] + "~";
+                }
+                REF += values[values.length - 1];
+                SourcedValue<String> sourceValue = new SourcedValue<String>();
+                sourceValue.setValue(REF);
+                SourcedDataItem<String, String> item = new SourcedDataItem<String, String>(key, sourceValue);
+                if (test.getTestData() == null) {
                     test.setTestData(new BasicTestData());
                 }
-
-        		SourcedValue<TestDataSource> sourceValue = new SourcedValue<TestDataSource>();
-                sourceValue.setValue(testdata);
-                SourcedDataItem<String, TestDataSource> item = new SourcedDataItem<String, TestDataSource>(key, sourceValue);
                 test.getTestData().put(key, item);
             }
-        }else {
-
-        	if (test.getTestData() == null) {
-                test.setTestData(new BasicTestData());
-            }
-
-        	SourcedDataItem<String, TestDataSource> sourceValue = null;
-
-        	String type = values[0];
-    		String key = values[1];
-    		String value = values[2];
-    		String[] dataValue = StringUtils.substringsBetween(value, "{{", "}}");
-
-    		if(dataValue != null && dataValue.length > 0) {
-    			sourceValue = test.getTestData().getSourcedValue(dataValue[0]);
-    		}
-    		if(sourceValue != null) {
-    			TestDataSource source = sourceValue.getValue().getValue();
-
-            	RequestModifier modifier = null;
-
-        		switch(type.trim().toUpperCase()){
-        		case "QUERY":
-        			modifier = new QueryParamsModifier(key, source);
-        			break;
-        		case "HEADER":
-        			modifier = new HeaderModifier(key, source);
-        			break;
-        		case "PATH":
-        			modifier = new PathModifier(key, source);
-        			break;
-        		case "FORM":
-        			modifier = new FormModifier(key, source);
-        			break;
-        		case "COOKIE":
-        			modifier = new CookieModifier(key, source);
-        			break;
-        		case "BODY":
-        			modifier = new BodyModifier(source);
-        			break;
-        		case "BODYTEMPLATE":
-        			modifier = new BodyTemplateModifier(key, source);
-        		}
-
-        		if (request == null && modifier != null) {
-        			modifers = new ArrayList<>();
-        			modifers.add(modifier);
-        		}else if (request !=null ) {
-        			request.getRequestModifiers().add(modifier);
-        		}
-    		}
         }
-
         Pattern p = Pattern.compile("\\{\\{(.*)\\}\\}");
         String[] parts = cellValue.split("::");
         for (int i = 0; i < parts.length; i++) {
             Matcher m = p.matcher(parts[i]);
             while (m.find()) {
-                SourcedDataItem<String, TestDataSource> value = test.getTestData().getSourcedValue(m.group(1));
+                SourcedDataItem<String, String> value = test.getTestData().getSourcedValue(m.group(1));
                 if (value != null) {
-                	TestDataSource source = value.getValue().getValue();
-                	String key = value.getKey();
-                	if(source instanceof StaticTestDataSource) {
-                		String Value = source.fullfill();
-                        cellValue = cellValue.replace(parts[i], Value);
-                	}/*else {
-                		cellValue = cellValue.replace(parts[i], key);
-                	}*/
-
+                    String Value = value.getValue().getValue();
+                    String key = value.getKey();
+                    cellValue = cellValue.replace(parts[i], Value);
                 }
             }
         }

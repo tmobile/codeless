@@ -12,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestData;
-import com.tmobile.ct.codeless.core.TestDataSource;
 
 public class TestDataProvider implements TestDataReference<String>{
 
@@ -54,35 +53,25 @@ public class TestDataProvider implements TestDataReference<String>{
 			if(!StringUtils.isEmpty(sysEnv)) {
 				return sysEnv;
 			}
-			Map<String, TestDataSource> data = testData.asMap();
+			Map<String, String> data = testData.asMap();
 			// check test data for override value
 			if(data.containsKey(key)) {
-				String overrideValue = data.get(key).fullfill();
+				String overrideValue = data.get(key);
 				if(!StringUtils.isEmpty(overrideValue.trim())) {
 					return overrideValue;
 				}
 			}else {
 				if(test.getConfig() != null && test.getConfig().asMap().containsKey(key)) {
-					String configValue = test.getConfig().get(key).fullfill();
+					String configValue = test.getConfig().get(key);
 					return configValue;
 				}
 			}
 		}else if(td != null) {
-			Map<String, TestDataSource> data = td.asMap();
-			return data.get(key).fullfill();
+			Map<String, String> data = td.asMap();
+			return data.get(key);
 		}
 		return key;
 	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-
 
 
 }

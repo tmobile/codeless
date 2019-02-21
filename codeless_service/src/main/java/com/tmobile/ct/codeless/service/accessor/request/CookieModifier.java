@@ -1,42 +1,49 @@
 package com.tmobile.ct.codeless.service.accessor.request;
 
-import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
+import com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor;
 import com.tmobile.ct.codeless.service.httpclient.Cookie;
-import com.tmobile.ct.codeless.testdata.RequestModifier;
 
 /**
  * The Class CookieModifier.
  *
  * @author Rob Graff
  */
-public class CookieModifier implements RequestModifier<Cookie, HttpRequest>{
+public class CookieModifier implements RequestModifier<Cookie>{
 
 	/** The key. */
 	private String key;
-
-	/** The dataSource to override. */
-	private TestDataSource dataSource;
-
+	
+	/** The response accessor. */
+	private ResponseAccessor responseAccessor;
+	
 	/**
 	 * Instantiates a new cookie modifier.
 	 *
 	 * @param key the key
 	 * @param responseAccessor the response accessor
 	 */
-	public CookieModifier(String key, TestDataSource dataSource){
+	public CookieModifier(String key, ResponseAccessor responseAccessor){
 		this.key = key;
-		this.dataSource = dataSource;
+		this.responseAccessor = responseAccessor;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.service.accessor.request.RequestModifier#modify(com.tmobile.ct.codeless.service.HttpRequest)
 	 */
 	@Override
 	public void modify(HttpRequest request) {
-		Cookie newCookie = new Cookie(key, dataSource.fullfill());
+		Cookie newCookie = new Cookie(key, responseAccessor.getActual());
 		request.getCookies().put(key, newCookie);
-
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.tmobile.ct.codeless.service.accessor.request.RequestModifier#setResponseAccessor(com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor)
+	 */
+	@Override
+	public void setResponseAccessor(ResponseAccessor responseAccessor) {
+		this.responseAccessor = responseAccessor;
 	}
 
 }

@@ -1,27 +1,27 @@
 package com.tmobile.ct.codeless.service.accessor.request;
 
-import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
+import com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor;
 import com.tmobile.ct.codeless.service.httpclient.OperationPath;
-import com.tmobile.ct.codeless.testdata.RequestModifier;
 
 /**
  * The Class OperationPathModifier.
  *
  * @author Rob Graff
  */
-public class OperationPathModifier implements RequestModifier<OperationPath, HttpRequest> {
+public class OperationPathModifier implements RequestModifier<OperationPath> {
 
-	/** The dataSource to override. */
-	private TestDataSource dataSource;
+	/** The response accessor. */
+	private ResponseAccessor responseAccessor;
 
 	/**
 	 * Instantiates a new operation path modifier.
 	 *
 	 * @param responseAccessor the response accessor
 	 */
-	public OperationPathModifier(TestDataSource dataSource){
-		this.dataSource = dataSource;
+	public OperationPathModifier(ResponseAccessor responseAccessor) {
+
+		this.responseAccessor = responseAccessor;
 	}
 
 	/* (non-Javadoc)
@@ -29,7 +29,15 @@ public class OperationPathModifier implements RequestModifier<OperationPath, Htt
 	 */
 	@Override
 	public void modify(HttpRequest request) {
-		request.setOperationPath(new OperationPath(dataSource.fullfill()));
+		request.setOperationPath(new OperationPath(responseAccessor.getActual()));
 
+	}
+
+	/* (non-Javadoc)
+	 * @see com.tmobile.ct.codeless.service.accessor.request.RequestModifier#setResponseAccessor(com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor)
+	 */
+	@Override
+	public void setResponseAccessor(ResponseAccessor responseAccessor) {
+		this.responseAccessor = responseAccessor;
 	}
 }

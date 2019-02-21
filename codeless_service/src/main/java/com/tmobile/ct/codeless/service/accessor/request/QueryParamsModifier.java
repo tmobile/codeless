@@ -1,22 +1,21 @@
 package com.tmobile.ct.codeless.service.accessor.request;
 
-import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
+import com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor;
 import com.tmobile.ct.codeless.service.httpclient.QueryParam;
-import com.tmobile.ct.codeless.testdata.RequestModifier;
 
 /**
  * The Class QueryParamsModifier.
  *
  * @author Rob Graff
  */
-public class QueryParamsModifier implements RequestModifier<QueryParam, HttpRequest> {
+public class QueryParamsModifier implements RequestModifier<QueryParam> {
 
 	/** The key. */
 	private String key;
-
-	/** The dataSource to override. */
-	private TestDataSource dataSource;
+	
+	/** The response accessor. */
+	private ResponseAccessor responseAccessor;
 
 	/**
 	 * Instantiates a new query params modifier.
@@ -24,9 +23,9 @@ public class QueryParamsModifier implements RequestModifier<QueryParam, HttpRequ
 	 * @param key the key
 	 * @param responseAccessor the response accessor
 	 */
-	public QueryParamsModifier(String key, TestDataSource dataSource){
+	public QueryParamsModifier(String key, ResponseAccessor responseAccessor) {
 		this.key = key;
-		this.dataSource = dataSource;
+		this.responseAccessor = responseAccessor;
 	}
 
 	/* (non-Javadoc)
@@ -34,6 +33,14 @@ public class QueryParamsModifier implements RequestModifier<QueryParam, HttpRequ
 	 */
 	@Override
 	public void modify(HttpRequest request) {
-		request.getQueryParams().put(key, new QueryParam(key, dataSource.fullfill()));
+		request.getQueryParams().put(key, new QueryParam(key, responseAccessor.getActual()));
+	}
+
+	/* (non-Javadoc)
+	 * @see com.tmobile.ct.codeless.service.accessor.request.RequestModifier#setResponseAccessor(com.tmobile.ct.codeless.service.accessor.response.ResponseAccessor)
+	 */
+	@Override
+	public void setResponseAccessor(ResponseAccessor responseAccessor) {
+		this.responseAccessor = responseAccessor;
 	}
 }

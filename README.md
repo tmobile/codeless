@@ -13,23 +13,28 @@ Below instructions will get you a copy of the project up and running on your loc
 | Java Runtime Environment (JRE) 1.8.x | java -version | As it is a Java project, Java need to be installed locally.
 | Microsoft Excel |  | ETP Codeless currently support excel based test cases
 
-##### Running sample test
 
-Before using ETP Codeless project you must first clone it to your local machine. you can download the project from github
-with out using any git tool. go to https://github.com/tmobile/codeless to download the ETP Codeless project.
+### Installation and build process
 
-You can also clone the project using your favorite git GUI tool or from the command line with using git command:
-```
+Before using ETP Codeless project you must first clone it to your local machine. 
+You can clone the project using your favorite git GUI tool or from the command line with using git command: 
 git clone https://github.com/tmobile/codeless.git
+
+After getting the project on you local, next step will be to build the project locally. One thing is
+this project comes with is a pre build jar file under <INSTALL_ROOT>/example_usage/bin path. Using that you can run
+a sample spread sheet tests provided located under <INSTALL_ROOT>/example_usage/suites.
+
+##### build
+This section is for a user who would like to change source file to contribute to the ETP codeless community or who like to extend
+the base features of the framework.
+ETP Codeless framework comes with five different components and example_usage folder that has sample test cases and model files.
+
+* To build the project
+Open command line and go to <INSTALL_ROOT> path and execute below maven command for quick build.
 ```
-
-There are example tests included in example_usage/suites/. This tests use PageObject models defined in yaml format and a swagger definations used by service tests located under <INSTALL_ROOT>/model folder respective of the test step.
-
-From the command line change to <INSTALL_ROOT>/example_usage/bin
-Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
-Type run.<os> sampletest.xlsx I.E. run.cmd sampletest.xlsx for Windows and ./run.sh sampletest.xlsx for Mac/Linux
-  
-  * refer wiki for all combinations and permitations of test execution.
+mvn clean install
+```
+After above command runs, it generates a .jar file that has all five components and puts the jar under <INSTALL_ROOT>/example_usage/lib folder.
 
 ### Project Structure
 
@@ -66,6 +71,18 @@ each test suite executed.
 ../test_suite
 ```
 
+## Running the tests
+From the command line change to <INSTALL_ROOT>/bin
+#### Execute Tests
+Example tests are included in example_usage/suites/. These tests use PageObject models defined by yaml and a swagger definations under <INSTALL_ROOT>/model folder respective of the test step.
+
+Make sure you have followed the install and configuration instructions above.
+From the command line change to <INSTALL_ROOT>/bin
+Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
+Type run.<os> sampletest.xlsx I.E. run.cmd sampletest.xlsx for Windows and ./run.sh sampletest.xlsx for Mac/Linux
+  
+  * refer wiki for all combinations and permitations of test execution.
+  
 ##### Execution outputs
 
 * Extent Report: gives report for each test and test steps (request and response values of each service steps).
@@ -93,27 +110,6 @@ Give an example
 
 
 ## Contributing
-
-##### Installation and build process
-
-If you already have the project cloned locally follow below steps, Otherwise go to Getting Started section to get the project
-on you local box.
-
-After getting the project on you local, next step will be to build the project locally. One thing is
-this project comes with is a pre build jar file under <INSTALL_ROOT>/example_usage/bin path. Using that you can run
-a sample spread sheet tests provided located under <INSTALL_ROOT>/example_usage/suites.
-
-##### build
-This section is for a user who would like to change source file to contribute to the ETP codeless community or who like to extend
-the base features of the framework.
-ETP Codeless framework comes with five different components and example_usage folder that has sample test cases and model files.
-
-* To build the project
-Open command line and go to <INSTALL_ROOT> path and execute below maven command for quick build.
-```
-mvn clean install
-```
-After above command runs, it generates a .jar file that has all five components and puts the jar under <INSTALL_ROOT>/example_usage/lib folder.
 
 
 ## Versioning

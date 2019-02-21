@@ -126,7 +126,7 @@ public class ExcelTest implements Test{
 		this.testData = data;
 	}
 
-	/* (non-Javadoc)R
+	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.core.Test#getTestData()
 	 */
 	@Override
@@ -165,8 +165,9 @@ public class ExcelTest implements Test{
 	 */
 	@Override
 	public Step getStepByName(String name) {
-		return stepMap.get(name.toUpperCase());
+		return stepMap.get(name);
 	}
+
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.core.Test#setSuite(com.tmobile.ct.codeless.core.Suite)
 	 */

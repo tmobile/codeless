@@ -9,11 +9,9 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
 import com.tmobile.ct.codeless.core.Config;
-import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
 import com.tmobile.ct.codeless.data.BasicConfig;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
-import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
 
 public class WebDriverFactoryTest {
@@ -48,11 +46,10 @@ public class WebDriverFactoryTest {
 		for(Map.Entry<String, String> entry : excelConfig.entrySet()) {
 			String key = entry.getKey();
 			String keyValue = entry.getValue();
-			StaticTestDataSource staticSource = new StaticTestDataSource(key, keyValue);
-			SourcedValue<TestDataSource> value = new SourcedValue<>();
-			value.setValue(staticSource);
+			SourcedValue<String> value = new SourcedValue<>();
+			value.setValue(keyValue);
 
-			SourcedDataItem<String,TestDataSource> item = new SourcedDataItem<>(key, value);
+			SourcedDataItem<String,String> item = new SourcedDataItem<>(key, value);
 			config.put(key, item);
 		}
 		return config;
@@ -71,11 +68,10 @@ public class WebDriverFactoryTest {
 		for(Map.Entry<String, String> entry : excelConfig.entrySet()) {
 			String key = entry.getKey();
 			String keyValue = entry.getValue();
-			StaticTestDataSource staticSource = new StaticTestDataSource(keyValue,keyValue);
-			SourcedValue<TestDataSource> value = new SourcedValue<>();
-			value.setValue(staticSource);
+			SourcedValue<String> value = new SourcedValue<>();
+			value.setValue(keyValue);
 
-			SourcedDataItem<String,TestDataSource> item = new SourcedDataItem<>(key, value);
+			SourcedDataItem<String,String> item = new SourcedDataItem<>(key, value);
 			config.put(key, item);
 		}
 		return config;

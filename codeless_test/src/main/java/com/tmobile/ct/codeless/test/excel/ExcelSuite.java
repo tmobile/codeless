@@ -13,6 +13,7 @@ import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.data.BasicConfig;
+import com.tmobile.ct.codeless.data.BasicSourcedDataMap;
 
 /**
  * The Class ExcelSuite.
@@ -20,16 +21,16 @@ import com.tmobile.ct.codeless.data.BasicConfig;
  * @author Rob Graff
  */
 public class ExcelSuite implements Suite{
-
+	
 	/** The name. */
 	private String name;
-
+	
 	/** The config. */
 	private Config config;
-
+	
 	/** The tests. */
 	private List<Test> tests;
-
+	
 	/** The test map. */
 	private Map<String, Test> testMap = new HashMap<>();
 
@@ -48,7 +49,7 @@ public class ExcelSuite implements Suite{
 		this.tests = new ArrayList<>();
 		this.id = UUID.randomUUID().toString();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.core.Suite#setName(java.lang.String)
 	 */
@@ -131,13 +132,13 @@ public class ExcelSuite implements Suite{
 	@Override
 	public void setResult(Result result) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void setStatus(Status status) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override

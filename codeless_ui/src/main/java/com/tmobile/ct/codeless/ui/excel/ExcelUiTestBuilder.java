@@ -12,10 +12,10 @@ import org.apache.poi.ss.usermodel.Row;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.ui.assertion.SeleniumMethodType;
 import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
-import com.tmobile.ct.codeless.ui.assertion.UiAssertionMethod;
-import com.tmobile.ct.codeless.ui.assertion.UiSeleniumMethod;
 import com.tmobile.ct.codeless.ui.model.ControlElement;
 import com.tmobile.ct.codeless.ui.model.yaml.YamlReader;
+import com.tmobile.ct.codeless.ui.assertion.UiAssertionMethod;
+import com.tmobile.ct.codeless.ui.assertion.UiSeleniumMethod;
 import com.tmobile.ct.codeless.ui.page.modals.CtUiTestRow;
 
 /**
@@ -149,12 +149,10 @@ public class ExcelUiTestBuilder {
 							seleniumMethod = UiSeleniumMethod.getSeleniumMethod(seleniumMethodName, parameter, type);
 						}
 
-						if(seleniumMethod != null) {
-							Method assertionMethod = UiAssertionMethod.getAssertionMethod(assertionMethodName, expected);
-							UiAssertionBuilder assertion = new UiAssertionBuilder(assertionMethod, expected, seleniumMethod,
-									type, parameter);
-							assertions.add(assertion);
-						}
+						Method assertionMethod = UiAssertionMethod.getAssertionMethod(assertionMethodName, expected);
+						UiAssertionBuilder assertion = new UiAssertionBuilder(assertionMethod, expected, seleniumMethod,
+								type, parameter);
+						assertions.add(assertion);
 
 					} catch (NoSuchMethodException e) {
 						e.printStackTrace();

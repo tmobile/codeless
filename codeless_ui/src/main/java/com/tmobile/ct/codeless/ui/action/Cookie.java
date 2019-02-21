@@ -5,6 +5,7 @@ import java.util.concurrent.Future;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import com.tmobile.selenium.sam.action.factory.ClickFactory;
 import com.tmobile.selenium.sam.action.factory.CookieFactory;
 import com.tmobile.selenium.sam.config.ActionConfig;
 
@@ -17,7 +18,7 @@ public class Cookie extends BaseAction implements UiAction {
 
 	/** The key. */
 	private String key;
-
+	
 	/** The value. */
 	private String value;
 
@@ -41,18 +42,12 @@ public class Cookie extends BaseAction implements UiAction {
 	 */
 	@Override
 	public void run() {
-
+		
 		try{
 			new CookieFactory(getDriver(), config).key(key).value(value).execute();
 		}catch(Exception e){
 			fail(e);
 			throw e;
 		}
-	}
-
-	@Override
-	public void setText(String input) {
-		// TODO Auto-generated method stub
-
 	}
 }

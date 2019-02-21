@@ -1,6 +1,6 @@
 package com.tmobile.ct.codeless.service.accessor.response;
 
-import com.tmobile.ct.codeless.core.Accessor;
+import com.tmobile.ct.codeless.service.HttpResponse;
 import com.tmobile.ct.codeless.service.assertion.ServiceAssertionActualProvider;
 import com.tmobile.ct.codeless.service.core.ServiceCall;
 import com.tmobile.ct.codeless.service.reference.ServiceCallReference;
@@ -13,20 +13,20 @@ import io.restassured.path.json.JsonPath;
  * @author Rob Graff
  * @param <T> the generic type
  */
-public class JsonPathAccessor<T> implements Accessor<T, ServiceCall>, ServiceAssertionActualProvider<T>{
+public class JsonPathAccessor<T> implements ResponseAccessor<T>, ServiceAssertionActualProvider<T>{
 
 	/** The json path. */
 	private String jsonPath;
-
+	
 	/** The type class. */
 	private Class<T> typeClass;
-
+	
 	/** The call ref. */
 	private ServiceCallReference callRef;
-
+	
 	/** The call. */
 	private ServiceCall call;
-
+	
 	/**
 	 * Instantiates a new json path accessor.
 	 *
@@ -39,7 +39,7 @@ public class JsonPathAccessor<T> implements Accessor<T, ServiceCall>, ServiceAss
 		this.typeClass = typeClass;
 		this.callRef = callRef;
 	}
-
+	
 	/**
 	 * Instantiates a new json path accessor.
 	 *
@@ -90,11 +90,6 @@ public class JsonPathAccessor<T> implements Accessor<T, ServiceCall>, ServiceAss
 	@Override
 	public String getActual() {
 		return String.valueOf(getActual(this.callRef.find()));
-	}
-
-	@Override
-	public String value() {
-		return jsonPath;
 	}
 
 }

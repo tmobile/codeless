@@ -1,14 +1,12 @@
 package com.tmobile.ct.codeless.data;
 
+import org.junit.Test;
+import org.junit.Assert;
+
 import java.util.HashMap;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.tmobile.ct.codeless.core.TestData;
-import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
-import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 
 public class BasicTestDataTest {
 	@Test
@@ -22,44 +20,38 @@ public class BasicTestDataTest {
 		TestData data = new BasicTestData();
 		Assert.assertEquals(data, data.getConfig());
 	}
-
+	
 	@Test
 	public void itShouldSetConfig() {
 		TestData data = new BasicTestData();
-		HashMap<String, SourcedDataItem<String,TestDataSource>> config = new HashMap<>();
+		HashMap<String, SourcedDataItem<String,String>> config = new HashMap<>();
 		String key = "Test";
-		String key_value = "This is a Test";
-		StaticTestDataSource staticSource = new StaticTestDataSource(key,key_value);
-		SourcedValue<TestDataSource> value = new SourcedValue<>();
-		value.setValue(staticSource);
-		SourcedDataItem<String,TestDataSource> di = new SourcedDataItem<>(key, value);
+		SourcedValue<String> value = new SourcedValue<>();
+		value.setValue("This is a Test");
+		SourcedDataItem<String,String> di = new SourcedDataItem<>(key, value);
 		config.put(key, di);
 		data.setConfig(config);
-		Assert.assertEquals(key_value, data.get("Test"));
+		Assert.assertEquals("This is a Test", data.get("Test"));
 	}
 
 	@Test
 	public void itShouldPutAndGet() {
 		TestData data = new BasicTestData();
 		String key = "Test";
-		String key_value = "This is a Test";
-		StaticTestDataSource staticSource = new StaticTestDataSource(key,key_value);
-		SourcedValue<TestDataSource> value = new SourcedValue<>();
-		value.setValue(staticSource);
-		SourcedDataItem<String,TestDataSource> di = new SourcedDataItem<>(key, value);
+		SourcedValue<String> value = new SourcedValue<>();
+		value.setValue("This is a Test");
+		SourcedDataItem<String,String> di = new SourcedDataItem<>(key, value);
 		data.put(key, di);
-		Assert.assertEquals("This is a Test", data.get("Test").fullfill());
+		Assert.assertEquals("This is a Test", data.get("Test"));
 	}
 
 	@Test
 	public void itShouldGetSourcedValue() {
 		TestData data = new BasicTestData();
 		String key = "Test";
-		String key_value = "This is a Test";
-		StaticTestDataSource staticSource = new StaticTestDataSource(key, key_value);
-		SourcedValue<TestDataSource> value = new SourcedValue<>();
-		value.setValue(staticSource);
-		SourcedDataItem<String,TestDataSource> di = new SourcedDataItem<>(key, value);
+		SourcedValue<String> value = new SourcedValue<>();
+		value.setValue("This is a Test");
+		SourcedDataItem<String,String> di = new SourcedDataItem<>(key, value);
 		data.put(key, di);
 		Assert.assertEquals(di, data.getSourcedValue("Test"));
 	}

@@ -5,6 +5,7 @@ import java.util.concurrent.Future;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import com.tmobile.selenium.sam.action.factory.ClickFactory;
 import com.tmobile.selenium.sam.action.factory.FrameFactory;
 import com.tmobile.selenium.sam.config.ActionConfig;
 
@@ -31,18 +32,12 @@ public class IFrame extends BaseAction implements UiAction {
 	 */
 	@Override
 	public void run() {
-
+		
 		try{
 			new FrameFactory(getDriver(), config).frame(element).execute();
 		}catch(Exception e){
 			fail(e);
 			throw e;
 		}
-	}
-
-	@Override
-	public void setText(String input) {
-		// TODO Auto-generated method stub
-
 	}
 }

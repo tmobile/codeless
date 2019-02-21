@@ -30,7 +30,7 @@ public class CtSeleniumPageActions extends CtSeleniumElementLocators {
 
 	/** The js. */
 	JavascriptExecutor js = (JavascriptExecutor) this.getDriver();
-
+	
 	/** The test. */
 	private Test test;
 
@@ -40,7 +40,7 @@ public class CtSeleniumPageActions extends CtSeleniumElementLocators {
 	 * @author Rob Graff
 	 */
 	private enum StepStatus{
-
+		
 		/** The pass. */
 		PASS,
 /** The fail. */
@@ -192,7 +192,7 @@ INFO
 	 * @param assertions the assertions
 	 * @param webElement the web element
 	 */
-	public void buildAssertions(List<UiAssertionBuilder> assertions, WebElement webElement) {
+	private void buildAssertions(List<UiAssertionBuilder> assertions, WebElement webElement) {
 		assertions.forEach(assertion -> {
 			Method assertionMethod = assertion.getAssertMethod();
 			Method seleniumMethod = assertion.getSeleniumMethod();

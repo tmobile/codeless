@@ -31,18 +31,12 @@ public class Click extends BaseAction implements UiAction {
 	 */
 	@Override
 	public void run() {
-
+		
 		try{
 			new ClickFactory(getDriver(), config).click(element).execute();
 		}catch(Exception e){
 			fail(e);
 			throw e;
 		}
-	}
-
-	@Override
-	public void setText(String input) {
-		// TODO Auto-generated method stub
-
 	}
 }

@@ -5,7 +5,10 @@ import java.util.concurrent.Future;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import com.tmobile.selenium.sam.action.factory.ClickFactory;
+import com.tmobile.selenium.sam.action.factory.GoFactory;
 import com.tmobile.selenium.sam.action.factory.SelectFactory;
+import com.tmobile.selenium.sam.action.factory.SendFactory;
 import com.tmobile.selenium.sam.config.ActionConfig;
 
 /**
@@ -42,10 +45,5 @@ public class Select extends BaseAction implements UiAction {
 			fail(e);
 			throw e;
 		}
-	}
-
-	@Override
-	public void setText(String input) {
-		this.text = text;
 	}
 }

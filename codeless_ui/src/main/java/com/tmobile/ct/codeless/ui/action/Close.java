@@ -29,9 +29,4 @@ public class Close extends BaseAction implements UiAction {
 		}
 	}
 
-	@Override
-	public void setText(String input) {
-		// TODO Auto-generated method stub
-	}
-
 }

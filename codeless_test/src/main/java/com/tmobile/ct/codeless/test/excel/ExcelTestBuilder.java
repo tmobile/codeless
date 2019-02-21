@@ -10,12 +10,10 @@ import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestBuilder;
 import com.tmobile.ct.codeless.core.TestData;
-import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
 import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.service.test.excel.ExcelServiceCallBuilder;
-import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 import com.tmobile.ct.codeless.ui.excel.ExcelUiStepBuilder;
 
 /**
@@ -100,12 +98,10 @@ public class ExcelTestBuilder implements TestBuilder{
 				String[] parts = cellvalue.split("::");
 				String key = parts[0];
 				String value = parts[1];
-				StaticTestDataSource staticSource = new StaticTestDataSource(key, value);
-				SourcedValue<TestDataSource> sourcedValue = new SourcedValue<TestDataSource>();
-				sourcedValue.setValue(staticSource);
+				SourcedValue<String> sourcedValue = new SourcedValue<String>();
+				sourcedValue.setValue(value);
 				sourcedValue.setSource("Test-Specific-Config");
-				SourcedDataItem<String,TestDataSource> item = new SourcedDataItem<>(key, sourcedValue);
-				test.getConfig().put(key, item);
+				test.getConfig().put(parts[0], new SourcedDataItem<String,String>(key, sourcedValue));
 			}
 		}
 	}

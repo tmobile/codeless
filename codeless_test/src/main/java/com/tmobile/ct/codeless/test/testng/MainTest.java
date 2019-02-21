@@ -1,14 +1,24 @@
 package com.tmobile.ct.codeless.test.testng;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import org.testng.TestNG;
+import org.testng.xml.XmlClass;
+import org.testng.xml.XmlSuite;
+import org.testng.xml.XmlTest;
 
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.ct.codeless.core.Execution;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.test.ExecutionContainer;
 import com.tmobile.ct.codeless.test.excel.ExcelSuiteBuilder;
+import com.tmobile.ct.codeless.test.excel.SuiteContainer;
 
 /**
  * The Class MainTest.
@@ -29,9 +39,9 @@ public class MainTest {
 		// create the execution container
 		Execution execution = new TestngExecution();
 		ExecutionContainer.setExecution(execution);
-
+		
 		// build test suite
-		String suitePath = Optional.ofNullable(System.getProperty("SUITE.FILE")).orElse("suites/sampletest.xlsx");
+		String suitePath = Optional.ofNullable(System.getProperty("SUITE.FILE")).orElse("suites/test_google.xlsx");
 
 		Suite suite = new ExcelSuiteBuilder().build(suitePath);
 
