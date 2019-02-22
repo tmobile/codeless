@@ -21,10 +21,10 @@ public class TestStepReporter {
 		try{
 			if (step instanceof ServiceCall) {
 				logServiceStepResult(step);
-	
+
 			} else {
 				logUiStepResult(step);
-	
+
 			}
 		}catch(Exception e){
 			System.err.println("TestStepReporter Failure");
@@ -35,7 +35,7 @@ public class TestStepReporter {
 	private static void logServiceStepResult(Step step) {
 
 		if (step.getTest().getConfig().asMap().containsKey("logging.details.enabled")
-				&& step.getTest().getConfig().get("logging.details.enabled").equalsIgnoreCase("TRUE")) {
+				&& step.getTest().getConfig().get("logging.details.enabled").fullfill().equalsIgnoreCase("TRUE")) {
 
 			ServiceCallDTO serviceCall = ServiceLogFilter.filter((ServiceCall) step);
 			ExtentTestManager.getTest().log(logStepResult(step), step.getName(), getDOMResult(serviceCall));

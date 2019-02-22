@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import com.tmobile.ct.codeless.core.TestData;
+import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
 import com.tmobile.ct.codeless.data.BasicTestData;
@@ -19,12 +20,13 @@ public class TestDataProviderTest {
 		TestData testData = new BasicTestData();
 		String key = "host";
 		String key_value = "https://google.com";
-		SourcedValue<String> value = new SourcedValue<>();
+		StaticTestDataSource staticSource = new StaticTestDataSource(key,key_value);
+		SourcedValue<TestDataSource> value = new SourcedValue<>();
 		value.setSource("SHEET_DATA");
 		value.setSourceClass(null);
-		value.setValue(key_value);
+		value.setValue(staticSource);
 
-		SourcedDataItem<String,String> item = new SourcedDataItem<>(key, value);
+		SourcedDataItem<String,TestDataSource> item = new SourcedDataItem<>(key, value);
 		testData.put(key, item);
 		TestDataInput testInput = mockDataProvider(key, testData);
 

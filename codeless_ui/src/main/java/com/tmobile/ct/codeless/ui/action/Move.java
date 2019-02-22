@@ -24,4 +24,10 @@ public class Move extends BaseAction implements UiAction {
 			throw e;
 		}
 	}
+
+	@Override
+	public void setText(String input) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -1,0 +1,6 @@
+searchbar:
+  by: "className"
+  locator: "b_searchbox"
+searchbutton:
+  by: "className"
+  locator: "b_searchboxSubmit"

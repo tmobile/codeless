@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tmobile.ct.codeless.service.accessor.request.RequestModifier;
 import com.tmobile.ct.codeless.service.httpclient.Authentication;
 import com.tmobile.ct.codeless.service.httpclient.Body;
 import com.tmobile.ct.codeless.service.httpclient.Cookies;
@@ -19,6 +18,7 @@ import com.tmobile.ct.codeless.service.httpclient.OperationPath;
 import com.tmobile.ct.codeless.service.httpclient.PathParams;
 import com.tmobile.ct.codeless.service.httpclient.QueryParams;
 import com.tmobile.ct.codeless.service.httpclient.ServicePath;
+import com.tmobile.ct.codeless.testdata.RequestModifier;
 
 /**
  * The Class HttpRequestImpl.
@@ -30,49 +30,49 @@ public class HttpRequestImpl<T> implements HttpRequest<T>, Serializable{
 
 	/** The headers. */
 	private Headers headers;
-	
+
 	/** The query params. */
 	private QueryParams queryParams;
-	
+
 	/** The path params. */
 	private PathParams pathParams;
-	
+
 	/** The cookies. */
 	private Cookies cookies;
-	
+
 	/** The multi parts. */
 	private MultiParts multiParts;
-	
+
 	/** The forms. */
 	private Forms forms;
-	
+
 	/** The body. */
 	private Body<T> body;
-	
+
 	/** The auth. */
 	private Authentication auth;
-	
+
 	/** The http method. */
 	private HttpMethod httpMethod;
-	
+
 	/** The protocal. */
 	private HttpProtocal protocal;
-	
+
 	/** The host. */
 	private Host host;
-	
+
 	/** The port. */
 	private Integer port;
-	
+
 	/** The service path. */
 	private ServicePath servicePath;
-	
+
 	/** The operation path. */
 	private OperationPath operationPath;
-	
+
 	/** The endpoint. */
 	private Endpoint endpoint;
-	
+
 	/** The request modifiers. */
 	private List<RequestModifier> requestModifiers = new ArrayList<>();
 
@@ -155,7 +155,7 @@ public class HttpRequestImpl<T> implements HttpRequest<T>, Serializable{
 	public void setHost(Host host) {
 		this.host = host;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.service.HttpRequest#setPort(java.lang.Integer)
 	 */
@@ -267,7 +267,7 @@ public class HttpRequestImpl<T> implements HttpRequest<T>, Serializable{
 	public Host getHost() {
 		return host;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.service.HttpRequest#getPort()
 	 */
@@ -299,7 +299,7 @@ public class HttpRequestImpl<T> implements HttpRequest<T>, Serializable{
 	public Endpoint getEndpoint() {
 		return endpoint;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.service.HttpRequest#setProtocal(com.tmobile.ct.codeless.service.httpclient.HttpProtocal)
 	 */
