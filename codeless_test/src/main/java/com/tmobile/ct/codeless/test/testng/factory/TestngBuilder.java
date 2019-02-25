@@ -35,9 +35,6 @@ public class TestngBuilder {
 		xmlSuite.addTest(xmlTest);
 		//params.put("codeless.suite.id", suiteId);    //not needed? this param is always null.  suiteId is set later in execution through testng
 		xmlSuite.setParameters(params);
-		System.out.println("check parameters:" +xmlSuite.getParameters());
-		System.out.println("check all parameters:" +xmlSuite.getAllParameters());
-		
 		addSuite(xmlSuite);
 		
 		return this;
