@@ -128,7 +128,7 @@ public class ExcelUiStepBuilder {
 					String parameter = "";
 					String expected = "";
 
-					if(originalParts.length < 2) return;
+					if(originalParts.length <= 2) return;
 
 					SeleniumMethodType type = SeleniumMethodType.valueOf(originalParts[1]);
 
