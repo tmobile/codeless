@@ -47,6 +47,8 @@ public class RestAssuredRequestBuilder {
 	 * @return the request specification
 	 */
 	public static RequestSpecification build(HttpRequest request){
+		if(request == null) return null;
+
 		RequestSpecBuilder reqSpecBuilder = new RequestSpecBuilder();
 
 		//inject http protocal into host
@@ -64,7 +66,6 @@ public class RestAssuredRequestBuilder {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-
 
 		Optional.ofNullable(request.getHeaders()).map(RestAssuredRequestBuilder::mapHeaders).ifPresent(reqSpecBuilder::addHeaders);
 		Optional.ofNullable(request.getQueryParams()).map(RestAssuredRequestBuilder::mapQueryParams).ifPresent(reqSpecBuilder::addQueryParams);

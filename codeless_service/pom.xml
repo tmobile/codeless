@@ -8,6 +8,14 @@
   <artifactId>codeless_service</artifactId>
   <groupId>com.tmobile.ct.codeless.service</groupId>
   
+  <repositories>
+        <repository>
+            <id>smartbear</id>
+            <name>smartbear repository</name>
+            <url>http://smartbearsoftware.com/repository/maven2</url>
+        </repository>
+    </repositories>
+  
   <dependencies>
 		<dependency>
    			<groupId>com.tmobile.ct.codeless.core</groupId>
@@ -22,6 +30,18 @@
 		    <version>2.19.0</version>
 		    <scope>test</scope>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.unitils.soapui</groupId>
+            <artifactId>unitils-soapui</artifactId>
+            <version>1.0.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javafx</groupId>
+                    <artifactId>jfxrt</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 	</dependencies>
 	
 	<build>

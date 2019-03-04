@@ -74,6 +74,7 @@ public class RestAssuredHttpClient implements HttpClient{
 	 */
 	@Override
 	public void invokeRequestModifiers() {
+		if(request == null) return;
 		List<RequestModifier> modifiers = request.getRequestModifiers();
 		modifiers.forEach(modifier -> modifier.modify(request));
 
@@ -94,11 +95,30 @@ public class RestAssuredHttpClient implements HttpClient{
 	 * @return the response
 	 */
 	private Response chooseMethod(){
+
 		Response response = null;
-		String target = RestAssuredRequestBuilder.mapOperationPath(request.getOperationPath());
+		String target = "";
+		if(request.getOperationPath() != null) {
+			target = RestAssuredRequestBuilder.mapOperationPath(request.getOperationPath());
+		}
 		switch (request.getHttpMethod()){
 		case POST:
-			response = RestAssured.given(reqSpec).post(target);//reqSpec.post(target);
+			/*RestAssured rest = new RestAssured();
+			rest.useRelaxedHTTPSValidation();
+			HashMap<String,String> headermap = new HashMap<String,String>();
+			headermap.put("Content-Type", "text/xml");
+			headermap.put("SOAPAction", "\"activateSubscriber\"");
+			response = rest.
+			given().
+			headers(headermap).body(body).
+			post("https://bw.apix.plab.internal.t-mobile.com:443/service/soap/v2/CustomerManagement/ProvisionService");//reqSpec.post(target);
+			String respBoby = response.body().asString();
+			System.out.println("SOAP Response: " + respBoby);*/
+
+			RestAssured rest = new RestAssured();
+			rest.useRelaxedHTTPSValidation();
+			response = rest.given(reqSpec).post(target);
+			String respBoby = response.body().asString();
 			break;
 		case PUT:
 			response = RestAssured.given(reqSpec).put(target);//reqSpec.put(target);

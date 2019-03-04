@@ -28,6 +28,7 @@ import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
 import com.tmobile.ct.codeless.core.datastructure.SuiteHeaders;
+import com.tmobile.ct.codeless.core.util.ResourceLocator;
 import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.files.ClassPathUtil;
@@ -53,6 +54,7 @@ import com.tmobile.ct.codeless.service.httpclient.Body;
 import com.tmobile.ct.codeless.service.httpclient.Cookie;
 import com.tmobile.ct.codeless.service.httpclient.Form;
 import com.tmobile.ct.codeless.service.httpclient.Header;
+import com.tmobile.ct.codeless.service.httpclient.Headers;
 import com.tmobile.ct.codeless.service.httpclient.Host;
 import com.tmobile.ct.codeless.service.httpclient.HttpMethod;
 import com.tmobile.ct.codeless.service.httpclient.HttpProtocal;
@@ -199,25 +201,81 @@ public class ExcelServiceCallBuilder {
 			return null;
 		}
 
-		Service service = ServiceCache.getService(testRow.service);
-		Operation operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
-//		HttpRequest request = SerializationUtils.clone((HttpRequestImpl) operation.getRequest());
-
-		if(operation == null){
-			System.err.println("NO OPERTAION FOUND FOR INPUT["+testRow.operation+"]");
-			return null;
-		}
-
+		Operation operation = null;
 		request = null;
-		try {
-			request = mapper.readValue(mapper.writeValueAsBytes(operation.getRequest()),HttpRequestImpl.class);
-			if(modifers != null) {
-				request.setRequestModifiers(modifers);
+
+		if(!ClassPathUtil.exists(CodelessConfiguration.getModelDir() + File.separator + testRow.service + File.separator)) {
+
+			Service service = ServiceCache.getService(testRow.service);
+			operation = (service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation) == null) ? service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation.substring(1, testRow.operation.length())) :
+			service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
+			//HttpRequest request = SerializationUtils.clone((HttpRequestImpl) operation.getRequest());
+
+			if(operation == null){
+				System.err.println("NO OPERTAION FOUND FOR INPUT["+testRow.operation+"]");
+				return null;
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			try {
+				request = mapper.readValue(mapper.writeValueAsBytes(operation.getRequest()),HttpRequestImpl.class);
+				if(modifers != null) {
+					request.setRequestModifiers(modifers);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}else {
+			String[] operations = testRow.operation.split("/");
+			String soapAction = operations[1];
+			String hostKey = StringUtils.substringBetween(operations[2], "{{", "}}");
+			String soapBody = "";
+
+			if(StringUtils.isEmpty(soapAction) || StringUtils.isEmpty(hostKey)) {
+				System.err.println("Host or service request action is empty. CHeck Target column value for you test step");
+			}
+
+			TestDataSource data = test.getTestData().asMap().get(hostKey);
+			String host = data.fullfill();
+
+			if(StringUtils.isEmpty(host)) {
+				System.err.println("Please provide host in you test data sheet for host key " + hostKey);
+			}
+
+			// check for request body presence
+			String requestBody = testRow.testData.get(0) + ".txt";
+			if(StringUtils.isEmpty(requestBody)) {
+				System.err.println("Please provide request body for you service call step in Overrides column");
+			}
+
+			request = new HttpRequestImpl<>();
+			Headers headers = new Headers();
+			Header header = new Header("Content-Type", "text/xml");
+			Header header2 = new Header("SOAPAction", "\"" + soapAction + "\"");
+			headers.put("Content-Type", header);
+			headers.put("SOAPAction", header2);
+			request.setHeaders(headers);
+
+			//String name = "activateRequest.txt";
+			String bathPath = CodelessConfiguration.getModelDir() + File.separator + "dsg" + File.separator + requestBody;
+			String path = path(bathPath);
+			String requestFile = null;
+			try {
+				requestFile = ResourceLocator.getRequestFromFile(path);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			soapBody = requestFile;
+			Body<String> newBody = new Body<String>();
+			newBody.setBody(soapBody);
+			request.setBody(newBody);
+			request.setHost(new Host(host));
+			request.setHttpMethod(HttpMethod.POST);
+
 		}
+
 
 		if(StringUtils.isNotBlank(testRow.bodyTemplate)){
 			setBodyFromTempate(testRow.bodyTemplate);
@@ -226,7 +284,6 @@ public class ExcelServiceCallBuilder {
 		call = new Call(new RestAssuredHttpClient(), request, 0);
 
 		testRow.testData.forEach(this::parseTestData);
-		setDefaultEndpoint();
 
 		if(request.getBody() != null && request.getBody().getBody() != null && request.getBody().getBody().indexOf("{{") > 0 && request.getBody().getBody().indexOf("}}") > 0 ){
 			setBodyFromEnv(operation);
@@ -531,6 +588,7 @@ private void parseTestData(String excelData){
 			System.err.println("ExcelParser: Test Data cell has parts > 9, "+parts);
 			return;
 		}
+		if(parts.length < 2) return;
 
 		String type = parts[0];
 		String key = parts[1];
@@ -620,88 +678,6 @@ private void parseTestData(String excelData){
 	}
 
 	/**
-	 * Parses the ref value.
-	 *
-	 * @param excelData the excel data
-	 * @return the string
-	 */
-	/*private String parseRefValue(String excelData) {
-
-		String[] excelparts = excelData.trim().split("::");
-
-		String type = excelparts[0];
-		String key = excelparts[1];
-		String value = excelparts[2];
-
-		//assert::query-response::account_status::isEqualTo::$REF~SELF~get balance~jsonpath~account_status
-
-		if(StringUtils.isBlank(value)){
-			return value;
-		}
-
-		if(!value.startsWith("$REF~")){
-			return value;
-		}
-
-		String[] parts = value.trim().split("~");
-		String locator = parts[1].toUpperCase();
-		String callName = parts[2].toUpperCase();
-		String responsePart = parts[3];
-		String responseKey = parts[4];
-
-		ServiceCallReference callRef;
-		if(locator.equalsIgnoreCase("SELF")){
-			callRef = new CallRefByTest(test, callName);
-		}else{
-			callRef = new CallRefBySuite(test.getSuite(),locator, callName);
-		}
-
-		ResponseAccessor accessor = null;
-		switch(responsePart.trim().toUpperCase()){
-		case "HEADER":
-			accessor = new HeaderAccessor(callRef, responseKey);
-			break;
-		case "BODYSTRING":
-			accessor = new BodyStringAccessor(callRef);
-			break;
-		case "JSONPATH":
-			accessor = new JsonPathAccessor(callRef, responseKey, String.class);
-			break;
-		case "XMLPATH":
-			accessor = new XmlPathAccessor(callRef, responseKey, String.class);
-			break;
-		}
-
-
-		RequestModifier modifier = null;
-		switch(type.trim().toUpperCase()){
-		case "QUERY":
-			modifier = new QueryParamsModifier(key, accessor);
-			break;
-		case "HEADER":
-			modifier = new HeaderModifier(key, accessor);
-			break;
-		case "PATH":
-			modifier = new PathModifier(key, accessor);
-			break;
-		case "FORM":
-			modifier = new FormModifier(key, accessor);
-			break;
-		case "COOKIE":
-			modifier = new CookieModifier(key, accessor);
-			break;
-		case "BODY":
-			modifier = new BodyModifier(accessor);
-			break;
-		case "BODYTEMPLATE":
-			modifier = new BodyTemplateModifier(key, accessor);
-		}
-
-		request.getRequestModifiers().add(modifier);
-		return value;
-	}*/
-
-	/**
 	 * Parses the assertion.
 	 *
 	 * @param parts the parts
@@ -712,9 +688,9 @@ private void parseTestData(String excelData){
 		//cant have .toUpperCase() applied to method name, breaks reflection call later on
 		String[] originalParts = excelData.trim().split("::");
 
-		String type = parts[1];
-		String method = originalParts[2];
-		String expected = originalParts[3];
+		String type = parts[1]; //statusCode
+		String method = originalParts[2]; // isEqualTo
+		String expected = originalParts[3]; // 200
 		String key = "";
 		if(parts.length == 5){
 			key = originalParts[2];
@@ -856,6 +832,10 @@ private void parseTestData(String excelData){
             }
         }else {
 
+        	if(values.length < 3 && values[0] != null) {
+        		 return values[0];
+        	}
+
         	if (test.getTestData() == null) {
                 test.setTestData(new BasicTestData());
             }
@@ -869,6 +849,8 @@ private void parseTestData(String excelData){
 
     		if(dataValue != null && dataValue.length > 0) {
     			sourceValue = test.getTestData().getSourcedValue(dataValue[0]);
+    		}else {
+    			return cellValue;
     		}
     		if(sourceValue != null) {
     			TestDataSource source = sourceValue.getValue().getValue();
@@ -929,5 +911,9 @@ private void parseTestData(String excelData){
         return cellValue;
 
     }
+
+	private String path(String file){
+		return ClassPathUtil.getAbsolutePath(file);
+	}
 
 }
