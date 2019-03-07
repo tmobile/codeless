@@ -115,15 +115,15 @@ mvn clean install
 ```
 After above command runs, it generates a .jar file that has all five components and puts the jar under <INSTALL_ROOT>/example_usage/lib folder.
 
-
 ## Versioning
-
 
 ## Authors
 
-
 ## License
+Pat to help to put the blurb
 
+## Notice
+Pat to populate the "disclaimer"
 
 ## Acknowledgments
 
