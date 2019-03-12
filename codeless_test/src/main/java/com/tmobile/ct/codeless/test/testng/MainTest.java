@@ -35,11 +35,11 @@ public class MainTest {
 		Suite suite = null;
 		String suitePath = Optional.ofNullable(System.getProperty("SUITE.FILE")).orElse("suites/sampletest.xlsx");
 		
-		if(System.getProperty("SUITE.FILE") != null) {
+		if (System.getProperty("SUITE.FILE") != null) {
 			suite = new ExcelSuiteBuilder().build(suitePath);
-		}else {
+		} else {
 			suitePath = Optional.ofNullable(System.getProperty("SUITE.DIR")).orElse("suites/ardcsv");
-		    suite = new CsvSuiteBuilder().build(suitePath);
+			suite = new CsvSuiteBuilder().build(suitePath);
 		}
 
 		if (suite == null || suite.getTests() == null || suite.getTests().size() == 0) {
@@ -73,8 +73,7 @@ public class MainTest {
 			String[] parts = arg.trim().split("=");
 			if (parts[0].equalsIgnoreCase("-SUITE")) {
 				String fileName = parts[1].trim();
-				if (fileName.contains(".")) {
-					// .xlsx
+				if (fileName.contains(".")) { // .xlsx
 					System.setProperty("SUITE.FILE", CodelessConfiguration.getSuiteDir() + "/" + parts[1].trim());
 				} else {
 					System.setProperty("SUITE.DIR", CodelessConfiguration.getSuiteDir() + "/" + parts[1].trim());

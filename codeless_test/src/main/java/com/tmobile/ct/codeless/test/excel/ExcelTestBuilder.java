@@ -138,17 +138,17 @@ public class ExcelTestBuilder implements TestBuilder{
 	
 	private Step buildServiceStep(Test test, Row row) {
 
-		ServiceStepBuilder serviceCallBuilder = new ServiceStepBuilder();
+		ServiceStepBuilder serviceStepBuilder = new ServiceStepBuilder();
 		ServiceCallInput input = new ServiceCallInput();
 
 		for (Cell cell : row) {
 			String header = formatter.formatCellValue(cell.getSheet().getRow(0).getCell(cell.getColumnIndex())).trim()
 					.toUpperCase();
 			String value = formatter.formatCellValue(cell);
-			serviceCallBuilder.buildServiceStep(header, value, input, test);
+			serviceStepBuilder.buildServiceStep(header, value, input, test);
 		}
 
-		return serviceCallBuilder.build(test, input);
+		return serviceStepBuilder.build(test, input);
 	}
 
 	public Step buildUiStep(Test test, Row row) {

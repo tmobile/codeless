@@ -11,6 +11,11 @@ import com.tmobile.ct.codeless.data.BasicConfig;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 
+/**
+ * The Class CsvConfig.
+ *
+ * @author Sai Chandra Korpu
+ */
 public class CsvConfig {
 
 	public static Config getCSVProperties() {

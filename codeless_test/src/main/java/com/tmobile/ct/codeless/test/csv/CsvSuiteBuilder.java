@@ -15,6 +15,11 @@ import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.files.ClassPathUtil;
 import com.tmobile.ct.codeless.test.suite.CodelessTestSuite;
 
+/**
+ * The Class CsvSuiteBuilder.
+ *
+ * @author Sai Chandra Korpu
+ */
 public class CsvSuiteBuilder implements SuiteBuilder {
 
 	private Suite suite;
