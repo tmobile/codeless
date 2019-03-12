@@ -19,16 +19,16 @@ import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.accessor.response.JsonPathAccessor;
 import com.tmobile.ct.codeless.service.httpclient.HttpMethod;
 import com.tmobile.ct.codeless.service.restassured.RestAssuredHttpClient;
-import com.tmobile.ct.codeless.service.test.excel.ExcelServiceCallBuilder;
-import com.tmobile.ct.codeless.service.test.excel.ServiceCallInput;
-import com.tmobile.ct.codeless.test.excel.ExcelTest;
+import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
+import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
+import com.tmobile.ct.codeless.test.suite.CodelessTest;
 import com.tmobile.ct.codeless.testdata.RuntimeTestDataSource;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 
 public class DataSourceTest extends BaseWiremockTest{
 
 	private com.tmobile.ct.codeless.core.Test test2;
-	ExcelTest test = new ExcelTest();
+	CodelessTest test = new CodelessTest();
 
 
 	@Test
@@ -70,7 +70,7 @@ public class DataSourceTest extends BaseWiremockTest{
 		String export_step = "export::empId::JSONPATH::id";
 		input.add(SuiteHeaders.TESTNAME.name(),  new MultiValue<String,String>(SuiteHeaders.TESTNAME.name(), export_step));
 
-		String input_value = new ExcelServiceCallBuilder().parseExport(export_step, test, input);
+		String input_value = new ServiceStepBuilder().parseExport(export_step, test, input);
 
 		input.add(SuiteHeaders.TESTNAME.name(),  new MultiValue<String,String>(SuiteHeaders.TESTNAME.name(), input_value));
 

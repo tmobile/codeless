@@ -1,4 +1,4 @@
-package com.tmobile.ct.codeless.service.test.excel;
+package com.tmobile.ct.codeless.service.test.build;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,16 +12,11 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Row;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tmobile.ct.codeless.assertion.AssertJAssertionBuilder;
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.ct.codeless.core.Accessor;
 import com.tmobile.ct.codeless.core.Assertion;
-import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.core.TestDataSource;
@@ -76,16 +71,13 @@ import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
  *
  * @author Rob Graff
  */
-public class ExcelServiceCallBuilder {
-
-	/** The formatter. */
-	private DataFormatter formatter = new DataFormatter();
+public class ServiceStepBuilder {
 
 	/** The mapper. */
 	private ObjectMapper mapper = new ObjectMapper();
 
 	/** The test row. */
-	private ExcelTestRow testRow;
+	private ServiceTestStep testRow;
 
 	/** The data. */
 	TestData data = new BasicTestData();
@@ -106,51 +98,41 @@ public class ExcelServiceCallBuilder {
 	private Test test;
 
 	/** The Constant SWAGGER_YAML. */
-	private static final String SWAGGER_YAML = "swagger.yaml";
-
-	/**
-	 * Builds the hybrid.
-	 *
-	 * @param test the test
-	 * @param row the row
-	 * @return the step
-	 */
-	public Step buildHybrid(Test test, Row row) {
-		ServiceCallInput input = new ServiceCallInput();
-
-		for(Cell cell : row){
-			String header = formatter.formatCellValue(cell.getSheet().getRow(0).getCell(cell.getColumnIndex())).trim().toUpperCase();
-			String value = formatter.formatCellValue(cell);
-			switch(header){
-			case "TARGET":
-				String[] parts = value.split("\\.");
-				input.add(SuiteHeaders.SERVICE.name(), new MultiValue<String,String>(SuiteHeaders.SERVICE.name(), parts[0]));
-				String operation = "";
-				for(int i =1; i<parts.length; i++){
-					operation = operation + parts[i] + "/";
-				}
-				operation = "/"+operation.substring(0, operation.length()-1);
-				input.add(SuiteHeaders.OPERATION.name(),  new MultiValue<String,String>(SuiteHeaders.OPERATION.name(), operation));
-				break;
-			case "INPUT":
-				input.add(SuiteHeaders.METHOD.name(),  new MultiValue<String,String>(SuiteHeaders.METHOD.name(), value));
-				break;
-			case "STEP":
-				input.add(SuiteHeaders.TESTNAME.name(),  new MultiValue<String,String>(SuiteHeaders.TESTNAME.name(), value));
-				break;
-			case "ACTION":
-				// do nothing
-				break;
-			default:
-				if(StringUtils.isNotBlank(value)){
-					value = parseExport(value, test, input);
-					input.add(SuiteHeaders.TESTDATA.name(),  new MultiValue<String,String>(SuiteHeaders.TESTDATA.name(), value));
-				}
+	private static final String SWAGGER_YAML = "swagger.yaml";	
+	
+	public void buildServiceStep(String header, String value, ServiceCallInput input, Test test) {
+		
+		switch (header.toUpperCase()) {
+		case "TARGET":
+			String[] parts = value.split("\\.");
+			input.add(SuiteHeaders.SERVICE.name(),
+					new MultiValue<String, String>(SuiteHeaders.SERVICE.name(), parts[0]));
+			String operation = "";
+			for (int i = 1; i < parts.length; i++) {
+				operation = operation + parts[i] + "/";
 			}
-
+			operation = "/" + operation.substring(0, operation.length() - 1);
+			input.add(SuiteHeaders.OPERATION.name(),
+					new MultiValue<String, String>(SuiteHeaders.OPERATION.name(), operation));
+			break;
+		case "INPUT":
+			input.add(SuiteHeaders.METHOD.name(), new MultiValue<String, String>(SuiteHeaders.METHOD.name(), value));
+			break;
+		case "STEP":
+			input.add(SuiteHeaders.TESTNAME.name(),
+					new MultiValue<String, String>(SuiteHeaders.TESTNAME.name(), value));
+			break;
+		case "ACTION":
+			// do nothing
+			break;
+		default:
+			if (StringUtils.isNotBlank(value)) {
+				value = parseExport(value, test, input);
+				input.add(SuiteHeaders.TESTDATA.name(),
+						new MultiValue<String, String>(SuiteHeaders.TESTDATA.name(), value));
+			}
 		}
 
-		return build(test, input);
 	}
 
 	/**
@@ -162,7 +144,7 @@ public class ExcelServiceCallBuilder {
 	 */
 	public Call build(Test test, ServiceCallInput input){
 		this.test = test;
-		testRow = new ExcelTestRow();
+		testRow = new ServiceTestStep();
 		input.stream().forEach(item ->{
 			SuiteHeaders header = SuiteHeaders.parse(item.getKey());
 			for(String value : item.getValue().getValues()){
@@ -201,7 +183,6 @@ public class ExcelServiceCallBuilder {
 
 		Service service = ServiceCache.getService(testRow.service);
 		Operation operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
-//		HttpRequest request = SerializationUtils.clone((HttpRequestImpl) operation.getRequest());
 
 		if(operation == null){
 			System.err.println("NO OPERTAION FOUND FOR INPUT["+testRow.operation+"]");
@@ -215,7 +196,7 @@ public class ExcelServiceCallBuilder {
 				request.setRequestModifiers(modifers);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 
@@ -496,23 +477,12 @@ public class ExcelServiceCallBuilder {
 		try {
 			return FileUtils.readFileToString(file);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 			return null;
 		}
 
 	}
-
-//	private TestData captureTestData(String value){
-//		SourcedValue<ExcelTestData, String> value = new SourcedValue<>();
-//		value.setSource(ExcelTestData.class.getName());
-//		value.setSourceClass(ExcelTestData.class);
-//		value.setValue(formatter.formatCellValue(cell));
-//
-//		String key = formatter.formatCellValue(row.getCell(0));
-//		SourcedDataItem<String> item = new SourcedDataItem<>(key, value);
-//		data.put(key, item);
-//	}
 
 	/**
  * Parses the test data.
@@ -535,8 +505,6 @@ private void parseTestData(String excelData){
 		String type = parts[0];
 		String key = parts[1];
 		String value = parts[2];
-
-		//value = parseRefValue(excelData);
 
 		if(StringUtils.isBlank(type)){
 			return;
@@ -585,7 +553,6 @@ private void parseTestData(String excelData){
 			Accessor accessor = new StaticAccessor(parts[2]);
 			TestDataSource testdata = new StaticTestDataSource(parts[1], parts[2]);
 			RequestModifier modifier = new BodyTemplateModifier(parts[1], testdata);
-			//request.getRequestModifiers().add(modifier);
 			if(modifers == null) {
 				modifers = new ArrayList<>();
 				modifers.add(modifier);
@@ -618,88 +585,6 @@ private void parseTestData(String excelData){
 			break;
 		}
 	}
-
-	/**
-	 * Parses the ref value.
-	 *
-	 * @param excelData the excel data
-	 * @return the string
-	 */
-	/*private String parseRefValue(String excelData) {
-
-		String[] excelparts = excelData.trim().split("::");
-
-		String type = excelparts[0];
-		String key = excelparts[1];
-		String value = excelparts[2];
-
-		//assert::query-response::account_status::isEqualTo::$REF~SELF~get balance~jsonpath~account_status
-
-		if(StringUtils.isBlank(value)){
-			return value;
-		}
-
-		if(!value.startsWith("$REF~")){
-			return value;
-		}
-
-		String[] parts = value.trim().split("~");
-		String locator = parts[1].toUpperCase();
-		String callName = parts[2].toUpperCase();
-		String responsePart = parts[3];
-		String responseKey = parts[4];
-
-		ServiceCallReference callRef;
-		if(locator.equalsIgnoreCase("SELF")){
-			callRef = new CallRefByTest(test, callName);
-		}else{
-			callRef = new CallRefBySuite(test.getSuite(),locator, callName);
-		}
-
-		ResponseAccessor accessor = null;
-		switch(responsePart.trim().toUpperCase()){
-		case "HEADER":
-			accessor = new HeaderAccessor(callRef, responseKey);
-			break;
-		case "BODYSTRING":
-			accessor = new BodyStringAccessor(callRef);
-			break;
-		case "JSONPATH":
-			accessor = new JsonPathAccessor(callRef, responseKey, String.class);
-			break;
-		case "XMLPATH":
-			accessor = new XmlPathAccessor(callRef, responseKey, String.class);
-			break;
-		}
-
-
-		RequestModifier modifier = null;
-		switch(type.trim().toUpperCase()){
-		case "QUERY":
-			modifier = new QueryParamsModifier(key, accessor);
-			break;
-		case "HEADER":
-			modifier = new HeaderModifier(key, accessor);
-			break;
-		case "PATH":
-			modifier = new PathModifier(key, accessor);
-			break;
-		case "FORM":
-			modifier = new FormModifier(key, accessor);
-			break;
-		case "COOKIE":
-			modifier = new CookieModifier(key, accessor);
-			break;
-		case "BODY":
-			modifier = new BodyModifier(accessor);
-			break;
-		case "BODYTEMPLATE":
-			modifier = new BodyTemplateModifier(key, accessor);
-		}
-
-		request.getRequestModifiers().add(modifier);
-		return value;
-	}*/
 
 	/**
 	 * Parses the assertion.
@@ -919,9 +804,7 @@ private void parseTestData(String excelData){
                 	if(source instanceof StaticTestDataSource) {
                 		String Value = source.fullfill();
                         cellValue = cellValue.replace(parts[i], Value);
-                	}/*else {
-                		cellValue = cellValue.replace(parts[i], key);
-                	}*/
+                	}
 
                 }
             }

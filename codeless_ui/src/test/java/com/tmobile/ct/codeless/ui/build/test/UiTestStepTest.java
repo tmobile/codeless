@@ -1,15 +1,17 @@
-package com.tmobile.ct.codeless.ui.excel.test;
+package com.tmobile.ct.codeless.ui.build.test;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+
+import com.tmobile.ct.codeless.ui.build.UiTestStep;
+
 import org.junit.Assert;
-import com.tmobile.ct.codeless.ui.excel.ExcelUiTestRow;
 
-public class ExcelUiTestRowTest {
+public class UiTestStepTest {
 
-	private static ExcelUiTestRow uiTestRow = new ExcelUiTestRow();
+	private static UiTestStep uiTestRow = new UiTestStep();
 
 	@Test
 	public void testSetAndGetAction() {
@@ -67,7 +69,7 @@ public class ExcelUiTestRowTest {
 		Assert.assertEquals(uiTestRow.getTestData(), expected);
 	}
 
-	public static ExcelUiTestRow createExcelUiTestRow() {
+	public static UiTestStep createExcelUiTestRow() {
 
 		List<String> testData = Arrays.asList("a", "b", "c");
 

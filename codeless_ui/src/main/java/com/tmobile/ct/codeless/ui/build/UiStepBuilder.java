@@ -1,4 +1,4 @@
-package com.tmobile.ct.codeless.ui.excel;
+package com.tmobile.ct.codeless.ui.build;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -7,12 +7,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Row;
 import org.openqa.selenium.WebElement;
 
-import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
@@ -55,7 +52,7 @@ import com.tmobile.selenium.sam.config.ConfigManager;
  *
  * @author Rob Graff
  */
-public class ExcelUiStepBuilder {
+public class UiStepBuilder {
 
 	/** The formatter. */
 	private DataFormatter formatter = new DataFormatter();
@@ -64,24 +61,7 @@ public class ExcelUiStepBuilder {
 
 	private static String OVERRIDE_INPUT_END = "}}";
 
-	Test test;
-
-	/**
-	 * Builds the.
-	 *
-	 * @param row the row
-	 * @return the step
-	 */
-	public Step build(Row row, Test test){
-		this.test = test;
-		UiStepInput input = new UiStepInput();
-		for(Cell cell : row){
-			String header = formatter.formatCellValue(cell.getSheet().getRow(0).getCell(cell.getColumnIndex())).trim().toUpperCase();
-			String value = formatter.formatCellValue(cell);
-			input.add(header, new MultiValue<String,String>(header, value));
-		}
-		return build(input,test);
-	}
+	Test test;	
 
 	/**
 	 * Builds the.
@@ -90,9 +70,11 @@ public class ExcelUiStepBuilder {
 	 * @return the ui step
 	 */
 	public UiStep build(UiStepInput input, Test test) {
+		
+		this.test = test;
 		UiStep step = new UiStepImpl();
 
-		ExcelUiTestRow testRow = buildTestRow(input, test, step);
+		UiTestStep testRow = buildTestRow(input, test, step);
 		testRow = parseTestData(testRow, step);
 		step.setName(testRow.getStep());
 
@@ -113,7 +95,7 @@ public class ExcelUiStepBuilder {
 	 * @param step the step
 	 * @return the list
 	 */
-	private List<UiAssertionBuilder> parseAssertion(ExcelUiTestRow testData, UiStep step) {
+	private List<UiAssertionBuilder> parseAssertion(UiTestStep testData, UiStep step) {
 
 		List<UiAssertionBuilder> assertions = new ArrayList<>();
 		if (testData.getTestData() != null && testData.getTestData().size() > 0) {
@@ -187,7 +169,7 @@ public class ExcelUiStepBuilder {
 	 * @param step the step
 	 * @return the ui action
 	 */
-	private UiAction buildAction(ExcelUiTestRow testRow, ActionConfig config, UiStep step) {
+	private UiAction buildAction(UiTestStep testRow, ActionConfig config, UiStep step) {
 		String actionType = testRow.getAction();
 		if(StringUtils.isBlank(actionType)){
 			return null;
@@ -335,8 +317,8 @@ public class ExcelUiStepBuilder {
 	 * @param input the input
 	 * @return the excel ui test row
 	 */
-	public ExcelUiTestRow buildTestRow(UiStepInput input, Test test ,UiStep step){
-		ExcelUiTestRow testRow = new ExcelUiTestRow();
+	public UiTestStep buildTestRow(UiStepInput input, Test test ,UiStep step){
+		UiTestStep testRow = new UiTestStep();
 		input.stream().forEach(item -> {
 			SuiteHeaders header = SuiteHeaders.parse(item.getKey());
 			for (String value : item.getValue().getValues()) {
@@ -379,7 +361,7 @@ public class ExcelUiStepBuilder {
 		return testRow;
 	}
 
-	private ExcelUiTestRow parseTestData(ExcelUiTestRow testRow, UiStep step) {
+	private UiTestStep parseTestData(UiTestStep testRow, UiStep step) {
 
 		for(TestDataInput input : step.getTestDataInputs()) {
 			input.stream().forEach(key ->{

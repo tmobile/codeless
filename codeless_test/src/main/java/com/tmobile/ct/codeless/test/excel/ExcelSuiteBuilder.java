@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
+import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.SuiteBuilder;
@@ -26,6 +27,7 @@ import com.tmobile.ct.codeless.data.BasicConfig;
 import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.files.ClassPathUtil;
+import com.tmobile.ct.codeless.test.suite.CodelessTestSuite;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 
 /**
@@ -77,7 +79,7 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 			return null;
 		}
 
-		suite = new ExcelSuite(resource);
+		suite = new CodelessTestSuite(resource);
 
 		Stream<Sheet> sheets = StreamSupport.stream(Spliterators.spliteratorUnknownSize(workbook.sheetIterator(), Spliterator.ORDERED), false);
 		// read test data sheet before sorting / building tests

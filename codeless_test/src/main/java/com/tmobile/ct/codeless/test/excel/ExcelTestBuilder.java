@@ -11,12 +11,16 @@ import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestBuilder;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.core.TestDataSource;
+import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
 import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
-import com.tmobile.ct.codeless.service.test.excel.ExcelServiceCallBuilder;
+import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
+import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
+import com.tmobile.ct.codeless.test.suite.CodelessTest;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
-import com.tmobile.ct.codeless.ui.excel.ExcelUiStepBuilder;
+import com.tmobile.ct.codeless.ui.build.UiStepBuilder;
+import com.tmobile.ct.codeless.ui.build.UiStepInput;
 
 /**
  * The Class ExcelTestBuilder.
@@ -29,7 +33,7 @@ public class ExcelTestBuilder implements TestBuilder{
 	private DataFormatter formatter = new DataFormatter();
 
 	/** The test. */
-	ExcelTest test = new ExcelTest();
+	CodelessTest test = new CodelessTest();
 
 	/** The data. */
 	TestData data = new BasicTestData();
@@ -68,22 +72,26 @@ public class ExcelTestBuilder implements TestBuilder{
 	 * @param row the row
 	 * @return the step
 	 */
-	private Step parseRow(Row row){
-		if(row.getCell(0) != null){
-		String stepName = row.getCell(0).getStringCellValue();
-		if(stepName == null || stepName == "" || stepName.startsWith("#")){
-			return null;
-		}
+	private Step parseRow(Row row) {
+		
+		if (row.getCell(0) != null) {
+			
+			String stepName = row.getCell(0).getStringCellValue();
+			if (stepName == null || stepName == "" || stepName.startsWith("#")) {
+				return null;
+			}
 		}
 		Step step;
-		if(getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("SERVICECALL")){
-			step = new ExcelServiceCallBuilder().buildHybrid(test, row);
-		}else if (getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("CONFIG")){
+		
+		if (getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("SERVICECALL")) {
+			step = buildServiceStep(test, row);
+		} else if (getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("CONFIG")) {
 			parseConfigStep(row);
 			return null;
-		}else{
-			step = new ExcelUiStepBuilder().build(row, test);
+		} else {
+			step = buildUiStep(test, row);
 		}
+		
 		step.setTest(test);
 		return step;
 	}
@@ -126,6 +134,35 @@ public class ExcelTestBuilder implements TestBuilder{
 	@Override
 	public Test getTest() {
 		return test;
+	}	
+	
+	private Step buildServiceStep(Test test, Row row) {
+
+		ServiceStepBuilder serviceCallBuilder = new ServiceStepBuilder();
+		ServiceCallInput input = new ServiceCallInput();
+
+		for (Cell cell : row) {
+			String header = formatter.formatCellValue(cell.getSheet().getRow(0).getCell(cell.getColumnIndex())).trim()
+					.toUpperCase();
+			String value = formatter.formatCellValue(cell);
+			serviceCallBuilder.buildServiceStep(header, value, input, test);
+		}
+
+		return serviceCallBuilder.build(test, input);
+	}
+
+	public Step buildUiStep(Test test, Row row) {
+		
+		UiStepBuilder uiStepBuilder = new UiStepBuilder();
+		UiStepInput input = new UiStepInput();
+
+		for (Cell cell : row) {
+			String header = formatter.formatCellValue(cell.getSheet().getRow(0).getCell(cell.getColumnIndex())).trim()
+					.toUpperCase();
+			String value = formatter.formatCellValue(cell);
+			input.add(header, new MultiValue<String, String>(header, value));
+		}
+		return uiStepBuilder.build(input, test);
 	}
 
 }

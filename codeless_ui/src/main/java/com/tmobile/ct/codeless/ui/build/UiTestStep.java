@@ -1,4 +1,4 @@
-package com.tmobile.ct.codeless.ui.excel;
+package com.tmobile.ct.codeless.ui.build;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author Rob Graff
  */
-public class ExcelUiTestRow {
+public class UiTestStep {
 
 	/** The Step. */
 	private String Step;

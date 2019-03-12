@@ -1,4 +1,4 @@
-package com.tmobile.ct.codeless.test.excel;
+package com.tmobile.ct.codeless.test.suite;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import com.tmobile.ct.codeless.data.BasicConfig;
  *
  * @author Rob Graff
  */
-public class ExcelTest implements Test{
+public class CodelessTest implements Test{
 
 	/** The name. */
 	private String name;

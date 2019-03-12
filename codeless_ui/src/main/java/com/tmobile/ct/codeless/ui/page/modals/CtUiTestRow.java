@@ -12,8 +12,8 @@ import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.Trackable;
 import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
+import com.tmobile.ct.codeless.ui.build.UiTestStep;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
-import com.tmobile.ct.codeless.ui.excel.ExcelUiTestRow;
 import com.tmobile.ct.codeless.ui.model.ControlElement;
 
 /**
@@ -27,7 +27,7 @@ public class CtUiTestRow implements Step, Trackable {
 	private String name;
 	
 	/** The step. */
-	private ExcelUiTestRow step;
+	private UiTestStep step;
 	
 	/** The control element. */
 	private ControlElement controlElement;
@@ -79,7 +79,7 @@ public class CtUiTestRow implements Step, Trackable {
 	 *
 	 * @return the step
 	 */
-	public ExcelUiTestRow getStep() {
+	public UiTestStep getStep() {
 		return step;
 	}
 
@@ -88,7 +88,7 @@ public class CtUiTestRow implements Step, Trackable {
 	 *
 	 * @param step the new step
 	 */
-	public void setStep(ExcelUiTestRow step) {
+	public void setStep(UiTestStep step) {
 		this.step = step;
 	}
 

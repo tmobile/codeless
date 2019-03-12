@@ -17,23 +17,33 @@ public final class CodelessConfiguration {
 	
 	/** The suite dir. */
 	private static String suiteDir = File.separator + "suites";
+	
+	private static Properties properties;
 
 	/**
 	 * Load.
 	 */
 	public static void load() {
-		Properties prop = new Properties();
+		 properties = new Properties();
 
 		try (InputStream configStream = new FileInputStream("." + File.separator + "codeless.config.properties")){
-			prop.load(configStream);
-			modelDir = prop.getProperty("model.dir", File.separator + "model");
-			suiteDir = prop.getProperty("suites.dir", File.separator + "suites");
+			properties.load(configStream);
+			modelDir = properties.getProperty("model.dir", File.separator + "model");
+			suiteDir = properties.getProperty("suites.dir", File.separator + "suites");
 		} catch (Exception e) {
 			// No config file present, default
 			System.out.println("************************************************************************");
 			System.out.println("No valid codeless.config.properties file found, defaulting configuration");
 			System.out.println("************************************************************************");
 		}
+	}
+
+	public static Properties getProperties() {
+		return properties;
+	}
+
+	public static void setProperties(Properties properties) {
+		CodelessConfiguration.properties = properties;
 	}
 
 	/**

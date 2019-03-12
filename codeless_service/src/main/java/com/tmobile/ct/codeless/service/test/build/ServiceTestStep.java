@@ -1,4 +1,4 @@
-package com.tmobile.ct.codeless.service.test.excel;
+package com.tmobile.ct.codeless.service.test.build;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author Rob Graff
  */
-public class ExcelTestRow {
+public class ServiceTestStep {
 
 	/** The test name. */
 	public String testName;
@@ -34,5 +34,5 @@ public class ExcelTestRow {
 	/**
 	 * Instantiates a new excel test row.
 	 */
-	public ExcelTestRow(){}
+	public ServiceTestStep(){}
 }

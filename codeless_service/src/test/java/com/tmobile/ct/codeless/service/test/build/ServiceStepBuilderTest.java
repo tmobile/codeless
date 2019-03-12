@@ -1,4 +1,4 @@
-package com.tmobile.ct.codeless.service.test.excel;
+package com.tmobile.ct.codeless.service.test.build;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -15,9 +15,11 @@ import com.tmobile.ct.codeless.core.datastructure.SuiteHeaders;
 import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.service.Call;
 import com.tmobile.ct.codeless.service.model.cache.ServiceCache;
+import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
+import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
 
 
-public class ExcelServiceCallBuilderTest {
+public class ServiceStepBuilderTest {
 
 	com.tmobile.ct.codeless.core.Test test;
 	Suite suite;
@@ -48,14 +50,14 @@ public class ExcelServiceCallBuilderTest {
 
 	@Test
 	public void itShouldBuildSuite(){
-		Call call = new ExcelServiceCallBuilder().build(test, input);
+		Call call = new ServiceStepBuilder().build(test, input);
 
 		assertThat(call).describedAs("service call").isNotNull();
 	}
 
 	@Test
 	public void itShouldValidateTestData(){
-		Call call = new ExcelServiceCallBuilder().build(test, input);
+		Call call = new ServiceStepBuilder().build(test, input);
 		String queryParam = call.getHttpRequest().getQueryParams().get("amount1").getValues().get(0);
 		assertThat(queryParam).describedAs("query params").isEqualTo("60");
 	}
@@ -63,7 +65,7 @@ public class ExcelServiceCallBuilderTest {
 	@Test
     public void parseExportTest() {
 
-        ExcelServiceCallBuilder callBuilder = new ExcelServiceCallBuilder();
+        ServiceStepBuilder callBuilder = new ServiceStepBuilder();
         String stepName = input.get(SuiteHeaders.TESTNAME.name()).getValues().get(0);
         String expectedResult = "$REF~TestName~" + stepName + "~header~authorization";
 

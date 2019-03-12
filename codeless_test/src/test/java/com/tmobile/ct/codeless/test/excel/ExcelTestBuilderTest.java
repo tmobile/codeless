@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.tmobile.ct.codeless.core.Suite;
+import com.tmobile.ct.codeless.test.suite.CodelessTestSuite;
 
 public class ExcelTestBuilderTest {
 
@@ -28,7 +29,7 @@ public class ExcelTestBuilderTest {
 		try {
 			workbook = WorkbookFactory.create(workbookFile);
 			Stream<Sheet> sheets = StreamSupport.stream(Spliterators.spliteratorUnknownSize(workbook.sheetIterator(), Spliterator.ORDERED), false);
-			Suite suite = new ExcelSuite(s);
+			Suite suite = new CodelessTestSuite(s);
 			com.tmobile.ct.codeless.core.Test test;
 
 			for (Sheet sheet : sheets.toArray(Sheet[]::new)) {
