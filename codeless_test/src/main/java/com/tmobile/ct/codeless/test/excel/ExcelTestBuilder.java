@@ -151,7 +151,7 @@ public class ExcelTestBuilder implements TestBuilder{
 		return serviceStepBuilder.build(test, input);
 	}
 
-	public Step buildUiStep(Test test, Row row) {
+	private Step buildUiStep(Test test, Row row) {
 		
 		UiStepBuilder uiStepBuilder = new UiStepBuilder();
 		UiStepInput input = new UiStepInput();
