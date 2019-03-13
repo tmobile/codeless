@@ -38,7 +38,7 @@ public class MainTest {
 		if (System.getProperty("SUITE.FILE") != null) {
 			suite = new ExcelSuiteBuilder().build(suitePath);
 		} else {
-			suitePath = Optional.ofNullable(System.getProperty("SUITE.DIR")).orElse("suites/ardcsv");
+			suitePath = Optional.ofNullable(System.getProperty("SUITE.DIR")).orElse("suites/testard");
 			suite = new CsvSuiteBuilder().build(suitePath);
 		}
 
