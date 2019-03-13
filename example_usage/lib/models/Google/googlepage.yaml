@@ -1,6 +1,0 @@
-searchbar:
-  by: "name"
-  locator: "q"
-searchbutton:
-  by: "name"
-  locator: "btnK"

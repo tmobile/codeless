@@ -52,6 +52,27 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+  /api/v1/delete/{id}:
+    delete:
+      tags:
+        - albums-resource
+      summary: delete
+      operationId: delete
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+            format: int64
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
           
           
 
