@@ -874,9 +874,4 @@ private void parseTestData(String excelData){
         return cellValue;
 
     }
-
-	private String path(String file){
-		return ClassPathUtil.getAbsolutePath(file);
-	}
-
 }
