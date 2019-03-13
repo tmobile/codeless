@@ -77,14 +77,7 @@ public class ServiceCache {
 		}else if(ClassPathUtil.exists(basePath+POSTMAN_COLLECTION_JSON)){
 			System.out.println("postman api path:: "+basePath+POSTMAN_COLLECTION_JSON);
 			requests = new PostmanParser().parse(basePath+POSTMAN_COLLECTION_JSON);
-		} /*else if(ClassPathUtil.exists(basePath+WSDL_XML)) {
-			System.out.println("wsdl api path:: "+basePath+WSDL_XML);
-			try {
-				requests = new WsdlReader().parse(basePath+WSDL_XML);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}*/
+		}
 
 		if(null != requests){
 			Service service = new BasicService();

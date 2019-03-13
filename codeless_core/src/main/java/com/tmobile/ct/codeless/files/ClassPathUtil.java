@@ -18,11 +18,11 @@ public class ClassPathUtil {
 	 * @return the absolute path
 	 */
 	public static String getAbsolutePath(String file){
-		
+
 		if(Boolean.parseBoolean(System.getProperty("EXEC.JAR"))){
             return System.getProperty("EXEC.ABSOLUTE.DIR") + File.separator + file;
 		}
-		
+
 		try {
 			file = file.replace("\\", "/");
 			return Paths.get(ClassPathUtil.class.getResource(file).toURI()).toAbsolutePath().toString();
@@ -32,7 +32,7 @@ public class ClassPathUtil {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Exists.
 	 *
@@ -40,16 +40,26 @@ public class ClassPathUtil {
 	 * @return true, if successful
 	 */
 	public static boolean exists(String file){
-		
-		if(Boolean.parseBoolean(System.getProperty("EXEC.JAR"))){       
+
+		if(Boolean.parseBoolean(System.getProperty("EXEC.JAR"))){
             return Paths.get(System.getProperty("EXEC.ABSOLUTE.DIR") + File.separator + file).toAbsolutePath().toFile().exists();
 		}
-		
+
 		try {
 			file = file.replace("\\", "/");
 			return Paths.get(ClassPathUtil.class.getResource(file).toURI()).toAbsolutePath().toFile().exists();
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Path.
+	 *
+	 * @param file the file
+	 * @return the string
+	 */
+	public static String path(String file){
+		return ClassPathUtil.getAbsolutePath(file);
 	}
 }

@@ -28,7 +28,6 @@ import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
 import com.tmobile.ct.codeless.core.datastructure.SuiteHeaders;
-import com.tmobile.ct.codeless.core.util.ResourceLocator;
 import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.files.ClassPathUtil;
@@ -54,7 +53,6 @@ import com.tmobile.ct.codeless.service.httpclient.Body;
 import com.tmobile.ct.codeless.service.httpclient.Cookie;
 import com.tmobile.ct.codeless.service.httpclient.Form;
 import com.tmobile.ct.codeless.service.httpclient.Header;
-import com.tmobile.ct.codeless.service.httpclient.Headers;
 import com.tmobile.ct.codeless.service.httpclient.Host;
 import com.tmobile.ct.codeless.service.httpclient.HttpMethod;
 import com.tmobile.ct.codeless.service.httpclient.HttpProtocal;
@@ -65,6 +63,7 @@ import com.tmobile.ct.codeless.service.model.EndPoint;
 import com.tmobile.ct.codeless.service.model.Operation;
 import com.tmobile.ct.codeless.service.model.Service;
 import com.tmobile.ct.codeless.service.model.cache.ServiceCache;
+import com.tmobile.ct.codeless.service.model.wsdl.soapRequestCache;
 import com.tmobile.ct.codeless.service.reference.CallRefByTest;
 import com.tmobile.ct.codeless.service.reference.ServiceCallReference;
 import com.tmobile.ct.codeless.service.restassured.RestAssuredHttpClient;
@@ -109,6 +108,9 @@ public class ExcelServiceCallBuilder {
 
 	/** The Constant SWAGGER_YAML. */
 	private static final String SWAGGER_YAML = "swagger.yaml";
+
+	/** The Constant SOAP_WSDL. */
+	private static final String SOAP_WSDL = "wsdlFile.wsdl";
 
 	/**
 	 * Builds the hybrid.
@@ -204,10 +206,20 @@ public class ExcelServiceCallBuilder {
 		Operation operation = null;
 		request = null;
 
-		if(!ClassPathUtil.exists(CodelessConfiguration.getModelDir() + File.separator + testRow.service + File.separator)) {
+		if(ClassPathUtil.exists(CodelessConfiguration.getModelDir() + File.separator + testRow.service + File.separator + SOAP_WSDL )) {
+
+			try {
+				request = soapRequestCache.getRequest(testRow, test);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+
+		}else {
 
 			Service service = ServiceCache.getService(testRow.service);
-			operation = (service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation) == null) ? service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation.substring(1, testRow.operation.length())) :
+			operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
 			service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
 			//HttpRequest request = SerializationUtils.clone((HttpRequestImpl) operation.getRequest());
 
@@ -225,55 +237,6 @@ public class ExcelServiceCallBuilder {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-		}else {
-			String[] operations = testRow.operation.split("/");
-			String soapAction = operations[1];
-			String hostKey = StringUtils.substringBetween(operations[2], "{{", "}}");
-			String soapBody = "";
-
-			if(StringUtils.isEmpty(soapAction) || StringUtils.isEmpty(hostKey)) {
-				System.err.println("Host or service request action is empty. CHeck Target column value for you test step");
-			}
-
-			TestDataSource data = test.getTestData().asMap().get(hostKey);
-			String host = data.fullfill();
-
-			if(StringUtils.isEmpty(host)) {
-				System.err.println("Please provide host in you test data sheet for host key " + hostKey);
-			}
-
-			// check for request body presence
-			String requestBody = testRow.testData.get(0) + ".txt";
-			if(StringUtils.isEmpty(requestBody)) {
-				System.err.println("Please provide request body for you service call step in Overrides column");
-			}
-
-			request = new HttpRequestImpl<>();
-			Headers headers = new Headers();
-			Header header = new Header("Content-Type", "text/xml");
-			Header header2 = new Header("SOAPAction", "\"" + soapAction + "\"");
-			headers.put("Content-Type", header);
-			headers.put("SOAPAction", header2);
-			request.setHeaders(headers);
-
-			//String name = "activateRequest.txt";
-			String bathPath = CodelessConfiguration.getModelDir() + File.separator + "dsg" + File.separator + requestBody;
-			String path = path(bathPath);
-			String requestFile = null;
-			try {
-				requestFile = ResourceLocator.getRequestFromFile(path);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			soapBody = requestFile;
-			Body<String> newBody = new Body<String>();
-			newBody.setBody(soapBody);
-			request.setBody(newBody);
-			request.setHost(new Host(host));
-			request.setHttpMethod(HttpMethod.POST);
-
 		}
 
 
