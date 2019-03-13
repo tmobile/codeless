@@ -59,14 +59,13 @@ import com.tmobile.ct.codeless.service.model.EndPoint;
 import com.tmobile.ct.codeless.service.model.Operation;
 import com.tmobile.ct.codeless.service.model.Service;
 import com.tmobile.ct.codeless.service.model.cache.ServiceCache;
-import com.tmobile.ct.codeless.service.model.wsdl.soapRequestCache;
+import com.tmobile.ct.codeless.service.model.soap.SoapRequestCache;
 import com.tmobile.ct.codeless.service.reference.CallRefByTest;
 import com.tmobile.ct.codeless.service.reference.ServiceCallReference;
 import com.tmobile.ct.codeless.service.restassured.RestAssuredHttpClient;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
 import com.tmobile.ct.codeless.testdata.RuntimeTestDataSource;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
-
 
 /**
  * The Class ExcelServiceCallBuilder.
@@ -190,7 +189,7 @@ public class ServiceStepBuilder {
 		if(ClassPathUtil.exists(CodelessConfiguration.getModelDir() + File.separator + testRow.service + File.separator + SOAP_WSDL )) {
 
 			try {
-				request = soapRequestCache.getRequest(testRow, test);
+				request = SoapRequestCache.getRequest(testRow, test);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

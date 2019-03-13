@@ -1,4 +1,4 @@
-package com.tmobile.ct.codeless.service.model.wsdl;
+package com.tmobile.ct.codeless.service.model.soap;
 
 import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,7 +24,7 @@ import com.tmobile.ct.codeless.service.test.build.ServiceTestStep;
  *
  * @author Fikreselam Elala
  */
-public class soapRequestCache {
+public class SoapRequestCache {
 
 	/* The cache */
 	private static ConcurrentHashMap<String,ConcurrentHashMap<String,HttpRequest<String>>> cache = new ConcurrentHashMap<>();
