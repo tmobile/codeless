@@ -65,7 +65,10 @@ public class WebDriverFactory {
 	 * Teardown.
 	 */
 	public static void teardown() {
-		driver.quit();
+		if (driver != null)
+		{
+			driver.quit();
+		}
 		driver = null;
 	}
 
