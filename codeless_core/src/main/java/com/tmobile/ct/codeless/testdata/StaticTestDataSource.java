@@ -30,6 +30,7 @@ public class StaticTestDataSource implements TestDataSource {
 		return value;
 	}
 
+	@Override
 	public void setValue(String value) {
 		this.value = value;
 	}

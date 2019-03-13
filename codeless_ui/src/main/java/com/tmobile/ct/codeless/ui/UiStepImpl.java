@@ -108,7 +108,9 @@ public class UiStepImpl implements UiStep {
 			setWebDriver(test.getWebDriver());
 
 			this.action.run();
+			if (assertionBuilder != null && !assertionBuilder.isEmpty()) {
 			buildAssertions(getAssertionBuilder(),action.getElement());
+			}
 			validate();
 			status = Status.COMPLETE;
 			if(result == null)
@@ -134,45 +136,49 @@ public class UiStepImpl implements UiStep {
 	 * @param assertions the assertions
 	 * @param webElement the web element
 	 */
-	public void buildAssertions(List<UiAssertionBuilder> assertions, WebElement webElement){
+	public void buildAssertions(List<UiAssertionBuilder> assertions, WebElement webElement) {
 		assertions.forEach(assertion -> {
 			Method assertionMethod = assertion.getAssertMethod();
 			Method seleniumMethod = assertion.getSeleniumMethod();
 			Object ElementorDriver;
-			if(assertion.getSeleniumMethodType() == SeleniumMethodType.WebDriver) {
+			if (assertion.getSeleniumMethodType() == SeleniumMethodType.WebDriver) {
 				ElementorDriver = test.getWebDriver();
-			}else {
+			} else {
 				ElementorDriver = webElement;
 			}
 			try {
 				if (assertionMethod.getParameterCount() == 1) {
-					if(seleniumMethod == null) {
+					if (seleniumMethod == null) {
 						assertionMethod.invoke(null, ElementorDriver);
 						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ", "Succesful");
-					}
-					else if (seleniumMethod.getParameterCount() == 0) {
+					} else if (seleniumMethod.getParameterCount() == 0) {
 						assertionMethod.invoke(null, seleniumMethod.invoke(ElementorDriver));
-						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ", "Succesful on the [ " + seleniumMethod + " ]");
+						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ",
+								"Succesful on the [ " + seleniumMethod + " ]");
+					} else if (seleniumMethod.getParameterCount() == 1) {
+						assertionMethod.invoke(null,
+								seleniumMethod.invoke(ElementorDriver, assertion.getParameterName()));
+						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ",
+								"Succesful on the [ " + seleniumMethod + " ] with parameterName ");
 					}
-					else if (seleniumMethod.getParameterCount() == 1) {
-						assertionMethod.invoke(null, seleniumMethod.invoke(ElementorDriver, assertion.getParameterName()));
-						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ", "Succesful on the [ " + seleniumMethod + " ] with parameterName ");
-					}
-				}
-				else if (assertionMethod.getParameterCount() == 2) {
+				} else if (assertionMethod.getParameterCount() == 2) {
 					if (seleniumMethod.getParameterCount() == 0) {
-						assertionMethod.invoke(null, seleniumMethod.invoke(ElementorDriver), assertion.getExpectedValue());
-						logStep("StepStatus.INFO","Assertion [ " + assertionMethod + " ] ", "Succesful on the [ " + seleniumMethod + " ]");
-					}
-					else if (seleniumMethod.getParameterCount() == 1) {
-						assertionMethod.invoke(null, seleniumMethod.invoke(ElementorDriver, assertion.getParameterName()), assertion.getExpectedValue());
-						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ", "Succesful on the [ " + seleniumMethod + " ] with parameterName ");
+						assertionMethod.invoke(null, seleniumMethod.invoke(ElementorDriver),
+								assertion.getExpectedValue());
+						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ",
+								"Succesful on the [ " + seleniumMethod + " ]");
+					} else if (seleniumMethod.getParameterCount() == 1) {
+						assertionMethod.invoke(null,
+								seleniumMethod.invoke(ElementorDriver, assertion.getParameterName()),
+								assertion.getExpectedValue());
+						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ",
+								"Succesful on the [ " + seleniumMethod + " ] with parameterName ");
 					}
 				}
 
-			}
-			catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				logStep("StepStatus.FAIL", "Assertion [ " + assertionMethod + " ] ", " Failed on the [ " + seleniumMethod + " ]");
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				logStep("StepStatus.FAIL", "Assertion [ " + assertionMethod + " ] ",
+						" Failed on the [ " + seleniumMethod + " ]");
 				try {
 					status = Status.COMPLETE;
 					result = Result.FAIL;

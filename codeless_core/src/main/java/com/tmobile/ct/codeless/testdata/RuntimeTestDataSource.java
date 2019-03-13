@@ -43,4 +43,10 @@ public class RuntimeTestDataSource implements TestDataSource {
 		return accessor;
 	}
 
+	@Override
+	public void setValue(String Value) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

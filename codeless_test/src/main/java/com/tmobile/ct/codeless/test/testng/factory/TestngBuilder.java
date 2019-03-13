@@ -37,7 +37,7 @@ public class TestngBuilder {
 
 		xmlTest.getClasses().addAll(xmlClasses);
 		xmlSuite.addTest(xmlTest);
-		params.put("codeless.suite.id", suiteId);
+		//params.put("codeless.suite.id", suiteId);		//this param is always null. suiteId is set later
 		xmlSuite.setParameters(params);
 		
 		addSuite(xmlSuite);
