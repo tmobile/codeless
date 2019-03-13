@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tmobile.ct.codeless.assertion.AssertJAssertionBuilder;
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
@@ -58,6 +59,7 @@ import com.tmobile.ct.codeless.service.model.EndPoint;
 import com.tmobile.ct.codeless.service.model.Operation;
 import com.tmobile.ct.codeless.service.model.Service;
 import com.tmobile.ct.codeless.service.model.cache.ServiceCache;
+import com.tmobile.ct.codeless.service.model.wsdl.soapRequestCache;
 import com.tmobile.ct.codeless.service.reference.CallRefByTest;
 import com.tmobile.ct.codeless.service.reference.ServiceCallReference;
 import com.tmobile.ct.codeless.service.restassured.RestAssuredHttpClient;
@@ -98,7 +100,10 @@ public class ServiceStepBuilder {
 	private Test test;
 
 	/** The Constant SWAGGER_YAML. */
-	private static final String SWAGGER_YAML = "swagger.yaml";	
+	private static final String SWAGGER_YAML = "swagger.yaml";
+	
+	/** The Constant SOAP_WSDL. */
+	private static final String SOAP_WSDL = "wsdlFile.wsdl";
 	
 	public void buildServiceStep(String header, String value, ServiceCallInput input, Test test) {
 		
@@ -179,24 +184,38 @@ public class ServiceStepBuilder {
 		if(testRow.service==null){
 			return null;
 		}
-
-		Service service = ServiceCache.getService(testRow.service);
-		Operation operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
-
-		if(operation == null){
-			System.err.println("NO OPERTAION FOUND FOR INPUT["+testRow.operation+"]");
-			return null;
-		}
-
+		Operation operation = null;
 		request = null;
-		try {
-			request = mapper.readValue(mapper.writeValueAsBytes(operation.getRequest()),HttpRequestImpl.class);
-			if(modifers != null) {
-				request.setRequestModifiers(modifers);
+		
+		if(ClassPathUtil.exists(CodelessConfiguration.getModelDir() + File.separator + testRow.service + File.separator + SOAP_WSDL )) {
+
+			try {
+				request = soapRequestCache.getRequest(testRow, test);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			
-			e.printStackTrace();
+
+
+		}else {
+
+			Service service = ServiceCache.getService(testRow.service);
+			operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
+			service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
+
+			if(operation == null){
+				System.err.println("NO OPERTAION FOUND FOR INPUT["+testRow.operation+"]");
+				return null;
+			}
+
+			try {
+				request = mapper.readValue(mapper.writeValueAsBytes(operation.getRequest()),HttpRequestImpl.class);
+				if(modifers != null) {
+					request.setRequestModifiers(modifers);
+				}
+			} catch (IOException e) {
+					e.printStackTrace();
+			}
 		}
 
 		if(StringUtils.isNotBlank(testRow.bodyTemplate)){
@@ -206,7 +225,6 @@ public class ServiceStepBuilder {
 		call = new Call(new RestAssuredHttpClient(), request, 0);
 
 		testRow.testData.forEach(this::parseTestData);
-		setDefaultEndpoint();
 
 		if(request.getBody() != null && request.getBody().getBody() != null && request.getBody().getBody().indexOf("{{") > 0 && request.getBody().getBody().indexOf("}}") > 0 ){
 			setBodyFromEnv(operation);
@@ -449,8 +467,6 @@ public class ServiceStepBuilder {
 				e.printStackTrace();
 			}
 		}
-
-
 	}
 
 
@@ -500,6 +516,7 @@ private void parseTestData(String excelData){
 			System.err.println("ExcelParser: Test Data cell has parts > 9, "+parts);
 			return;
 		}
+		if(parts.length < 2) return;
 
 		String type = parts[0];
 		String key = parts[1];
@@ -596,9 +613,9 @@ private void parseTestData(String excelData){
 		//cant have .toUpperCase() applied to method name, breaks reflection call later on
 		String[] originalParts = excelData.trim().split("::");
 
-		String type = parts[1];
-		String method = originalParts[2];
-		String expected = originalParts[3];
+		String type = parts[1]; //statusCode
+		String method = originalParts[2]; // isEqualTo
+		String expected = originalParts[3]; // 200
 		String key = "";
 		if(parts.length == 5){
 			key = originalParts[2];
@@ -740,6 +757,10 @@ private void parseTestData(String excelData){
             }
         }else {
 
+        	if(values.length < 3 && values[0] != null) {
+        		 return values[0];
+        	}
+
         	if (test.getTestData() == null) {
                 test.setTestData(new BasicTestData());
             }
@@ -753,6 +774,8 @@ private void parseTestData(String excelData){
 
     		if(dataValue != null && dataValue.length > 0) {
     			sourceValue = test.getTestData().getSourcedValue(dataValue[0]);
+    		}else {
+    			return cellValue;
     		}
     		if(sourceValue != null) {
     			TestDataSource source = sourceValue.getValue().getValue();
@@ -811,5 +834,4 @@ private void parseTestData(String excelData){
         return cellValue;
 
     }
-
 }

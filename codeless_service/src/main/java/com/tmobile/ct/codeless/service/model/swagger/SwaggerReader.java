@@ -1,12 +1,11 @@
 package com.tmobile.ct.codeless.service.model.swagger;
 
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import com.tmobile.ct.codeless.files.ClassPathUtil;
 import com.tmobile.ct.codeless.service.HttpRequest;
@@ -23,8 +22,6 @@ import com.tmobile.ct.codeless.service.httpclient.PathParams;
 import com.tmobile.ct.codeless.service.httpclient.QueryParam;
 import com.tmobile.ct.codeless.service.httpclient.QueryParams;
 import com.tmobile.ct.codeless.service.httpclient.ServicePath;
-
-import java.util.Optional;
 
 import io.swagger.models.HttpMethod;
 import io.swagger.models.Operation;
@@ -46,7 +43,7 @@ public class SwaggerReader {
 
 	/** The requests. */
 	List<HttpRequest> requests = new ArrayList<>();
-	
+
 	/**
 	 * Parses the.
 	 *
@@ -54,16 +51,16 @@ public class SwaggerReader {
 	 * @return the list
 	 */
 	public List<HttpRequest> parse(String resource){
-		Swagger swagger = new SwaggerParser().read(path(resource));
+		Swagger swagger = new SwaggerParser().read(ClassPathUtil.path(resource));
 		System.out.println(swagger.getPaths());
-		
+
 		swagger.getPaths().forEach( (name,path) -> {
 			parsePath(name, path, swagger);
 		});
-		
+
 		return requests;
 	}
-	
+
 	/**
 	 * Parses the path.
 	 *
@@ -74,7 +71,7 @@ public class SwaggerReader {
 	private void parsePath(String name, Path path, Swagger swagger){
 		path.getOperationMap().entrySet().forEach(x->parseOperation(x, path, name, swagger));
 	}
-	
+
 	/**
 	 * Parses the operation.
 	 *
@@ -87,11 +84,11 @@ public class SwaggerReader {
 		HttpMethod method = entry.getKey();
 		Operation op = entry.getValue();
 		HttpRequest req = new HttpRequestImpl();
-		
+
 		req.setHttpMethod(com.tmobile.ct.codeless.service.httpclient.HttpMethod.valueOf(method.name()));
 		req.setOperationPath(new OperationPath(name));
 		req.setServicePath(new ServicePath(swagger.getBasePath()));
-		
+
 		//parse host
 		String host = swagger.getHost();
 		URL url;
@@ -106,13 +103,13 @@ public class SwaggerReader {
 			e.printStackTrace();
 		}
 		req.setHost(new Host(host));
-		
+
 		QueryParams queryParams = new QueryParams();
 		PathParams pathParams = new PathParams();
 		Forms formParams = new Forms();
 		Headers headerParams = new Headers();
 		Cookies cookieParams = new Cookies();
-		
+
 		for(Parameter param : op.getParameters()){
 			switch(param.getIn()){
 			case "query":
@@ -132,22 +129,13 @@ public class SwaggerReader {
 				cookieParams.put(param.getName(), new Cookie(param.getName(), (String) cp.getDefault()));
 			}
 		}
-		
+
 		req.setQueryParams(queryParams);
 		req.setPathParams(pathParams);
 		req.setHeaders(headerParams);
 		req.setCookies(cookieParams);
-		
+
 		requests.add(req);
 	}
-	
-	/**
-	 * Path.
-	 *
-	 * @param file the file
-	 * @return the string
-	 */
-	private String path(String file){
-		return ClassPathUtil.getAbsolutePath(file);
-	}
+
 }

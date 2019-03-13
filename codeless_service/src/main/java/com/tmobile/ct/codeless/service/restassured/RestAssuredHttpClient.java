@@ -74,6 +74,7 @@ public class RestAssuredHttpClient implements HttpClient{
 	 */
 	@Override
 	public void invokeRequestModifiers() {
+		if(request == null) return;
 		List<RequestModifier> modifiers = request.getRequestModifiers();
 		modifiers.forEach(modifier -> modifier.modify(request));
 
@@ -94,11 +95,17 @@ public class RestAssuredHttpClient implements HttpClient{
 	 * @return the response
 	 */
 	private Response chooseMethod(){
+
+		RestAssured rest = new RestAssured();
+		rest.useRelaxedHTTPSValidation();
 		Response response = null;
-		String target = RestAssuredRequestBuilder.mapOperationPath(request.getOperationPath());
+		String target = "";
+		if(request.getOperationPath() != null) {
+			target = RestAssuredRequestBuilder.mapOperationPath(request.getOperationPath());
+		}
 		switch (request.getHttpMethod()){
 		case POST:
-			response = RestAssured.given(reqSpec).post(target);//reqSpec.post(target);
+			response = rest.given(reqSpec).post(target);
 			break;
 		case PUT:
 			response = RestAssured.given(reqSpec).put(target);//reqSpec.put(target);

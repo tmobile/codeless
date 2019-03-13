@@ -30,6 +30,9 @@ public class ServiceCache {
 	/** The Constant POSTMAN_COLLECTION_JSON. */
 	private static final String POSTMAN_COLLECTION_JSON = "postman_collection.json";
 
+	/** The Constant WSDL Defination. */
+	private static final String WSDL_XML = "wsdlFile.wsdl";
+
 	/** The cache. */
 	private static ConcurrentHashMap<String, Service> cache = new ConcurrentHashMap<>();
 
@@ -41,6 +44,7 @@ public class ServiceCache {
 	 *
 	 * @param name the name
 	 * @return the service
+	 * @throws Exception
 	 */
 	public static Service getService(String name){
 		if(!cache.containsKey(name)){
@@ -63,8 +67,9 @@ public class ServiceCache {
 	 * Builds the cache.
 	 *
 	 * @param name the name
+	 * @throws Exception
 	 */
-	private static void buildCache(String name){
+	private static void buildCache(String name) {
 		List<HttpRequest> requests = null;
 		String basePath = getModelDir() + File.separator + name + File.separator;
 		if(ClassPathUtil.exists(basePath+SWAGGER_YAML)){
