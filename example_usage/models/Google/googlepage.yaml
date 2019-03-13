@@ -2,5 +2,5 @@ searchbar:
   by: "name"
   locator: "q"
 searchbutton:
-  by: "name"
-  locator: "btnK"
+  by: "xpath"
+  locator: "//*[@id='tsf']/div[2]/div/div[3]/center/input[1]"

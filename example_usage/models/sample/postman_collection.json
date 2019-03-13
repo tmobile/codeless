@@ -11,11 +11,11 @@
 			"name": "dummyAPIs-POST",
 			"request": {
 				"url": "http://dummy.default.com/api/create",
-				"method": "POST",
+				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"name\":\"{{namevar}}\",\"salary\":\"{{salaryvar}}\",\"age\":\"{{agevar}}\"}"
+					"raw": ""
 				},
 				"description": ""
 			},

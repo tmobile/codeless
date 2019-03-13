@@ -1,0 +1,12 @@
+searchbar:
+  by: "id"
+  locator: "navbar-query"
+submit:
+  by: "id"
+  locator: "navbar-submit-button"
+wall-e:
+  by: "xpath"
+  locator: "//*[@id='main']/div/div[2]/table/tbody/tr[1]/td[2]/a"
+plot:
+  by: "xpath"
+  locator: "//*[@id='title-overview-widget']/div[2]/div[1]/div[1]"
