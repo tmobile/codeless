@@ -26,6 +26,7 @@ import com.tmobile.ct.codeless.ui.action.Cookie;
 import com.tmobile.ct.codeless.ui.action.Drag;
 import com.tmobile.ct.codeless.ui.action.GoTo;
 import com.tmobile.ct.codeless.ui.action.IFrame;
+import com.tmobile.ct.codeless.ui.action.Move;
 import com.tmobile.ct.codeless.ui.action.Select;
 import com.tmobile.ct.codeless.ui.action.SwitchDefault;
 import com.tmobile.ct.codeless.ui.action.Type;
@@ -40,6 +41,7 @@ import com.tmobile.ct.codeless.ui.model.ControlElement;
 import com.tmobile.ct.codeless.ui.model.controls.WebElementProxyFactory;
 import com.tmobile.ct.codeless.ui.model.yaml.YamlReader;
 import com.tmobile.selenium.sam.action.types.ClickType;
+import com.tmobile.selenium.sam.action.types.MoveType;
 import com.tmobile.selenium.sam.action.types.SelectType;
 import com.tmobile.selenium.sam.action.types.SendKeysType;
 import com.tmobile.selenium.sam.action.types.WaitType;
@@ -110,7 +112,7 @@ public class UiStepBuilder {
 					String parameter = "";
 					String expected = "";
 
-					if(originalParts.length < 2) return;
+					if(originalParts.length < 3) return;
 
 					SeleniumMethodType type = SeleniumMethodType.valueOf(originalParts[1]);
 
@@ -217,6 +219,9 @@ public class UiStepBuilder {
 		case "CLOSE":
 			action = new Close(step.getWebDriver(), config, element);
 			break;
+		case "MOVE":
+			action = new Move(step.getWebDriver(), config, element);
+			break;
 		}
 		return action;
 	}
@@ -305,6 +310,9 @@ public class UiStepBuilder {
 				break;
 			case "MESSAGE":
 				config.message = value;
+				break;
+			case "MOVETYPE":
+				config.moveType = MoveType.valueOf(value);
 				break;
 			}
 		}

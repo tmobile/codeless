@@ -2,6 +2,7 @@ package com.tmobile.selenium.sam.action.utils;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -149,10 +150,30 @@ public class Wait implements IAction{
 	}
 	
 	/**
-	 * None.
+	 * waitForPageLoad.
 	 */
-	private void none(){
-		// do nothing
+	private void waitForPageLoad() {
+		ExpectedCondition<Boolean> pageLoadCondition = new ExpectedCondition<Boolean>() {
+			public Boolean apply(WebDriver driver) {
+				return ((JavascriptExecutor) driver).executeScript("return document.readyState").toString()
+						.equals("complete");
+			}
+		};
+		WebDriverWait wait = new WebDriverWait(driver, waitTime);
+		wait.until(pageLoadCondition);
+
+	}
+	
+	/**
+	 * browserSleep.
+	 */
+	private void browserSleep() {
+
+		try {
+			Thread.sleep(waitTime);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/* (non-Javadoc)
