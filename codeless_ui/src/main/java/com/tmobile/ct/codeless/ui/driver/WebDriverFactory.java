@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,7 +65,10 @@ public class WebDriverFactory {
 	 * Teardown.
 	 */
 	public static void teardown() {
-		driver.quit();
+		if (driver != null)
+		{
+			driver.quit();
+		}
 		driver = null;
 	}
 
@@ -87,7 +91,7 @@ public class WebDriverFactory {
 		case "firefox": {
 			webDriver = "webdriver.gecko.driver";
 			if (testConfig.get("webdriver.path.firefox") == null)	return null;
-			webDriverPath = path + "\\" + testConfig.get("webdriver.path.firefox").fullfill().replace("/", "\\");
+			webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.firefox").fullfill());
 			System.setProperty(webDriver, webDriverPath);
 			driver = new FirefoxDriver();
 			break;
@@ -95,7 +99,7 @@ public class WebDriverFactory {
 		case "microsoftedge": {
 			webDriver = "webdriver.ie.driver";
 			if (testConfig.get("webdriver.path.ie") == null)	return null;
-			webDriverPath = path + "\\" + testConfig.get("webdriver.path.ie").fullfill().replace("/", "\\");
+			webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.ie").fullfill());
 			System.setProperty(webDriver, webDriverPath);
 			driver = new InternetExplorerDriver();
 			break;
@@ -103,7 +107,7 @@ public class WebDriverFactory {
 		default: {
 			webDriver = "webdriver.chrome.driver";
 			if (testConfig.get("webdriver.path.chrome") == null)	return null;
-			webDriverPath = path + "\\" + testConfig.get("webdriver.path.chrome").fullfill().replace("/", "\\");
+			webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.chrome").fullfill());
 			System.setProperty(webDriver, webDriverPath);
 			driver = new ChromeDriver();
 			break;
@@ -111,6 +115,19 @@ public class WebDriverFactory {
 		}
 		initWebDriver();
 		return driver;
+	}
+	
+	private static String getWebDriverPath(String webDriverPath) {
+
+		String opertatingSystem = System.getProperty("os.name").toLowerCase();
+		String path = System.getProperty("user.dir");
+		if (opertatingSystem.contains("windows")) {
+
+			webDriverPath = path + "\\" + webDriverPath.replace("/", "\\");
+			return webDriverPath;
+
+		}
+		return  path + "//" + webDriverPath;
 	}
 
 	/**
@@ -136,9 +153,14 @@ public class WebDriverFactory {
 		String plateformVersion = Optional.fromNullable(testConfig.get(WEBDRIVER_VERSION.concat("."+plateformType.toLowerCase())).fullfill()).or(EMPTY);
 		SupportedPlatform platform = SupportedPlatform.findFor(platformType);
 		String hub = Optional.fromNullable(testConfig.get("webdriver.hub").fullfill()).or(EMPTY);
+		String parentTunnel = Optional.fromNullable(testConfig.get("webdriver.parentTunnel").fullfill()).or(EMPTY);
+		String tunnelIdentifier = Optional.fromNullable(testConfig.get("webdriver.tunnelIdentifier").fullfill()).or(EMPTY);
 		Map<String, String> additionalProperties = new HashMap<String, String>();
 		additionalProperties.put("platform", hubOS);
 		additionalProperties.put("version", plateformVersion);
+		additionalProperties.put("parentTunnel",parentTunnel);
+		additionalProperties.put("tunnelIdentifier", tunnelIdentifier);
+		
 
 		DesiredCapabilities desiredCap = platform.createCapabilities().merge(new DesiredCapabilities(additionalProperties));
 

@@ -13,5 +13,7 @@ public interface TestDataSource {
 	void setAccessor(Accessor accessor);
 
 	Accessor getAccessor();
+	
+	void setValue(String Value);
 
 }
