@@ -8,6 +8,7 @@ import com.tmobile.selenium.sam.action.actions.conditions.Condition;
 import com.tmobile.selenium.sam.action.report.StepResult;
 import com.tmobile.selenium.sam.action.types.ActionType;
 import com.tmobile.selenium.sam.action.types.ClickType;
+import com.tmobile.selenium.sam.action.types.MoveType;
 import com.tmobile.selenium.sam.action.types.NavigateType;
 import com.tmobile.selenium.sam.action.types.SelectType;
 import com.tmobile.selenium.sam.action.types.SendKeysType;
@@ -65,6 +66,8 @@ public class ActionConfig {
 	
 	/** The navigate type. */
 	public NavigateType navigateType = NavigateType.back;
+	
+	public MoveType moveType = MoveType.javascript;
 
 	/** The send keys delay. */
 	public long sendKeysDelay = 500;
@@ -98,6 +101,7 @@ public class ActionConfig {
 		windowType = config.windowType;
 		sendKeysType = config.sendKeysType;
 		navigateType = config.navigateType;
+		moveType = config.moveType;
 	}
 
 }
