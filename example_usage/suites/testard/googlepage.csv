@@ -1,0 +1,4 @@
+"Step","Action","Target","Input","Overrides"
+"Get customer info","serviceCall","customer.api.v1.employee.{id}","GET","path::id::42823"
+"Load Google Page","goto","","https://www.google.com","assertEquals::WebDriver::getTitle::Google"
+"type in some text","sendKeys","Google.googlepage.searchbar","test",""

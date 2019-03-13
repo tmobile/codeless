@@ -1,0 +1,78 @@
+swagger: '2.0'
+info:
+  description: '"Fake Online REST API for Testing and Prototyping"'
+  version: 1.0.0
+  title: JSON Placeholder REST API
+  contact:
+    name: Test
+    url: 'https://localhost/test'
+    email: test@test.com
+  license:
+    name: Apache License Version 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0"'
+host: 'http://dummy.restapiexample.com'
+paths:
+  /api/v1/employee/{id}:
+    get:
+      tags:
+        - albums-resource
+      summary: getAlbums
+      operationId: getAlbumsUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+            format: int64
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /api/v1/create:
+    post:
+      tags:
+        - albums-resource
+      summary: getAlbums
+      operationId: getAlbumsUsingGET
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+            format: int64
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /api/v1/delete/{id}:
+    delete:
+      tags:
+        - albums-resource
+      summary: delete
+      operationId: delete
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+            format: int64
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+          
+          
+
