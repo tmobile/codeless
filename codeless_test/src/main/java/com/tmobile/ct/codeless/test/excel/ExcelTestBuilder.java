@@ -17,7 +17,7 @@ import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
 import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
-import com.tmobile.ct.codeless.test.suite.CodelessTest;
+import com.tmobile.ct.codeless.test.suite.TestImpl;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 import com.tmobile.ct.codeless.ui.build.UiStepBuilder;
 import com.tmobile.ct.codeless.ui.build.UiStepInput;
@@ -33,7 +33,7 @@ public class ExcelTestBuilder implements TestBuilder{
 	private DataFormatter formatter = new DataFormatter();
 
 	/** The test. */
-	CodelessTest test = new CodelessTest();
+	TestImpl test = new TestImpl();
 
 	/** The data. */
 	TestData data = new BasicTestData();
@@ -128,9 +128,6 @@ public class ExcelTestBuilder implements TestBuilder{
 		return formatter.formatCellValue(cell).trim().replace(" ", "");
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.TestBuilder#getTest()
-	 */
 	@Override
 	public Test getTest() {
 		return test;

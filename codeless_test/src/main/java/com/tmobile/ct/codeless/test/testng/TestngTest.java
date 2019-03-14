@@ -58,7 +58,6 @@ public class TestngTest{
 		// get suite container from execution
 		String id = context.getCurrentXmlTest().getParameter("codeless.suite.id");
 		execution = ExecutionContainer.getExecution();
-		
 		suite = execution.getSuite(id);
 		execution.getSuiteHooks().forEach(hook ->{
 			hook.beforeSuite(suite);

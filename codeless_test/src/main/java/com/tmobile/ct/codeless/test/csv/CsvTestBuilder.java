@@ -12,7 +12,7 @@ import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
 import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
-import com.tmobile.ct.codeless.test.suite.CodelessTest;
+import com.tmobile.ct.codeless.test.suite.TestImpl;
 import com.tmobile.ct.codeless.ui.build.UiStepBuilder;
 import com.tmobile.ct.codeless.ui.build.UiStepInput;
 
@@ -23,7 +23,7 @@ import com.tmobile.ct.codeless.ui.build.UiStepInput;
  */
 public class CsvTestBuilder implements TestBuilder {
 	
-	CodelessTest test = new CodelessTest();
+	TestImpl test = new TestImpl();
 
 	TestData data = new BasicTestData();
 

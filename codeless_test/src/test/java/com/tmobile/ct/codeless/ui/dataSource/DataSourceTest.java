@@ -21,14 +21,14 @@ import com.tmobile.ct.codeless.service.httpclient.HttpMethod;
 import com.tmobile.ct.codeless.service.restassured.RestAssuredHttpClient;
 import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
 import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
-import com.tmobile.ct.codeless.test.suite.CodelessTest;
+import com.tmobile.ct.codeless.test.suite.TestImpl;
 import com.tmobile.ct.codeless.testdata.RuntimeTestDataSource;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 
 public class DataSourceTest extends BaseWiremockTest{
 
 	private com.tmobile.ct.codeless.core.Test test2;
-	CodelessTest test = new CodelessTest();
+	TestImpl test = new TestImpl();
 
 
 	@Test
