@@ -63,6 +63,7 @@ import com.tmobile.ct.codeless.service.model.EndPoint;
 import com.tmobile.ct.codeless.service.model.Operation;
 import com.tmobile.ct.codeless.service.model.Service;
 import com.tmobile.ct.codeless.service.model.cache.ServiceCache;
+import com.tmobile.ct.codeless.service.model.soap.SoapRequestCache;
 import com.tmobile.ct.codeless.service.reference.CallRefByTest;
 import com.tmobile.ct.codeless.service.reference.ServiceCallReference;
 import com.tmobile.ct.codeless.service.restassured.RestAssuredHttpClient;
@@ -107,6 +108,9 @@ public class ExcelServiceCallBuilder {
 
 	/** The Constant SWAGGER_YAML. */
 	private static final String SWAGGER_YAML = "swagger.yaml";
+
+	/** The Constant SOAP_WSDL. */
+	private static final String SOAP_WSDL = "wsdlFile.wsdl";
 
 	/**
 	 * Builds the hybrid.
@@ -199,25 +203,42 @@ public class ExcelServiceCallBuilder {
 			return null;
 		}
 
-		Service service = ServiceCache.getService(testRow.service);
-		Operation operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
-//		HttpRequest request = SerializationUtils.clone((HttpRequestImpl) operation.getRequest());
-
-		if(operation == null){
-			System.err.println("NO OPERTAION FOUND FOR INPUT["+testRow.operation+"]");
-			return null;
-		}
-
+		Operation operation = null;
 		request = null;
-		try {
-			request = mapper.readValue(mapper.writeValueAsBytes(operation.getRequest()),HttpRequestImpl.class);
-			if(modifers != null) {
-				request.setRequestModifiers(modifers);
+
+		if(ClassPathUtil.exists(CodelessConfiguration.getModelDir() + File.separator + testRow.service + File.separator + SOAP_WSDL )) {
+
+			try {
+				request = SoapRequestCache.getRequest(testRow, test);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+
+		}else {
+
+			Service service = ServiceCache.getService(testRow.service);
+			operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
+			service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
+			//HttpRequest request = SerializationUtils.clone((HttpRequestImpl) operation.getRequest());
+
+			if(operation == null){
+				System.err.println("NO OPERTAION FOUND FOR INPUT["+testRow.operation+"]");
+				return null;
+			}
+
+			try {
+				request = mapper.readValue(mapper.writeValueAsBytes(operation.getRequest()),HttpRequestImpl.class);
+				if(modifers != null) {
+					request.setRequestModifiers(modifers);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+
 
 		if(StringUtils.isNotBlank(testRow.bodyTemplate)){
 			setBodyFromTempate(testRow.bodyTemplate);
@@ -226,7 +247,6 @@ public class ExcelServiceCallBuilder {
 		call = new Call(new RestAssuredHttpClient(), request, 0);
 
 		testRow.testData.forEach(this::parseTestData);
-		setDefaultEndpoint();
 
 		if(request.getBody() != null && request.getBody().getBody() != null && request.getBody().getBody().indexOf("{{") > 0 && request.getBody().getBody().indexOf("}}") > 0 ){
 			setBodyFromEnv(operation);
@@ -531,6 +551,7 @@ private void parseTestData(String excelData){
 			System.err.println("ExcelParser: Test Data cell has parts > 9, "+parts);
 			return;
 		}
+		if(parts.length < 2) return;
 
 		String type = parts[0];
 		String key = parts[1];
@@ -620,88 +641,6 @@ private void parseTestData(String excelData){
 	}
 
 	/**
-	 * Parses the ref value.
-	 *
-	 * @param excelData the excel data
-	 * @return the string
-	 */
-	/*private String parseRefValue(String excelData) {
-
-		String[] excelparts = excelData.trim().split("::");
-
-		String type = excelparts[0];
-		String key = excelparts[1];
-		String value = excelparts[2];
-
-		//assert::query-response::account_status::isEqualTo::$REF~SELF~get balance~jsonpath~account_status
-
-		if(StringUtils.isBlank(value)){
-			return value;
-		}
-
-		if(!value.startsWith("$REF~")){
-			return value;
-		}
-
-		String[] parts = value.trim().split("~");
-		String locator = parts[1].toUpperCase();
-		String callName = parts[2].toUpperCase();
-		String responsePart = parts[3];
-		String responseKey = parts[4];
-
-		ServiceCallReference callRef;
-		if(locator.equalsIgnoreCase("SELF")){
-			callRef = new CallRefByTest(test, callName);
-		}else{
-			callRef = new CallRefBySuite(test.getSuite(),locator, callName);
-		}
-
-		ResponseAccessor accessor = null;
-		switch(responsePart.trim().toUpperCase()){
-		case "HEADER":
-			accessor = new HeaderAccessor(callRef, responseKey);
-			break;
-		case "BODYSTRING":
-			accessor = new BodyStringAccessor(callRef);
-			break;
-		case "JSONPATH":
-			accessor = new JsonPathAccessor(callRef, responseKey, String.class);
-			break;
-		case "XMLPATH":
-			accessor = new XmlPathAccessor(callRef, responseKey, String.class);
-			break;
-		}
-
-
-		RequestModifier modifier = null;
-		switch(type.trim().toUpperCase()){
-		case "QUERY":
-			modifier = new QueryParamsModifier(key, accessor);
-			break;
-		case "HEADER":
-			modifier = new HeaderModifier(key, accessor);
-			break;
-		case "PATH":
-			modifier = new PathModifier(key, accessor);
-			break;
-		case "FORM":
-			modifier = new FormModifier(key, accessor);
-			break;
-		case "COOKIE":
-			modifier = new CookieModifier(key, accessor);
-			break;
-		case "BODY":
-			modifier = new BodyModifier(accessor);
-			break;
-		case "BODYTEMPLATE":
-			modifier = new BodyTemplateModifier(key, accessor);
-		}
-
-		request.getRequestModifiers().add(modifier);
-		return value;
-	}*/
-
-	/**
 	 * Parses the assertion.
 	 *
 	 * @param parts the parts
@@ -712,9 +651,9 @@ private void parseTestData(String excelData){
 		//cant have .toUpperCase() applied to method name, breaks reflection call later on
 		String[] originalParts = excelData.trim().split("::");
 
-		String type = parts[1];
-		String method = originalParts[2];
-		String expected = originalParts[3];
+		String type = parts[1]; //statusCode
+		String method = originalParts[2]; // isEqualTo
+		String expected = originalParts[3]; // 200
 		String key = "";
 		if(parts.length == 5){
 			key = originalParts[2];
@@ -856,6 +795,10 @@ private void parseTestData(String excelData){
             }
         }else {
 
+        	if(values.length < 3 && values[0] != null) {
+        		 return values[0];
+        	}
+
         	if (test.getTestData() == null) {
                 test.setTestData(new BasicTestData());
             }
@@ -869,6 +812,8 @@ private void parseTestData(String excelData){
 
     		if(dataValue != null && dataValue.length > 0) {
     			sourceValue = test.getTestData().getSourcedValue(dataValue[0]);
+    		}else {
+    			return cellValue;
     		}
     		if(sourceValue != null) {
     			TestDataSource source = sourceValue.getValue().getValue();
@@ -929,5 +874,4 @@ private void parseTestData(String excelData){
         return cellValue;
 
     }
-
 }
