@@ -3,7 +3,7 @@ package com.tmobile.ct.codeless.ui.page.modals.test;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.tmobile.ct.codeless.ui.excel.test.ExcelUiTestRowTest;
+import com.tmobile.ct.codeless.ui.build.test.UiTestStepTest;
 import com.tmobile.ct.codeless.ui.page.modals.CtUiTestRow;
 import com.tmobile.ct.codeless.ui.yaml.test.ControlElementTest;
 
@@ -20,7 +20,7 @@ public class CtUiTestRowTest {
 
 	@Test
 	public void testExcelUiTestRow() {
-		ctUiTestRow.setStep(ExcelUiTestRowTest.createExcelUiTestRow());
+		ctUiTestRow.setStep(UiTestStepTest.createExcelUiTestRow());
 		Assert.assertNotNull(ctUiTestRow.getStep());
 	}
 

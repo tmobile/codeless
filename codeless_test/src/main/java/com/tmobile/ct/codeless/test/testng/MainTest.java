@@ -8,6 +8,7 @@ import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.ct.codeless.core.Execution;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.test.ExecutionContainer;
+import com.tmobile.ct.codeless.test.csv.CsvSuiteBuilder;
 import com.tmobile.ct.codeless.test.excel.ExcelSuiteBuilder;
 
 /**
@@ -31,9 +32,15 @@ public class MainTest {
 		ExecutionContainer.setExecution(execution);
 
 		// build test suite
+		Suite suite = null;
 		String suitePath = Optional.ofNullable(System.getProperty("SUITE.FILE")).orElse("suites/sampletest.xlsx");
-
-		Suite suite = new ExcelSuiteBuilder().build(suitePath);
+		
+		if (System.getProperty("SUITE.FILE") != null) {
+			suite = new ExcelSuiteBuilder().build(suitePath);
+		} else {
+			suitePath = Optional.ofNullable(System.getProperty("SUITE.DIR")).orElse("suites/testard");
+			suite = new CsvSuiteBuilder().build(suitePath);
+		}
 
 		if (suite == null || suite.getTests() == null || suite.getTests().size() == 0) {
 			throw new RuntimeException("Invliad Test Suite, No Tests Found");
@@ -65,9 +72,14 @@ public class MainTest {
 		Arrays.asList(args).forEach(arg -> {
 			String[] parts = arg.trim().split("=");
 			if (parts[0].equalsIgnoreCase("-SUITE")) {
-				System.setProperty("SUITE.FILE", CodelessConfiguration.getSuiteDir() + "/" + parts[1].trim());
+				String fileName = parts[1].trim();
+				if (fileName.contains(".")) { // .xlsx
+					System.setProperty("SUITE.FILE", CodelessConfiguration.getSuiteDir() + "/" + parts[1].trim());
+				} else {
+					System.setProperty("SUITE.DIR", CodelessConfiguration.getSuiteDir() + "/" + parts[1].trim());
+				}
+
 			}
 		});
-
 	}
 }

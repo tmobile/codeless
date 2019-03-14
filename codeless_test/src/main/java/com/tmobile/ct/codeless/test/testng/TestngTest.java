@@ -1,15 +1,11 @@
 package com.tmobile.ct.codeless.test.testng;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.testng.IExecutionListener;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
@@ -20,7 +16,6 @@ import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.test.BasicExecutor;
 import com.tmobile.ct.codeless.test.ExecutionContainer;
-import com.tmobile.ct.codeless.test.excel.SuiteContainer;
 import com.tmobile.ct.codeless.test.extentreport.ExtentTestManager;
 import com.tmobile.ct.codeless.test.extentreport.TestStepReporter;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
@@ -63,7 +58,6 @@ public class TestngTest{
 		// get suite container from execution
 		String id = context.getCurrentXmlTest().getParameter("codeless.suite.id");
 		execution = ExecutionContainer.getExecution();
-		
 		suite = execution.getSuite(id);
 		execution.getSuiteHooks().forEach(hook ->{
 			hook.beforeSuite(suite);

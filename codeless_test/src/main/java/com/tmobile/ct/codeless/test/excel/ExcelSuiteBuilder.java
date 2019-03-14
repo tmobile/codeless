@@ -26,6 +26,7 @@ import com.tmobile.ct.codeless.data.BasicConfig;
 import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.files.ClassPathUtil;
+import com.tmobile.ct.codeless.test.suite.SuiteImpl;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 
 /**
@@ -72,12 +73,11 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 		try {
 			workbook = WorkbookFactory.create(workbookFile);
 		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
 
-		suite = new ExcelSuite(resource);
+		suite = new SuiteImpl(resource);
 
 		Stream<Sheet> sheets = StreamSupport.stream(Spliterators.spliteratorUnknownSize(workbook.sheetIterator(), Spliterator.ORDERED), false);
 		// read test data sheet before sorting / building tests
@@ -88,9 +88,6 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 		return suite;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.SuiteBuilder#getSuite()
-	 */
 	@Override
 	public Suite getSuite() {
 		return null;
@@ -176,11 +173,9 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 			return;
 		}
 
-		if(!StringUtils.isEmpty(env)) {
-			if(!name.toUpperCase().equalsIgnoreCase(env)) {
-				return;
-			}
-		}else if(!fullname.toUpperCase().equalsIgnoreCase(DEFAULT_TEST_DATA)){
+		if (!StringUtils.isEmpty(env) && !name.toUpperCase().equalsIgnoreCase(env)) {
+			return;
+		} else if (!fullname.toUpperCase().equalsIgnoreCase(DEFAULT_TEST_DATA)) {
 			return;
 		}
 

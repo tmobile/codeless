@@ -17,7 +17,7 @@ import com.tmobile.ct.codeless.service.httpclient.Header;
 import com.tmobile.ct.codeless.service.httpclient.Headers;
 import com.tmobile.ct.codeless.service.httpclient.Host;
 import com.tmobile.ct.codeless.service.httpclient.HttpMethod;
-import com.tmobile.ct.codeless.service.test.excel.ExcelTestRow;
+import com.tmobile.ct.codeless.service.test.build.ServiceTestStep;
 
 /**
  * The Class ServiceCache.
@@ -29,7 +29,7 @@ public class SoapRequestCache {
 	/* The cache */
 	private static ConcurrentHashMap<String,ConcurrentHashMap<String,HttpRequest<String>>> cache = new ConcurrentHashMap<>();
 
-	public static HttpRequest getRequest(ExcelTestRow testRow, Test test) throws Exception {
+	public static HttpRequest getRequest(ServiceTestStep testRow, Test test) throws Exception {
 		if(cache.containsKey(testRow.service)) {
 			String[] operations = testRow.operation.split("/");
 			String soapAction = operations[1];
@@ -41,7 +41,7 @@ public class SoapRequestCache {
 		return buildRequest(testRow,test);
 	}
 
-	public static HttpRequest buildRequest(ExcelTestRow testRow, Test test) throws Exception {
+	public static HttpRequest buildRequest(ServiceTestStep testRow, Test test) throws Exception {
 
 		HttpRequest<String> request;
 
