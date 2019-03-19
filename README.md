@@ -115,18 +115,9 @@ mvn clean install
 ```
 After above command runs, it generates a .jar file that has all five components and puts the jar under <INSTALL_ROOT>/example_usage/lib folder.
 
-## Versioning
-
-## Authors
-
 ## License
-Pat to help to put the blurb
-
-## Notice
-Pat to populate the "disclaimer"
+Codeless is released under the [Apache 2.0 License](https://github.com/tmobile/codeless/blob/master/LICENSE)
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+Apart from the awesome T-Mobile FTEs and partners who have been contributing to the project, we want to recognize [Rob Graff](https://github.com/rob-g4) who came up with the initial design and implementation as well as the name **Codeless**. 
