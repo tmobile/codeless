@@ -120,4 +120,4 @@ Codeless is released under the [Apache 2.0 License](https://github.com/tmobile/c
 
 ## Acknowledgments
 
-Apart from the awesome T-Mobile FTEs and partners who have been contributing to the project, we want to recognize [Rob Graff](https://github.com/rob-g4) who came up with the initial design and implementation as well as the name **Codeless**. 
+Apart from the awesome T-Mobile FTEs and partners who have been contributing to the project, we want to shout out specifically to [Rob Graff](https://github.com/rob-g4) who came up with the initial design and implementation as well as the name **Codeless**. 
