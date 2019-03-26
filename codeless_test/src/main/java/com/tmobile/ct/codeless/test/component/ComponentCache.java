@@ -28,7 +28,7 @@ public class ComponentCache {
 	private ComponentCache() {}
 	
 	private static void init() {
-		String path = ClassPathUtil.getAbsolutePath(File.separator+"components");
+		String path = ClassPathUtil.getAbsolutePath(".."+File.separator+"components");
 		FileMapper mapper = new FileMapper(Paths.get(path), "component");
 		files = mapper.map();
 	}

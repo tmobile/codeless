@@ -61,7 +61,9 @@ public class CsvTestBuilder implements TestBuilder {
 		}
 
 		List<Step> steps = buildStep(test, row, header);
-		steps.forEach(step -> step.setTest(test));
+		if(steps != null) {
+			steps.forEach(step -> step.setTest(test));
+		}
 		return steps;
 	}
 
