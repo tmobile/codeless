@@ -1,5 +1,8 @@
 package com.tmobile.ct.codeless.test.excel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
@@ -17,6 +20,7 @@ import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
 import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
+import com.tmobile.ct.codeless.test.component.ComponentCache;
 import com.tmobile.ct.codeless.test.suite.TestImpl;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 import com.tmobile.ct.codeless.ui.build.UiStepBuilder;
@@ -56,9 +60,9 @@ public class ExcelTestBuilder implements TestBuilder{
 		for(Row row: sheet){
 			count++;
 			if(count <1) continue;
-			Step step = parseRow(row);
-			if(step != null){
-				test.addStep(step);
+			List<Step> steps = parseRow(row);
+			if(steps != null){
+				test.addSteps(steps);
 			}
 		}
 
@@ -72,7 +76,7 @@ public class ExcelTestBuilder implements TestBuilder{
 	 * @param row the row
 	 * @return the step
 	 */
-	private Step parseRow(Row row) {
+	private List<Step> parseRow(Row row) {
 		
 		if (row.getCell(0) != null) {
 			
@@ -81,19 +85,25 @@ public class ExcelTestBuilder implements TestBuilder{
 				return null;
 			}
 		}
-		Step step;
+		List<Step> steps = new ArrayList<>();
 		
 		if (getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("SERVICECALL")) {
-			step = buildServiceStep(test, row);
+			steps.add(buildServiceStep(test, row));
 		} else if (getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("CONFIG")) {
 			parseConfigStep(row);
 			return null;
+		} else if(getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("COMPONENT")) {
+			steps.addAll(ComponentCache.getComponent(getSafeStringFromCell(row.getCell(2))));
+			return steps;
 		} else {
-			step = buildUiStep(test, row);
+			steps.add(buildUiStep(test, row));
 		}
 		
-		step.setTest(test);
-		return step;
+		if(steps != null) {
+			steps.forEach(step -> step.setTest(test));
+		}
+		
+		return steps;
 	}
 
 	/**
