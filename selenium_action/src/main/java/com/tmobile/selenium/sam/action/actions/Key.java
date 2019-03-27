@@ -56,7 +56,7 @@ public class Key extends Action implements IAction{
 	@Override
 	public void mainAction() throws Exception {
 		if(element != null){
-			new Actions(driver).click(element.get()).sendKeys(element.get(), key ).build().perform();
+			new Actions(driver).sendKeys(element.get(), key ).build().perform();
 		}else{
 			new Actions(driver).sendKeys(key).build().perform();
 		}
