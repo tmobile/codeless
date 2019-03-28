@@ -48,4 +48,13 @@ public class ExcelSuiteBuilderTest {
 				test.getSteps().forEach( step ->
 					exec.run(step)));
 	}
+
+	@Test
+	public void itShouldRunSuite_Soap(){
+		Suite suites = new ExcelSuiteBuilder().build("/suites/soaptest.xlsx");
+		BasicExecutor exec = new BasicExecutor();
+		suites.getTests().forEach(test ->
+				test.getSteps().forEach( step ->
+						exec.run(step)));
+	}
 }

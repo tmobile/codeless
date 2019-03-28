@@ -111,8 +111,7 @@ public class RestAssuredHttpClient implements HttpClient{
 	 */
 	private Response chooseMethod(){
 
-		RestAssured rest = new RestAssured();
-		rest.useRelaxedHTTPSValidation();
+		RestAssured.useRelaxedHTTPSValidation();
 		Response response = null;
 		String target = "";
 		if(request.getOperationPath() != null) {
@@ -120,7 +119,7 @@ public class RestAssuredHttpClient implements HttpClient{
 		}
 		switch (request.getHttpMethod()){
 		case POST:
-			response = rest.given(reqSpec).post(target);
+			response = RestAssured.given(reqSpec).post(target);
 			break;
 		case PUT:
 			response = RestAssured.given(reqSpec).put(target);//reqSpec.put(target);
