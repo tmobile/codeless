@@ -27,5 +27,6 @@ public class XmlPathTest extends BaseWiremockTest{
     @Test
     public void shouldGetActual(){
         assertThat(accessor.getActual(call)).isEqualTo("testing");
+        assertThat(accessor.getActual(call)).isNotEqualTo("othermessage");
     }
 }
