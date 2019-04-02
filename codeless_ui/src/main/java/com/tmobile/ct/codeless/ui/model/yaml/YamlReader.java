@@ -26,8 +26,6 @@ import org.yaml.snakeyaml.Yaml;
 import com.tmobile.ct.codeless.files.ClassPathUtil;
 import com.tmobile.ct.codeless.ui.model.ControlElement;
 
-import javax.annotation.Resource;
-
 /**
  * The Class YamlReader.
  *
@@ -46,30 +44,32 @@ public class YamlReader {
 	/**
 	 * Read control.
 	 *
-	 * @param basePath the model name
+	 * @param modelName the model name
+	 * @param targetName the target name
 	 * @return the map
 	 */
-	public static Map<String, ControlElement> ReadControl(String basePath) {
+	public static Map<String, ControlElement> ReadControl(String modelName, String targetName) {
 
 
-		return	initializeYaml(basePath);
+		return	initializeYaml(modelName,targetName);
 
 	}
 
 	/**
 	 * Initialize yaml.
 	 *
-	 * @param basePath the basepath
+	 * @param modelName the model name
+	 * @param targetName the target name
 	 * @return the map
 	 */
-	private static Map<String, ControlElement> initializeYaml(String basePath) {
+	private static Map<String, ControlElement> initializeYaml(String modelName, String targetName) {
 		Yaml yaml = new Yaml();
 		Map<String, Map<String, String>> mapyaml = null;
 		Map<String, ControlElement> yamldata = new HashMap<String, ControlElement>();
 		ControlElement ctrlElem = null;
 		try {
-			File path = new File(ClassPathUtil.path(basePath));
-			if (path.exists()) {
+			File path = new File(ClassPathUtil.getAbsolutePath(".."+File.separator+"models/" + modelName + "/" + targetName +".yaml"));
+			if (path != null) {
 				InputStream ios = new FileInputStream(path);
 				mapyaml = (Map<String, Map<String, String>>) yaml.load(ios);
 				if (mapyaml != null) {

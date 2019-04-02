@@ -15,7 +15,10 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.test.csv;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.csv.CSVRecord;
 
 import com.tmobile.ct.codeless.core.Step;
@@ -27,6 +30,7 @@ import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
 import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
+import com.tmobile.ct.codeless.test.component.ComponentCache;
 import com.tmobile.ct.codeless.test.suite.TestImpl;
 import com.tmobile.ct.codeless.ui.build.UiStepBuilder;
 import com.tmobile.ct.codeless.ui.build.UiStepInput;
@@ -53,16 +57,16 @@ public class CsvTestBuilder implements TestBuilder {
 		test.setTestData(testData);
 		CSVRecord header = rows.next();
 		while (rows.hasNext()) {
-			Step step = parseRow(rows.next(), header);
-			if (step != null) {
-				test.addStep(step);
+			List<Step> steps = parseRow(rows.next(), header);
+			if (steps != null) {
+				test.addSteps(steps);
 			}
 		}
 
 		return test;
 	}
 
-	private Step parseRow(CSVRecord row, CSVRecord header) {
+	private List<Step> parseRow(CSVRecord row, CSVRecord header) {
 
 		if (row.get(0) != null) {
 			String stepName = row.get(0);
@@ -71,24 +75,36 @@ public class CsvTestBuilder implements TestBuilder {
 			}
 		}
 
-		Step step = buildStep(test, row, header);
-		step.setTest(test);
-		return step;
+		List<Step> steps = buildStep(test, row, header);
+		if(steps != null) {
+			steps.forEach(step -> step.setTest(test));
+		}
+		return steps;
 	}
 
-	private Step buildStep(Test test, CSVRecord row, CSVRecord header) {
+	private List<Step> buildStep(Test test, CSVRecord row, CSVRecord header) {
 
 		Iterator<String> cells = row.iterator();
 		Iterator<String> headerCell = header.iterator();
 
-		if (row.get(1).equalsIgnoreCase("SERVICECALL")) {
+		List<Step> steps = new ArrayList<>();
+		
+		String actionType = row.get(1);
+		
+		if ("SERVICECALL".equalsIgnoreCase(actionType)) {
 
 			ServiceCallInput input = new ServiceCallInput();
 			while (cells.hasNext() && headerCell.hasNext()) {
 				serviceStepBuilder.buildServiceStep(headerCell.next(), cells.next(), input, test);
 			}
-
-			return serviceStepBuilder.build(test, input);
+			steps.add(serviceStepBuilder.build(test, input));
+			return steps;
+			
+		} else if ("COMPONENT".equalsIgnoreCase(actionType)) {
+			
+			steps = ComponentCache.getComponent(row.get(2));
+			return steps;
+			
 		} else {
 
 			UiStepInput input = new UiStepInput();
@@ -97,7 +113,8 @@ public class CsvTestBuilder implements TestBuilder {
 				input.add(headerValue, new MultiValue<String, String>(headerValue, cells.next()));
 			}
 
-			return uiStepBuilder.build(input, test);
+			steps.add(uiStepBuilder.build(input, test));
+			return steps;
 		}
 	}
 
