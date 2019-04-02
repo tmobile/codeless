@@ -54,8 +54,6 @@ public interface Test extends Trackable{
 	 */
 	void addStep(Step step);
 	
-	void addSteps(List<Step> steps);
-	
 	/**
 	 * Sets the config.
 	 *
@@ -147,5 +145,7 @@ public interface Test extends Trackable{
 	 * @return the log proxies
 	 */
 	List<LogProxy> getLogProxies();
+
+
 	
 }
