@@ -68,7 +68,7 @@ public class YamlReader {
 		Map<String, ControlElement> yamldata = new HashMap<String, ControlElement>();
 		ControlElement ctrlElem = null;
 		try {
-			File path = new File(ClassPathUtil.getAbsolutePath("../models/" + modelName + "/" + targetName +".yaml"));
+			File path = new File(ClassPathUtil.getAbsolutePath(".."+File.separator+"models/" + modelName + "/" + targetName +".yaml"));
 			if (path != null) {
 				InputStream ios = new FileInputStream(path);
 				mapyaml = (Map<String, Map<String, String>>) yaml.load(ios);

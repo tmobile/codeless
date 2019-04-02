@@ -1,0 +1,102 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:mo="http://esp.t-mobile.com/mo" xmlns:eo="http://esp.t-mobile.com/2012/eo">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ns2:activateSubscriberRequest xsi:type="ns2:ActivateSubscriberRequest" serviceTransactionId="000055106101" xmlns:ns2="http://esp.t-mobile.com/mo" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+         <header xmlns="http://esp.t-mobile.com/2012/eo">
+            <sender>
+               <senderId>METROv2</senderId>
+               <channelId>METROv2</channelId>
+               <applicationId>AAM</applicationId>
+            </sender>
+         </header>
+         <subscriber id="28174523301">
+            <ns1:MSISDN xmlns:ns1="http://esp.t-mobile.com/2012/eo">7173009282</ns1:MSISDN>
+            <ns1:subscriberContact xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:personName>
+                  <ns1:firstName>Automation</ns1:firstName>
+                  <ns1:familyName>Test</ns1:familyName>
+               </ns1:personName>
+               <ns1:preferredLanguage>en-US</ns1:preferredLanguage>
+            </ns1:subscriberContact>
+            <ns1:installedProduct actionCode="ADD" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:product xsi:type="ns1:ProductProfile">
+                  <ns1:key keyName="FeatureCode">SL7</ns1:key>
+               </ns1:product>
+               <ns1:specificationGroup name="Bucket">
+                  <ns1:specificationValue measurementUnit="GB" name="BucketSize">5</ns1:specificationValue>
+               </ns1:specificationGroup>
+            </ns1:installedProduct>
+            <ns1:installedProduct actionCode="ADD" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:product xsi:type="ns1:ProductProfile">
+                  <ns1:key keyName="FeatureCode">VMG</ns1:key>
+               </ns1:product>
+            </ns1:installedProduct>
+            <ns1:installedProduct actionCode="ADD" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:product xsi:type="ns1:ProductProfile">
+                  <ns1:key keyName="FeatureCode">CLIP</ns1:key>
+               </ns1:product>
+            </ns1:installedProduct>
+            <ns1:installedProduct actionCode="ADD" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:product xsi:type="ns1:ProductProfile">
+                  <ns1:key keyName="FeatureCode">CW</ns1:key>
+               </ns1:product>
+            </ns1:installedProduct>
+            <ns1:installedProduct actionCode="ADD" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:product xsi:type="ns1:ProductProfile">
+                  <ns1:key keyName="FeatureCode">EHR</ns1:key>
+               </ns1:product>
+            </ns1:installedProduct>
+            <ns1:installedProduct actionCode="ADD" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:product xsi:type="ns1:ProductProfile">
+                  <ns1:key keyName="FeatureCode">SMS</ns1:key>
+               </ns1:product>
+            </ns1:installedProduct>
+            <ns1:installedProduct actionCode="ADD" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:product xsi:type="ns1:ProductProfile">
+                  <ns1:key keyName="FeatureCode">MMS</ns1:key>
+               </ns1:product>
+            </ns1:installedProduct>
+            <ns1:installedProduct actionCode="ADD" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:product xsi:type="ns1:ProductProfile">
+                  <ns1:key keyName="FeatureCode">STD</ns1:key>
+               </ns1:product>
+            </ns1:installedProduct>
+            <ns1:installedProduct actionCode="ADD" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:product xsi:type="ns1:ProductProfile">
+                  <ns1:key keyName="FeatureCode">VVM</ns1:key>
+               </ns1:product>
+            </ns1:installedProduct>
+            <ns1:installedProduct actionCode="ADD" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:key keyName="IMSI" usageContext="">310260968217355</ns1:key>
+               <ns1:product xsi:type="ns1:ProductProfile">
+                  <ns1:productCategory>SIM</ns1:productCategory>
+               </ns1:product>
+               <ns1:serialNumber>8901260963182173554</ns1:serialNumber>
+            </ns1:installedProduct>
+            <ns1:installedProduct actionCode="ADD" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:product xsi:type="ns1:ProductProfile">
+                  <ns1:productCategory>DEVICE</ns1:productCategory>
+               </ns1:product>
+               <ns1:serialNumber>310260690004546</ns1:serialNumber>
+            </ns1:installedProduct>
+            <ns1:installedProduct actionCode="ADD" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:product xsi:type="ns1:ProductProfile">
+                  <ns1:productCategory>BILLCYCLE</ns1:productCategory>
+               </ns1:product>
+               <ns1:specificationGroup name="BILLCYCLE">
+                  <ns1:specificationValue name="BillCycleCloseDay">18</ns1:specificationValue>
+               </ns1:specificationGroup>
+            </ns1:installedProduct>
+            <ns1:specificationGroup name="PORTING" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:specificationValue name="PORTTYPE">RE</ns1:specificationValue>
+            </ns1:specificationGroup>
+            <ns1:specificationGroup name="Provisioning" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:specificationValue name="ProvisioningSystem">EDA</ns1:specificationValue>
+            </ns1:specificationGroup>
+            <ns1:specificationGroup name="RuleEngine" xmlns:ns1="http://esp.t-mobile.com/2012/eo">
+               <ns1:specificationValue name="">API</ns1:specificationValue>
+            </ns1:specificationGroup>
+         </subscriber>
+      </ns2:activateSubscriberRequest>
+   </soapenv:Body>
+</soapenv:Envelope>

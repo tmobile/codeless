@@ -1,0 +1,3 @@
+"Step","Action","Target","Input"
+"Load Google Page","goto","","https://www.google.com"
+"type in some text","sendKeys","Google.googlepage.searchbar","test"

@@ -26,6 +26,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import com.tmobile.ct.codeless.core.Assertion;
+import com.tmobile.ct.codeless.core.Component;
 import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Status;
@@ -87,6 +88,8 @@ public class UiStepImpl implements UiStep {
 	private CompletableFuture<WebDriver> driver = new CompletableFuture<>();
 
 	private List<TestDataInput> testDataInputs;
+	
+	private Component component;
 
 	/**
 	 * Instantiates a new ui step impl.
@@ -497,6 +500,14 @@ public class UiStepImpl implements UiStep {
 		this.requestModifiers = requestModifiers;
 	}
 
+	@Override
+	public Component getComponent() {
+		return component;
+	}
 
-
+	@Override
+	public void setComponent(Component component) {
+		this.component = component;
+	}
 }
+

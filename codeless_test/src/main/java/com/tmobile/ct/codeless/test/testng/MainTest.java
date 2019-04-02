@@ -58,7 +58,7 @@ public class MainTest {
 		}
 
 		if (suite == null || suite.getTests() == null || suite.getTests().size() == 0) {
-			throw new RuntimeException("Invliad Test Suite, No Tests Found");
+			throw new RuntimeException("Invalid Test Suite, No Tests Found");
 		}
 
 		suite.setExecution(execution);
