@@ -83,6 +83,11 @@ public class BaseWiremockTest {
 				  .withStatus(200)
 				  .withHeader("Content-Type", "application/json")
 				  .withBody("\"This is a HEAD test\": \"WireMock\"")));
+		stubFor(get(urlPathMatching("/do/xml"))
+				.willReturn(aResponse()
+						.withStatus(200)
+						.withHeader("Content-Type", "application/json")
+						.withBody("<response><message>testing</message></response>")));
 	}
 	
 	/*
@@ -95,6 +100,16 @@ public class BaseWiremockTest {
 		req.setPort(8080);
 		req.setHost(new Host("http://localhost"));
 		
+		return req;
+	}
+
+	protected HttpRequest buildXmlRequest() {
+		HttpRequest req = new HttpRequestImpl();
+		req.setOperationPath(new OperationPath("/xml"));
+		req.setServicePath(new ServicePath("/do"));
+		req.setPort(8080);
+		req.setHost(new Host("http://localhost"));
+
 		return req;
 	}
 }

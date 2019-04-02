@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.ui.build;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,8 @@ import com.tmobile.selenium.sam.action.types.WaitType;
 import com.tmobile.selenium.sam.action.types.WindowType;
 import com.tmobile.selenium.sam.config.ActionConfig;
 import com.tmobile.selenium.sam.config.ConfigManager;
+
+import static com.tmobile.ct.codeless.configuration.CodelessConfiguration.getModelDir;
 
 /**
  * The Class ExcelUiStepBuilder.
@@ -259,7 +262,8 @@ public class UiStepBuilder {
 			String appName = parts[0];
 			String modelName = parts[1];
 			String targetName = parts[2];
-			Map<String, ControlElement> controls = YamlReader.ReadControl(appName, modelName);
+			String basePath = getModelDir() + File.separator + appName + File.separator + modelName +".yaml";
+			Map<String, ControlElement> controls = YamlReader.ReadControl(basePath);
 			if(controls != null && controls.containsKey(targetName)){
 				ControlElement control = controls.get(targetName);
 				return new WebElementProxyFactory().fromControlElement(step.getWebDriver(), control);
