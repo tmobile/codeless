@@ -45,21 +45,5 @@ public class CsvSuiteBuilderTest {
 			});
 		});
 	}
-	
-	@Test
-	public void itShouldBuildTestSuiteWithComponent() {
-
-		CsvSuiteBuilder builder = new CsvSuiteBuilder();
-		Suite suite = builder.build("/suites/testComponent");
-		assertNotNull(suite);
-		assertNotNull(suite.getConfig());
-		assertNotNull(suite.getTests());
-		suite.getTests().forEach(test -> {
-			assertNotNull(test.getName());
-			test.getSteps().forEach(step -> {
-				assertNotNull(step.getName());
-			});
-		});
-	}
 
 }
