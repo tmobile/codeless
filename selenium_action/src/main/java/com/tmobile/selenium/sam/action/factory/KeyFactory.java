@@ -20,8 +20,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import com.tmobile.selenium.sam.action.actions.Key;
-import com.tmobile.selenium.sam.action.actions.Send;
-import com.tmobile.selenium.sam.action.driver.ActionDriver;
 import com.tmobile.selenium.sam.action.utils.Element;
 import com.tmobile.selenium.sam.config.ActionConfig;
 
@@ -48,9 +46,6 @@ public class KeyFactory extends ActionFactory<KeyFactory> {
 		super(driver, appConfig);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.tmobile.eqre.auto.sam.action.factory.ActionFactory#execute()
-	 */
 	public void execute(){
 		Key key = new Key(driver, this.element, this.key, actionParams);
 		actionDriver.run(key);

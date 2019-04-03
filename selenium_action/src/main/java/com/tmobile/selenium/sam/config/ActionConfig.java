@@ -17,10 +17,10 @@ package com.tmobile.selenium.sam.config;
 
 import java.util.List;
 
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 
 import com.tmobile.selenium.sam.action.actions.conditions.Condition;
-import com.tmobile.selenium.sam.action.report.StepResult;
 import com.tmobile.selenium.sam.action.types.ActionType;
 import com.tmobile.selenium.sam.action.types.ClickType;
 import com.tmobile.selenium.sam.action.types.MoveType;
@@ -83,9 +83,11 @@ public class ActionConfig {
 	public NavigateType navigateType = NavigateType.back;
 	
 	public MoveType moveType = MoveType.javascript;
+	
+	public Keys keyType;
 
 	/** The send keys delay. */
-	public long sendKeysDelay = 500;
+	public long sendKeysDelay = 5;
 	
 	/**
 	 * Instantiates a new action config.
@@ -117,6 +119,8 @@ public class ActionConfig {
 		sendKeysType = config.sendKeysType;
 		navigateType = config.navigateType;
 		moveType = config.moveType;
+		keyType = config.keyType;
+		sendKeysDelay = config.sendKeysDelay;
 	}
 
 }

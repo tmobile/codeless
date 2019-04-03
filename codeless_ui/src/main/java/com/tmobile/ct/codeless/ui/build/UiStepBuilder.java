@@ -17,6 +17,7 @@ package com.tmobile.ct.codeless.ui.build;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import com.tmobile.ct.codeless.core.Test;
@@ -42,6 +44,7 @@ import com.tmobile.ct.codeless.ui.action.Cookie;
 import com.tmobile.ct.codeless.ui.action.Drag;
 import com.tmobile.ct.codeless.ui.action.GoTo;
 import com.tmobile.ct.codeless.ui.action.IFrame;
+import com.tmobile.ct.codeless.ui.action.Key;
 import com.tmobile.ct.codeless.ui.action.Move;
 import com.tmobile.ct.codeless.ui.action.Select;
 import com.tmobile.ct.codeless.ui.action.SwitchDefault;
@@ -240,6 +243,9 @@ public class UiStepBuilder {
 		case "MOVE":
 			action = new Move(step.getWebDriver(), config, element);
 			break;
+		case "KEY":
+			action = new Key(step.getWebDriver(), config, element);
+			break;
 		}
 		return action;
 	}
@@ -333,6 +339,9 @@ public class UiStepBuilder {
 			case "MOVETYPE":
 				config.moveType = MoveType.valueOf(value);
 				break;
+			case "KEYTYPE":
+				config.keyType = Keys.valueOf(value);
+				break;
 			}
 		}
 		return config;
@@ -372,7 +381,11 @@ public class UiStepBuilder {
 						testRow.setTarget(value);
 						break;
 					case INPUT:
-						testRow.setInput(value);
+						if (value.contains("E+")) {
+							testRow.setInput(new BigDecimal(value).toPlainString());
+						} else {
+							testRow.setInput(value);
+						}
 						break;
 					case TESTDATA:
 						testRow.getTestData().add(value);
