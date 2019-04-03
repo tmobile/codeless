@@ -20,7 +20,6 @@ import java.util.List;
 import org.openqa.selenium.WebDriver;
 
 import com.tmobile.ct.codeless.core.Assertion;
-import com.tmobile.ct.codeless.core.Component;
 import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Status;
@@ -239,18 +238,6 @@ public class CtUiTestRow implements Step, Trackable {
 	public void setStatus(Status status) {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public Component getComponent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setComponent(Component component) {
-		// TODO Auto-generated method stub
-		
 	}
 
 
