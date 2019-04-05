@@ -20,6 +20,12 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>com.tmobile.ct.codeless.core</groupId>
+			<artifactId>codeless_core</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>${selenium.version}</version>
