@@ -13,54 +13,42 @@
  *  * License for the specific language governing permissions and limitations under
  *  * the License.
  ******************************************************************************/
-package com.tmobile.ct.codeless.core;
+package com.tmobile.ct.codeless.test.component;
 
-/**
- * The Interface Step.
- *
- * @author Rob Graff
- */
-public interface Step extends Executable, Validatable{
+import java.util.ArrayList;
+import java.util.List;
 
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	String getName();
+import com.tmobile.ct.codeless.core.Component;
+import com.tmobile.ct.codeless.core.Step;
+
+public class ComponentImpl implements Component{
+
+	private List<Step> steps = new ArrayList<>();
+	private String name = "";
 	
-	/**
-	 * Sets the name.
-	 *
-	 * @param name the new name
-	 */
-	void setName(String name);
-	
-	/**
-	 * Gets the test.
-	 *
-	 * @return the test
-	 */
-	Test getTest();
-	
-	/**
-	 * Sets the test.
-	 *
-	 * @param test the new test
-	 */
-	void setTest(Test test);
-	
-	/**
-	 * Gets the step's parent component
-	 * 
-	 * @return the parent component
-	 */
-	Component getComponent();
-	
-	/**
-	 * Set the step's parent component
-	 * 
-	 * @param parent component
-	 */
-	void setComponent(Component component);
+	@Override
+	public List<Step> getSteps() {
+		return steps;
+	}
+
+	@Override
+	public void addStep(Step step) {
+		steps.add(step);
+	}
+
+	@Override
+	public void setSteps(List<Step> steps) {
+		this.steps = steps;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+
 }

@@ -20,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import com.tmobile.ct.codeless.core.Assertion;
+import com.tmobile.ct.codeless.core.Component;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Retryable;
 import com.tmobile.ct.codeless.core.Status;
@@ -74,6 +75,8 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	
 	/** The is complete. */
 	private CompletableFuture<Boolean> isComplete = new CompletableFuture<>();
+	
+	private Component component;
 
 	/**
 	 * Instantiates a new call.
@@ -361,5 +364,15 @@ INFO
 	public void markComplete() {
 		isComplete.complete(true);
 
+	}
+
+	@Override
+	public Component getComponent() {
+		return component;
+	}
+
+	@Override
+	public void setComponent(Component component) {
+		this.component = component;
 	}
 }

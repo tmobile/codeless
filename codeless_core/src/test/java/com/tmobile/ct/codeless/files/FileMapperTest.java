@@ -13,54 +13,25 @@
  *  * License for the specific language governing permissions and limitations under
  *  * the License.
  ******************************************************************************/
-package com.tmobile.ct.codeless.core;
+package com.tmobile.ct.codeless.files;
 
-/**
- * The Interface Step.
- *
- * @author Rob Graff
- */
-public interface Step extends Executable, Validatable{
+import java.nio.file.Paths;
+import java.util.concurrent.ConcurrentHashMap;
 
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	String getName();
+import static org.assertj.core.api.Assertions.*;
+import org.junit.Test;
+
+public class FileMapperTest {
 	
-	/**
-	 * Sets the name.
-	 *
-	 * @param name the new name
-	 */
-	void setName(String name);
-	
-	/**
-	 * Gets the test.
-	 *
-	 * @return the test
-	 */
-	Test getTest();
-	
-	/**
-	 * Sets the test.
-	 *
-	 * @param test the new test
-	 */
-	void setTest(Test test);
-	
-	/**
-	 * Gets the step's parent component
-	 * 
-	 * @return the parent component
-	 */
-	Component getComponent();
-	
-	/**
-	 * Set the step's parent component
-	 * 
-	 * @param parent component
-	 */
-	void setComponent(Component component);
+	@Test
+	public void itShouldMapNestedFolders() {
+		String path = ClassPathUtil.getAbsolutePath("/components");
+		
+		FileMapper mapper = new FileMapper(Paths.get(path), "component");
+		
+		ConcurrentHashMap<String, FileDotIdentifier> files = mapper.map();
+		
+		assertThat(files.size()).isEqualTo(4);
+	}
+
 }

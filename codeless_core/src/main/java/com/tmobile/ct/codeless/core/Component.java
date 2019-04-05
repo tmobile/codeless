@@ -15,52 +15,17 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.core;
 
-/**
- * The Interface Step.
- *
- * @author Rob Graff
- */
-public interface Step extends Executable, Validatable{
+import java.util.List;
 
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
+public interface Component {
+
+	List<Step> getSteps();
+	
+	void addStep(Step step);
+	
+	void setSteps(List<Step> steps);
+	
 	String getName();
 	
-	/**
-	 * Sets the name.
-	 *
-	 * @param name the new name
-	 */
 	void setName(String name);
-	
-	/**
-	 * Gets the test.
-	 *
-	 * @return the test
-	 */
-	Test getTest();
-	
-	/**
-	 * Sets the test.
-	 *
-	 * @param test the new test
-	 */
-	void setTest(Test test);
-	
-	/**
-	 * Gets the step's parent component
-	 * 
-	 * @return the parent component
-	 */
-	Component getComponent();
-	
-	/**
-	 * Set the step's parent component
-	 * 
-	 * @param parent component
-	 */
-	void setComponent(Component component);
 }
