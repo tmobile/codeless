@@ -17,6 +17,7 @@ package com.tmobile.selenium.sam.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,6 +48,9 @@ public class SamConfig {
 	
 	/** The window. */
 	public Map<String,String> window = new HashMap<>();
+
+	/** The Constant CONFIG_WAIT_TIME. */
+	private static final String CONFIG_WAIT_TIME = "waitTime";
 	
 	/**
 	 * Merge.
@@ -64,6 +68,22 @@ public class SamConfig {
 		window.putAll(removeBlankValue(config.window));
 		
 		return this;
+	}
+
+	/**
+	 * Merge.
+	 *
+	 * @param config the config
+	 * @return the sam config
+	 */
+	public SamConfig mergeGlobalProperties(SamConfig config, Properties globalproperties){
+
+		String waitTime = globalproperties.getProperty(CONFIG_WAIT_TIME);
+		if (waitTime !=null && !waitTime.trim().equals("")) {
+			config.action.put(CONFIG_WAIT_TIME,waitTime.trim());
+		}
+
+		return config;
 	}
 	
 	/**

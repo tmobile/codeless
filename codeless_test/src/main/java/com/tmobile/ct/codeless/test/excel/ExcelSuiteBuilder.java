@@ -17,11 +17,13 @@ package com.tmobile.ct.codeless.test.excel;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -66,6 +68,9 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 	private static final String DEFAULT_TEST_DATA = "D-DATASHEET";
 
 	private static final String SHEET_TEST_DATA = "SHEET-TEST_DATA";
+
+	/** The Constant CONFIG_WAIT_TIME. */
+	private static final String CONFIG_WAIT_TIME = "waitTime";
 
 	/** The formatter. */
 	private DataFormatter formatter = new DataFormatter();
@@ -155,6 +160,8 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 	 */
 	private Config parseConfigSheet(Sheet sheet) {
 		Config config = new BasicConfig();
+		boolean foundWaitTimeConfig = false;
+		Properties globalproperties = CodelessConfiguration.getProperties();
 		for(Row row: sheet){
 
 			String key = formatter.formatCellValue(row.getCell(0));
@@ -172,7 +179,19 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 			SourcedDataItem<String,TestDataSource> item = new SourcedDataItem<>(key, value);
 			config.put(key, item);
 
+			if (key.toString().equals(CONFIG_WAIT_TIME)) {
+				globalproperties.put(CONFIG_WAIT_TIME , formatter.formatCellValue(row.getCell(1)));
+				CodelessConfiguration.setProperties(globalproperties);
+				foundWaitTimeConfig=true;
+			}
+
 		}
+
+		if (!foundWaitTimeConfig && globalproperties!=null){
+			globalproperties.remove(CONFIG_WAIT_TIME);
+			CodelessConfiguration.setProperties(globalproperties);
+		}
+
 		return config;
 	}
 
