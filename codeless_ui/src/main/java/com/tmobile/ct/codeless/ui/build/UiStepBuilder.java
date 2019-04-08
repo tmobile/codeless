@@ -17,6 +17,7 @@ package com.tmobile.ct.codeless.ui.build;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -380,7 +381,11 @@ public class UiStepBuilder {
 						testRow.setTarget(value);
 						break;
 					case INPUT:
-						testRow.setInput(value);
+						if (value.contains("E+")) {
+							testRow.setInput(new BigDecimal(value).toPlainString());
+						} else {
+							testRow.setInput(value);
+						}
 						break;
 					case TESTDATA:
 						testRow.getTestData().add(value);

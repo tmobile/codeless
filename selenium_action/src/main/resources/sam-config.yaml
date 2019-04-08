@@ -24,10 +24,10 @@ action:
   # make every action optional by default
   optional: false
   
-  clickType: click
+  clickType: javascript
   selectType: visibleText
   sendKeysType: sendKeys
-  sendKeysDelay: 500
+  sendKeysDelay: 5
   
 click:
 

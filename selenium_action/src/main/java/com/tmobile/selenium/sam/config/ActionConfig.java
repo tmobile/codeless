@@ -87,7 +87,7 @@ public class ActionConfig {
 	public Keys keyType;
 
 	/** The send keys delay. */
-	public long sendKeysDelay = 500;
+	public long sendKeysDelay = 5;
 	
 	/**
 	 * Instantiates a new action config.
@@ -120,6 +120,7 @@ public class ActionConfig {
 		navigateType = config.navigateType;
 		moveType = config.moveType;
 		keyType = config.keyType;
+		sendKeysDelay = config.sendKeysDelay;
 	}
 
 }
