@@ -170,12 +170,21 @@ public class WebDriverFactory {
 		String hub = Optional.fromNullable(testConfig.get("webdriver.hub").fullfill()).or(EMPTY);
 		String parentTunnel = Optional.fromNullable(testConfig.get("webdriver.parentTunnel").fullfill()).or(EMPTY);
 		String tunnelIdentifier = Optional.fromNullable(testConfig.get("webdriver.tunnelIdentifier").fullfill()).or(EMPTY);
+		String sboxToken = Optional.fromNullable(testConfig.get("webdriver.e34:token").fullfill()).or(EMPTY);
+		String sboxVideo = Optional.fromNullable(testConfig.get("webdriver.e34:video").fullfill()).or(EMPTY);
+		String testName = Optional.fromNullable(testConfig.get("webdriver.e34:l_testName").fullfill()).or(EMPTY);
+		String testTimeout = Optional.fromNullable(testConfig.get("webdriver.e34:per_test_timeout_ms").fullfill()).or(EMPTY);
 		Map<String, String> additionalProperties = new HashMap<String, String>();
 		additionalProperties.put("platform", hubOS);
 		additionalProperties.put("version", plateformVersion);
 		additionalProperties.put("parentTunnel",parentTunnel);
 		additionalProperties.put("tunnelIdentifier", tunnelIdentifier);
-		
+
+		//adding support for sbox execution.
+		additionalProperties.put("e34:token", sboxToken);
+		additionalProperties.put("e34:video", sboxVideo);
+		additionalProperties.put("e34:l_testName", testName);
+		additionalProperties.put("e34:per_test_timeout_ms", testTimeout);
 
 		DesiredCapabilities desiredCap = platform.createCapabilities().merge(new DesiredCapabilities(additionalProperties));
 
