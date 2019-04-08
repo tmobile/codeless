@@ -171,5 +171,10 @@ public class TestImpl implements Test{
 	public List<LogProxy> getLogProxies() {
 		return logProxies;
 	}
+	
+	@Override
+	public void addSteps(List<Step> steps) {
+		this.steps.addAll(steps);
+	}
 
 }

@@ -49,4 +49,18 @@ public interface Step extends Executable, Validatable{
 	 * @param test the new test
 	 */
 	void setTest(Test test);
+	
+	/**
+	 * Gets the step's parent component
+	 * 
+	 * @return the parent component
+	 */
+	Component getComponent();
+	
+	/**
+	 * Set the step's parent component
+	 * 
+	 * @param parent component
+	 */
+	void setComponent(Component component);
 }
