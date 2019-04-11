@@ -18,9 +18,11 @@ package com.tmobile.selenium.sam.config;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.selenium.sam.action.types.ActionType;
 import com.tmobile.selenium.sam.action.types.ClickType;
 import com.tmobile.selenium.sam.action.types.SelectType;
@@ -75,7 +77,15 @@ public class ConfigManager {
 			e.printStackTrace();
 		}
 
-		masterConfig = mergeConfigSources(samConfigDefault, userConfig);
+		Properties properties = null;
+
+		try {
+			properties = CodelessConfiguration.getProperties();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		masterConfig = mergeConfigSources(samConfigDefault, userConfig,properties);
 	}
 
 	/**
@@ -85,17 +95,20 @@ public class ConfigManager {
 	 * @param userConfig the user config
 	 * @return the sam config
 	 */
-	public static SamConfig mergeConfigSources(SamConfig samConfigDefault, SamConfig userConfig) {
+	public static SamConfig mergeConfigSources(SamConfig samConfigDefault, SamConfig userConfig, Properties globalproperties) {
 
 		if (samConfigDefault == null) {
 			samConfigDefault = new SamConfig();
 		}
 
 		if (userConfig != null) {
-			return samConfigDefault.merge(userConfig);
-		} else {
-			return samConfigDefault;
+			samConfigDefault.merge(userConfig);
 		}
+
+		if (globalproperties != null) {
+			samConfigDefault = samConfigDefault.mergeGlobalProperties(samConfigDefault,globalproperties);
+		}
+		return samConfigDefault;
 	}
 
 	/**
