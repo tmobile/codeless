@@ -70,10 +70,8 @@ public class WebDriverFactory {
 	 * @param config the new config
 	 */
 	public static void setConfig(Config config) {
-
 		// setup properties for driver creation
 		testConfig = config;
-
 	}
 
 	/**
@@ -98,35 +96,41 @@ public class WebDriverFactory {
 		String webDriverPath = "";
 		String path = System.getProperty("user.dir");
 		platformType = Optional.fromNullable(testConfig.get("platform-type").fullfill()).or(EMPTY);
-		String runLocal = Optional.fromNullable(testConfig.get("webdriver.runlocal").fullfill()).or(EMPTY);
-		if ("false".equalsIgnoreCase(runLocal)) {
-			return createRemoteDriver(platformType);
-		}
-		switch (platformType.toLowerCase()) {
-		case "firefox": {
-			webDriver = "webdriver.gecko.driver";
-			if (testConfig.get("webdriver.path.firefox") == null)	return null;
-			webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.firefox").fullfill());
-			System.setProperty(webDriver, webDriverPath);
-			driver = new FirefoxDriver();
-			break;
-		}
-		case "microsoftedge": {
-			webDriver = "webdriver.ie.driver";
-			if (testConfig.get("webdriver.path.ie") == null)	return null;
-			webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.ie").fullfill());
-			System.setProperty(webDriver, webDriverPath);
-			driver = new InternetExplorerDriver();
-			break;
-		}
-		default: {
-			webDriver = "webdriver.chrome.driver";
-			if (testConfig.get("webdriver.path.chrome") == null)	return null;
-			webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.chrome").fullfill());
-			System.setProperty(webDriver, webDriverPath);
-			driver = new ChromeDriver();
-			break;
-		}
+
+		if ("iPad".equalsIgnoreCase(platformType)) {
+			createMobileWebDriver(platformType); //create iPad WebDriver
+		} else {
+
+			String runLocal = Optional.fromNullable(testConfig.get("webdriver.runlocal").fullfill()).or(EMPTY);
+			if ("false".equalsIgnoreCase(runLocal)) {
+				return createRemoteDriver(platformType);
+			}
+			switch (platformType.toLowerCase()) {
+				case "firefox": {
+					webDriver = "webdriver.gecko.driver";
+					if (testConfig.get("webdriver.path.firefox") == null)	return null;
+					webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.firefox").fullfill());
+					System.setProperty(webDriver, webDriverPath);
+					driver = new FirefoxDriver();
+					break;
+				}
+				case "microsoftedge": {
+					webDriver = "webdriver.ie.driver";
+					if (testConfig.get("webdriver.path.ie") == null)	return null;
+					webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.ie").fullfill());
+					System.setProperty(webDriver, webDriverPath);
+					driver = new InternetExplorerDriver();
+					break;
+				}
+				default: {
+					webDriver = "webdriver.chrome.driver";
+					if (testConfig.get("webdriver.path.chrome") == null)	return null;
+					webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.chrome").fullfill());
+					System.setProperty(webDriver, webDriverPath);
+					driver = new ChromeDriver();
+					break;
+				}
+			}
 		}
 		initWebDriver();
 		return driver;
@@ -175,19 +179,47 @@ public class WebDriverFactory {
 		additionalProperties.put("version", plateformVersion);
 		additionalProperties.put("parentTunnel",parentTunnel);
 		additionalProperties.put("tunnelIdentifier", tunnelIdentifier);
-		
 
+		return getWebDriver(platform, hub, additionalProperties);
+	}
+
+	/**
+	 * Creates a new WebDriver object for iPad connected with Appium Server.
+	 *
+	 * @author Albert Lin
+	 * @param plateformType the plateform type
+	 * @return the web driver for iPad
+	 */
+	private static WebDriver createMobileWebDriver(String platformType) {
+		String deviceName = Optional.fromNullable(testConfig.get("webdriver.deviceName".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
+		String platformVersion = Optional.fromNullable(testConfig.get("webdriver.platformVersion".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
+		String platformName = Optional.fromNullable(testConfig.get("webdriver.platformName".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
+		String bundleId = Optional.fromNullable(testConfig.get("webdriver.bundleId".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
+		String udid = Optional.fromNullable(testConfig.get("webdriver.udid".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
+
+		SupportedPlatform platform = SupportedPlatform.findFor(platformType);
+		String hub = Optional.fromNullable(testConfig.get("webdriver.hub").fullfill()).or(EMPTY);
+		Map<String, String> additionalProperties = new HashMap<String, String>();
+		additionalProperties.put("platformName", platformName);
+		additionalProperties.put("platformVersion", platformVersion);
+		additionalProperties.put("deviceName", deviceName);
+		additionalProperties.put("bundleId", bundleId);
+		additionalProperties.put("udid", udid);
+		additionalProperties.put("clearSystemFiles", "true");
+		additionalProperties.put("automationName", "XCUITest");
+
+		return getWebDriver(platform, hub, additionalProperties);
+	}
+
+	private static WebDriver getWebDriver(SupportedPlatform platform, String hub, Map<String, String> additionalProperties) {
 		DesiredCapabilities desiredCap = platform.createCapabilities().merge(new DesiredCapabilities(additionalProperties));
-
 		try {
-			driver = platform.getDriverClass().getConstructor(URL.class, Capabilities.class)
-					.newInstance(new URL(hub), desiredCap);
+			driver = platform.getDriverClass().getConstructor(URL.class, Capabilities.class).newInstance(new URL(hub), desiredCap);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException | MalformedURLException e) {
 			e.printStackTrace();
 		}
 		return driver;
-
 	}
 
 	/**
@@ -201,7 +233,6 @@ public class WebDriverFactory {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
@@ -222,5 +253,4 @@ public class WebDriverFactory {
 		FileUtils.copyFile(source, finalDestination);
 		return destination;
 	}
-
 }
