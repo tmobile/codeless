@@ -13,11 +13,11 @@
 		<testng.version>6.14.2</testng.version>
 		<junit.version>4.12</junit.version>
 		<retro.version>2.3.0</retro.version>
-		<selenium.version>3.8.1</selenium.version>
+		<selenium.version>3.141.59</selenium.version>
 		<sl4j.version>1.7.25</sl4j.version>
 		<extentreport.version>3.0.7</extentreport.version>
 		<restassured.version>3.1.1</restassured.version>
-		<appiumclient.version>5.0.4</appiumclient.version>
+		<appiumclient.version>7.0.0</appiumclient.version>
 	</properties>
 
 	<dependencies>
@@ -97,6 +97,17 @@
 			<version>${selenium.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>io.appium</groupId>
+			<artifactId>java-client</artifactId>
+			<version>${appiumclient.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.seleniumhq.selenium</groupId>
+					<artifactId>selenium-java</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 		<!-- swagger -->
 		<dependency>
