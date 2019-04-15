@@ -36,8 +36,8 @@ import com.tmobile.ct.codeless.ui.build.UiTestStep;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
 import com.tmobile.ct.codeless.ui.model.ControlElement;
 import com.tmobile.ct.codeless.ui.modifiers.AssertionModifer;
-import com.tmobile.ct.codeless.ui.testdata.UiExport;
-import com.tmobile.ct.codeless.ui.testdata.UiVariableExport;
+import com.tmobile.ct.codeless.ui.testdata.UiStepExportVariable;
+import com.tmobile.ct.codeless.ui.testdata.UiStepExportBuilder;
 
 /**
  * The Class UiStepImpl.
@@ -89,7 +89,7 @@ public class UiStepImpl implements UiStep {
 	
 	private Component component;
 	
-	private List<UiVariableExport> uiStepVariableExport;
+	private List<UiStepExportBuilder> uiStepExportBuilder;
 
 	/**
 	 * Instantiates a new ui step impl.
@@ -120,11 +120,13 @@ public class UiStepImpl implements UiStep {
 			}
 
 			setWebDriver(test.getWebDriver());
-
 			this.action.run();
 			
-			if (uiStepVariableExport != null && !uiStepVariableExport.isEmpty()) {
-				UiExport.buildExport(test, getUiStepVariableExport(), action.getElement());
+			if (uiStepExportBuilder != null && !uiStepExportBuilder.isEmpty()) {
+				UiStepExportVariable.buildExport(test, getUiStepExportBuilder(), action.getElement());
+			}
+			if (assertionBuilder != null && !assertionBuilder.isEmpty()) {
+				UiAssertion.buildAssertions(test, getAssertionBuilder(), action.getElement());
 			}
 			validate();
 			status = Status.COMPLETE;
@@ -249,9 +251,7 @@ public class UiStepImpl implements UiStep {
 
 	@Override
 	public void validate() {
-		if (assertionBuilder != null && !assertionBuilder.isEmpty()) {
-			UiAssertion.buildAssertions(test, getAssertionBuilder(), action.getElement());
-		}
+		
 	}
 
 	@Override
@@ -367,14 +367,13 @@ public class UiStepImpl implements UiStep {
 	}
 
 	@Override
-	public void setUiStepVariableExport(List<UiVariableExport> uiStepVariableExport) {
-		this.uiStepVariableExport = uiStepVariableExport;
+	public void setUiStepExportBuilder(List<UiStepExportBuilder> uiStepExportBuilder) {
+		this.uiStepExportBuilder = uiStepExportBuilder;
 		
 	}
 
 	@Override
-	public List<UiVariableExport> getUiStepVariableExport() {
-		return this.uiStepVariableExport;
+	public List<UiStepExportBuilder> getUiStepExportBuilder() {
+		return this.uiStepExportBuilder;
 	}
-
 }

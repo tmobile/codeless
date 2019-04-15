@@ -22,11 +22,11 @@ import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.ui.assertion.SeleniumMethodType;
 
 /**
- * The Class UiVariableExport.
+ * The Class UiStepExportBuilder.
  *
  * @author Sai Chandra Korpu
  */
-public class UiVariableExport {
+public class UiStepExportBuilder {
 
 	/** The selenium method. */
 	private Method seleniumMethod;
@@ -39,7 +39,7 @@ public class UiVariableExport {
 
 	private SourcedDataItem<String, TestDataSource> testDataSource;
 
-	public UiVariableExport(Method seleniumMethod, String parameterName, SeleniumMethodType seleniumMethodType,
+	public UiStepExportBuilder(Method seleniumMethod, String parameterName, SeleniumMethodType seleniumMethodType,
 			SourcedDataItem<String, TestDataSource> testDataSource) {
 		super();
 		this.seleniumMethod = seleniumMethod;

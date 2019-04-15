@@ -51,7 +51,7 @@ public class UiStepOverrides {
 	public static void parseOverrides(Test test, UiTestStep uiTestStep, UiStep step) {
 
 		List<UiAssertionBuilder> assertions = new ArrayList<>();
-		List<UiVariableExport> uiVariableExport = new ArrayList<>();
+		List<UiStepExportBuilder> uiStepExportBuilder = new ArrayList<>();
 		uiTestStep.getStep();
 
 		if (uiTestStep.getTestData() != null && uiTestStep.getTestData().size() > 0) {
@@ -60,7 +60,7 @@ public class UiStepOverrides {
 				try {
 					if (d.contains(Config.Export)) {
 
-						String[] values = d.split("::");
+						String[] values = d.trim().split("::");
 						if (values.length == Config.Four || values.length == Config.Five) {
 
 							String key = values[Config.ONE];
@@ -78,9 +78,9 @@ public class UiStepOverrides {
 
 							SourcedDataItem<String, TestDataSource> dataSource = createStaticTestDataSource(test, key,
 									"");
-							UiVariableExport uiExport = new UiVariableExport(seleniumMethod, parameter, type,
+							UiStepExportBuilder uiExport = new UiStepExportBuilder(seleniumMethod, parameter, type,
 									dataSource);
-							uiVariableExport.add(uiExport);
+							uiStepExportBuilder.add(uiExport);
 						}
 					} else if (d.contains(Config.Assert)) {
 						String[] originalParts = d.trim().split("::");
@@ -138,7 +138,7 @@ public class UiStepOverrides {
 				}
 			});
 			step.setAssertionBuilder(assertions);
-			step.setUiStepVariableExport(uiVariableExport);
+			step.setUiStepExportBuilder(uiStepExportBuilder);
 		}
 	}
 

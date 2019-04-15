@@ -19,6 +19,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
@@ -27,13 +29,15 @@ import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 import com.tmobile.ct.codeless.ui.assertion.SeleniumMethodType;
 
 /**
- * The Class UiExport.
+ * The Class UiStepExportVariable.
  *
  * @author Sai Chandra Korpu
  */
-public class UiExport {
+public class UiStepExportVariable {
+	
+	private static Logger log = LoggerFactory.getLogger(UiStepExportVariable.class);
 
-	public static void buildExport(Test test, List<UiVariableExport> exportBuilder, WebElement webElement) {
+	public static void buildExport(Test test, List<UiStepExportBuilder> exportBuilder, WebElement webElement) {
 
 		exportBuilder.forEach(export -> {
 			Method seleniumMethod = export.getSeleniumMethod();
@@ -43,8 +47,10 @@ public class UiExport {
 			try {
 				Object value = seleniumMethod.getParameterCount() == 0 ? seleniumMethod.invoke(ElementorDriver)
 						: seleniumMethod.invoke(ElementorDriver, export.getParameterName());
+				
 				SourcedDataItem<String, TestDataSource> sourcedData = export.getTestDataSource();
-
+				log.info("Ui Step Exported Key ["+sourcedData.getKey()+"] value ["+value.toString()+"]");
+				
 				if (value != null && sourcedData.getValue().getValue() instanceof StaticTestDataSource) {
 					StaticTestDataSource staticSource = (StaticTestDataSource) sourcedData.getValue().getValue();
 					staticSource.setValue(value.toString());
