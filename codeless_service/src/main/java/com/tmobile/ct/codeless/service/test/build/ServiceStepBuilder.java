@@ -839,7 +839,8 @@ private void parseTestData(String excelData){
                 	String key = value.getKey();
                 	if(source instanceof StaticTestDataSource) {
                 		String Value = source.fullfill();
-                        cellValue = cellValue.replace(parts[i], Value);
+                			if (StringUtils.isNotBlank(Value))
+							cellValue = cellValue.replace(parts[i], Value);
                 	}
 
                 }
