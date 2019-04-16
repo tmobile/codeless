@@ -13,27 +13,30 @@
  *  * License for the specific language governing permissions and limitations under
  *  * the License.
  ******************************************************************************/
-package com.tmobile.ct.codeless.ui.accessor.request;
+package com.tmobile.ct.codeless.ui.modifiers;
 
-import com.tmobile.ct.codeless.core.Accessor;
+import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
+import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
 
-public class OverrideModifer implements RequestModifier<String, String> {
+public class AssertionModifer implements RequestModifier<String, UiAssertionBuilder> {
 
 	/** The key. */
 	private String key;
 
-	/** The response accessor. */
-	private Accessor accessor;
+	/** The dataSource to override. */
+	private TestDataSource dataSource;
 
-	public OverrideModifer(String key, Accessor accessor) {
+	public AssertionModifer(String key, TestDataSource dataSource) {
 		this.key = key;
-		this.accessor = accessor;
+		this.dataSource = dataSource;
 	}
 
 	@Override
-	public void modify(String input) {
-		input = accessor.getActual();
+	public void modify(UiAssertionBuilder input) {
+		if(input == null)
+			return;
+		input.setExpectedValue(dataSource.fullfill());
 	}
 
 }

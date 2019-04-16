@@ -27,6 +27,7 @@ import com.tmobile.ct.codeless.testdata.RequestModifier;
 import com.tmobile.ct.codeless.testdata.TestDataInput;
 import com.tmobile.ct.codeless.ui.action.UiAction;
 import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
+import com.tmobile.ct.codeless.ui.testdata.UiStepExportBuilder;
 
 /**
  * The Interface UiStep.
@@ -56,4 +57,9 @@ public interface UiStep extends Step, Trackable, Retryable {
 	void setAssertionBuilder(List<UiAssertionBuilder> assertionBuilder);
 
 	List<UiAssertionBuilder> getAssertionBuilder();
+	
+	void setUiStepExportBuilder(List<UiStepExportBuilder> uiStepExportBuilder);
+	
+	List<UiStepExportBuilder> getUiStepExportBuilder();
+	
 }

@@ -15,16 +15,12 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.ui;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
 import com.tmobile.ct.codeless.core.Assertion;
 import com.tmobile.ct.codeless.core.Component;
 import com.tmobile.ct.codeless.core.Config;
@@ -33,13 +29,15 @@ import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
 import com.tmobile.ct.codeless.testdata.TestDataInput;
-import com.tmobile.ct.codeless.ui.accessor.request.AssertionModifer;
 import com.tmobile.ct.codeless.ui.action.UiAction;
-import com.tmobile.ct.codeless.ui.assertion.SeleniumMethodType;
 import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
+import com.tmobile.ct.codeless.ui.assertion.UiAssertion;
 import com.tmobile.ct.codeless.ui.build.UiTestStep;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
 import com.tmobile.ct.codeless.ui.model.ControlElement;
+import com.tmobile.ct.codeless.ui.modifiers.AssertionModifer;
+import com.tmobile.ct.codeless.ui.testdata.UiStepExportVariable;
+import com.tmobile.ct.codeless.ui.testdata.UiStepExportBuilder;
 
 /**
  * The Class UiStepImpl.
@@ -90,6 +88,8 @@ public class UiStepImpl implements UiStep {
 	private List<TestDataInput> testDataInputs;
 	
 	private Component component;
+	
+	private List<UiStepExportBuilder> uiStepExportBuilder;
 
 	/**
 	 * Instantiates a new ui step impl.
@@ -107,15 +107,11 @@ public class UiStepImpl implements UiStep {
 		this.action = action;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Executable#run()
-	 */
 	@Override
 	public void run() {
 
 		try {
-			buildRequestModifier();
+			buildRequestModifier();			
 			if(test.getWebDriver() == null){
 				Config config = test.getConfig();
 			    WebDriverFactory.setConfig(config);
@@ -124,16 +120,18 @@ public class UiStepImpl implements UiStep {
 			}
 
 			setWebDriver(test.getWebDriver());
-
 			this.action.run();
+			
+			if (uiStepExportBuilder != null && !uiStepExportBuilder.isEmpty()) {
+				UiStepExportVariable.buildExport(test, getUiStepExportBuilder(), action.getElement());
+			}
 			if (assertionBuilder != null && !assertionBuilder.isEmpty()) {
-			buildAssertions(getAssertionBuilder(),action.getElement());
+				UiAssertion.buildAssertions(test, getAssertionBuilder(), action.getElement());
 			}
 			validate();
 			status = Status.COMPLETE;
 			if(result == null)
 				result = Result.PASS;
-			logPass();
 		} catch(Exception e){
 			retries = retries + 1;
 			if(retries >= maxRetries){
@@ -146,81 +144,6 @@ public class UiStepImpl implements UiStep {
 		}finally{
 			markComplete();
 		}
-	}
-
-	/**
-	 * Builds the assertions.
-	 *
-	 * @param assertions the assertions
-	 * @param webElement the web element
-	 */
-	public void buildAssertions(List<UiAssertionBuilder> assertions, WebElement webElement) {
-		assertions.forEach(assertion -> {
-			Method assertionMethod = assertion.getAssertMethod();
-			Method seleniumMethod = assertion.getSeleniumMethod();
-			Object ElementorDriver;
-			if (assertion.getSeleniumMethodType() == SeleniumMethodType.WebDriver) {
-				ElementorDriver = test.getWebDriver();
-			} else {
-				ElementorDriver = webElement;
-			}
-			try {
-				if (assertionMethod.getParameterCount() == 1) {
-					if (seleniumMethod == null) {
-						assertionMethod.invoke(null, ElementorDriver);
-						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ", "Succesful");
-					} else if (seleniumMethod.getParameterCount() == 0) {
-						assertionMethod.invoke(null, seleniumMethod.invoke(ElementorDriver));
-						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ",
-								"Succesful on the [ " + seleniumMethod + " ]");
-					} else if (seleniumMethod.getParameterCount() == 1) {
-						assertionMethod.invoke(null,
-								seleniumMethod.invoke(ElementorDriver, assertion.getParameterName()));
-						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ",
-								"Succesful on the [ " + seleniumMethod + " ] with parameterName ");
-					}
-				} else if (assertionMethod.getParameterCount() == 2) {
-					if (seleniumMethod.getParameterCount() == 0) {
-						assertionMethod.invoke(null, seleniumMethod.invoke(ElementorDriver),
-								assertion.getExpectedValue());
-						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ",
-								"Succesful on the [ " + seleniumMethod + " ]");
-					} else if (seleniumMethod.getParameterCount() == 1) {
-						assertionMethod.invoke(null,
-								seleniumMethod.invoke(ElementorDriver, assertion.getParameterName()),
-								assertion.getExpectedValue());
-						logStep("StepStatus.INFO", "Assertion [ " + assertionMethod + " ] ",
-								"Succesful on the [ " + seleniumMethod + " ] with parameterName ");
-					}
-				}
-
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				logStep("StepStatus.FAIL", "Assertion [ " + assertionMethod + " ] ",
-						" Failed on the [ " + seleniumMethod + " ]");
-				try {
-					status = Status.COMPLETE;
-					result = Result.FAIL;
-					fail(e);
-					logFail(e);
-					throw e;
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Log step.
-	 *
-	 * @param status the status
-	 * @param name the name
-	 * @param message the message
-	 */
-	private void logStep(String status, String name, String message){
-		test.getLogProxies().forEach(logger ->{
-			logger.log(status, name, message);
-		});
 	}
 
 	private void buildRequestModifier() {
@@ -242,7 +165,6 @@ public class UiStepImpl implements UiStep {
 		this.status = Status.COMPLETE;
 	}
 
-
 	/**
 	 * Log fail.
 	 *
@@ -251,16 +173,6 @@ public class UiStepImpl implements UiStep {
 	private void logFail(Exception e) {
 		e.printStackTrace();
 	}
-
-
-	/**
-	 * Log pass.
-	 */
-	private void logPass() {
-		// TODO Auto-generated method stub
-
-	}
-
 
 	/**
 	 * Gets the assertion builder.
@@ -318,131 +230,81 @@ public class UiStepImpl implements UiStep {
 		this.step = step;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Validatable#getAssertions()
-	 */
 	@Override
 	public List<Assertion> getAssertions() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Validatable#setAssertions(java.util.List)
-	 */
 	@Override
 	public void setAssertions(List<Assertion> assertions) {
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Failable#fail(java.lang.Throwable)
-	 */
 	@Override
 	public void fail(Throwable e) {
 		this.failureCause = e;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Failable#getFailureCause()
-	 */
 	@Override
 	public Throwable getFailureCause() {
 		return failureCause;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Validatable#validate()
-	 */
 	@Override
 	public void validate() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Step#getName()
-	 */
 	@Override
 	public String getName() {
 		return this.name;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Step#setName(java.lang.String)
-	 */
 	@Override
 	public void setName(String name) {
 	this.name = name;
 
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Step#getTest()
-	 */
 	@Override
 	public Test getTest() {
 		return test;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Step#setTest(com.tmobile.ct.codeless.core.Test)
-	 */
 	@Override
 	public void setTest(Test test) {
 		this.test = test;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Trackable#getResult()
-	 */
 	@Override
 	public Result getResult() {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Trackable#getStatus()
-	 */
 	@Override
 	public Status getStatus() {
 		return status;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Trackable#setResult(com.tmobile.ct.codeless.core.Result)
-	 */
 	@Override
 	public void setResult(Result result) {
 		this.result = result;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Trackable#setStatus(com.tmobile.ct.codeless.core.Status)
-	 */
 	@Override
 	public void setStatus(Status status) {
 		this.status = status;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Retryable#setMaxRetries(java.lang.Integer)
-	 */
 	@Override
 	public void setMaxRetries(Integer retries) {
 		this.maxRetries = retries;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Retryable#getMaxRetries()
-	 */
 	@Override
 	public Integer getMaxRetries() {
 		return maxRetries;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Retryable#getRetries()
-	 */
 	@Override
 	public Integer getRetries() {
 		return retries;
@@ -457,17 +319,11 @@ public class UiStepImpl implements UiStep {
 		return action;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.ui.UiStep#setAction(com.tmobile.ct.codeless.ui.action.UiAction)
-	 */
 	@Override
 	public void setAction(UiAction action) {
 		this.action = action;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.ui.UiStep#getWebDriver()
-	 */
 	@Override
 	public Future<WebDriver> getWebDriver(){
 		return driver;
@@ -510,4 +366,14 @@ public class UiStepImpl implements UiStep {
 		this.component = component;
 	}
 
+	@Override
+	public void setUiStepExportBuilder(List<UiStepExportBuilder> uiStepExportBuilder) {
+		this.uiStepExportBuilder = uiStepExportBuilder;
+		
+	}
+
+	@Override
+	public List<UiStepExportBuilder> getUiStepExportBuilder() {
+		return this.uiStepExportBuilder;
+	}
 }

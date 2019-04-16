@@ -12,11 +12,10 @@
  *  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
  *  * License for the specific language governing permissions and limitations under
  *  * the License.
- ******************************************************************************/
+ *****************************************************************************/
 package com.tmobile.ct.codeless.ui.assertion;
 
 import java.lang.reflect.Method;
-
 
 /**
  * The Class UiAssertionBuilder.
@@ -49,7 +48,7 @@ public class UiAssertionBuilder {
 	 * @param type the type
 	 * @param paramaterName the paramater name
 	 */
-	public UiAssertionBuilder(  Method assertMethod, String expectedValue, Method seleniumMethod, SeleniumMethodType type, String paramaterName) {
+	public UiAssertionBuilder(  Method assertMethod, String expectedValue, Method seleniumMethod, SeleniumMethodType type, String parameterName) {
 		super();
 		this.expectedValue = expectedValue;
 		this.assertMethod = assertMethod;

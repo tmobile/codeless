@@ -16,9 +16,7 @@
 package com.tmobile.ct.codeless.ui.build;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,14 +28,13 @@ import org.openqa.selenium.WebElement;
 
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
+import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
 import com.tmobile.ct.codeless.testdata.TestDataInput;
 import com.tmobile.ct.codeless.testdata.TestDataProvider;
 import com.tmobile.ct.codeless.ui.UiStep;
 import com.tmobile.ct.codeless.ui.UiStepImpl;
-import com.tmobile.ct.codeless.ui.accessor.request.AssertionModifer;
-import com.tmobile.ct.codeless.ui.accessor.request.InputModifer;
 import com.tmobile.ct.codeless.ui.action.Click;
 import com.tmobile.ct.codeless.ui.action.Close;
 import com.tmobile.ct.codeless.ui.action.Cookie;
@@ -52,13 +49,11 @@ import com.tmobile.ct.codeless.ui.action.Type;
 import com.tmobile.ct.codeless.ui.action.UiAction;
 import com.tmobile.ct.codeless.ui.action.Wait;
 import com.tmobile.ct.codeless.ui.action.Window;
-import com.tmobile.ct.codeless.ui.assertion.SeleniumMethodType;
-import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
-import com.tmobile.ct.codeless.ui.assertion.UiAssertionMethod;
-import com.tmobile.ct.codeless.ui.assertion.UiSeleniumMethod;
 import com.tmobile.ct.codeless.ui.model.ControlElement;
 import com.tmobile.ct.codeless.ui.model.controls.WebElementProxyFactory;
 import com.tmobile.ct.codeless.ui.model.yaml.YamlReader;
+import com.tmobile.ct.codeless.ui.modifiers.InputModifer;
+import com.tmobile.ct.codeless.ui.testdata.UiStepOverrides;
 import com.tmobile.selenium.sam.action.types.ClickType;
 import com.tmobile.selenium.sam.action.types.MoveType;
 import com.tmobile.selenium.sam.action.types.SelectType;
@@ -76,13 +71,6 @@ import static com.tmobile.ct.codeless.configuration.CodelessConfiguration.getMod
  * @author Rob Graff
  */
 public class UiStepBuilder {
-
-	/** The formatter. */
-	private DataFormatter formatter = new DataFormatter();
-
-	private static String OVERRIDE_INPUT_START = "{{";
-
-	private static String OVERRIDE_INPUT_END = "}}";
 
 	Test test;	
 
@@ -109,80 +97,6 @@ public class UiStepBuilder {
 
 		return step;
 	}
-
-	/**
-	 * Parses the assertion.
-	 *
-	 * @param testData the test data
-	 * @param step
-	 * @param step the step
-	 * @return the list
-	 */
-	private List<UiAssertionBuilder> parseAssertion(UiTestStep testData, UiStep step) {
-
-		List<UiAssertionBuilder> assertions = new ArrayList<>();
-		if (testData.getTestData() != null && testData.getTestData().size() > 0) {
-			testData.getTestData().forEach(d -> {
-
-				String[] assertions_data = d.trim().split("[,]");
-				for (String data : assertions_data) {
-					String[] originalParts = data.trim().split("::");
-					String assertionMethodName = originalParts[0];
-					String seleniumMethodName = null;
-					Method seleniumMethod = null;
-					String parameter = "";
-					String expected = "";
-
-					if(originalParts.length < 3) return;
-
-					SeleniumMethodType type = SeleniumMethodType.valueOf(originalParts[1]);
-
-					if (originalParts.length > 2) {
-						seleniumMethodName = originalParts[2];
-					}
-
-					try {
-						if (originalParts.length >= 4) {
-							expected = originalParts[3];
-
-							if (originalParts.length == 5) {
-								parameter = originalParts[4];
-							}
-						} else if (originalParts.length == 3) {
-							if (originalParts.length == 4) {
-								parameter = originalParts[3];
-							}
-						}
-
-						if (seleniumMethodName != null) {
-							seleniumMethod = UiSeleniumMethod.getSeleniumMethod(seleniumMethodName, parameter, type);
-						}
-
-						if(seleniumMethod != null) {
-							String dataValue[] = StringUtils.substringsBetween(expected,"{{", "}}");
-
-							if(dataValue != null && dataValue.length>0) {
-								TestDataSource tData = test.getTestData().get(dataValue[0]);
-								RequestModifier modifier = new AssertionModifer(dataValue[0],tData);
-								step.getRequestModifiers().add(modifier);
-
-							}
-							Method assertionMethod = UiAssertionMethod.getAssertionMethod(assertionMethodName, expected);
-							UiAssertionBuilder assertion = new UiAssertionBuilder(assertionMethod, expected, seleniumMethod,
-									type, parameter);
-							assertions.add(assertion);
-						}
-
-					} catch (NoSuchMethodException e) {
-						e.printStackTrace();
-					}
-				}
-			});
-		}
-
-		return assertions;
-	}
-
 
 	/**
 	 * Builds the action.
@@ -361,7 +275,7 @@ public class UiStepBuilder {
 
 				if(!StringUtils.isEmpty(value)) {
 					TestDataInput datainput = null;
-					String[] dataValue = StringUtils.substringsBetween(value, OVERRIDE_INPUT_START, OVERRIDE_INPUT_END);
+					String[] dataValue = StringUtils.substringsBetween(value, Config.OVERRIDE_INPUT_START, Config.OVERRIDE_INPUT_END);
 					if(dataValue != null && dataValue.length > 0 ) {
 						datainput= new TestDataInput();
 						datainput.add(item.getKey(), new MultiValue<String,TestDataProvider>(item.getKey(), new TestDataProvider(test, dataValue[0])));
@@ -396,8 +310,7 @@ public class UiStepBuilder {
 				}
 			}
 		});
-		List<UiAssertionBuilder> assertions = parseAssertion(testRow,step);
-		step.setAssertionBuilder(assertions);
+		UiStepOverrides.parseOverrides(test,testRow,step);
 		return testRow;
 	}
 
@@ -424,7 +337,7 @@ public class UiStepBuilder {
 					modifier = new InputModifer(value,testData);
 					break;
 				default:
-
+					// do nothing
 					break;
 				}
 
