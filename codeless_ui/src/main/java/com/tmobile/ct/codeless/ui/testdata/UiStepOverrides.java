@@ -52,7 +52,6 @@ public class UiStepOverrides {
 
 		List<UiAssertionBuilder> assertions = new ArrayList<>();
 		List<UiStepExportBuilder> uiStepExportBuilder = new ArrayList<>();
-		uiTestStep.getStep();
 
 		if (uiTestStep.getTestData() != null && uiTestStep.getTestData().size() > 0) {
 
