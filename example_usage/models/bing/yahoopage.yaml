@@ -4,3 +4,6 @@ searchbar:
 searchbutton:
   by: "className"
   locator: "b_searchboxSubmit"
+bingyoutube:
+  by: "xpath"
+  locator: "//*[@id='b_results']/li[1]/div[2]/ul[2]/li[2]/h3/a"

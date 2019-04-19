@@ -1,0 +1,12 @@
+website,https://www.google.com/
+apiHost,dummy.restapiexample.com
+apiPath,/api/v1/create
+txtBox,Google.googlepage.searchbar
+btnClick,Google.googlepage.searchbutton
+omdbhost,http://www.omdbapi.com
+omdbpath,?apikey=91999f16&i=tt0910970
+imdb,https://www.imdb.com/title/tt0910970/
+imdb2,https://www.imdb.com/title/tt1049413/
+imdbhome,https://www.imdb.com
+search,t-mobile best network
+element1,Google.googlepage.googletranslate
