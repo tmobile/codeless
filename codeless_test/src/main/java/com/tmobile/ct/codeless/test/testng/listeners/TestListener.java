@@ -22,6 +22,9 @@ import org.testng.ITestResult;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.test.extentreport.ExtentTestManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The listener interface for receiving test events.
  * The class that is interested in processing a test
@@ -37,6 +40,7 @@ import com.tmobile.ct.codeless.test.extentreport.ExtentTestManager;
  */
 public class TestListener implements ITestListener {
 
+	public static final Logger log = LoggerFactory.getLogger(TestListener.class);
 	/**
 	 * Gets the test method name.
 	 *
@@ -52,7 +56,7 @@ public class TestListener implements ITestListener {
 	 */
 	@Override
 	public void onTestStart(ITestResult result) {
-		System.out.println("Entering TestListener.onTestStart method " + getTestMethodName(result) + " start");
+		log.debug("Entering TestListener.onTestStart method " + getTestMethodName(result) + " start");
 		Test test = (Test) result.getParameters()[0];
 		ExtentTestManager.startTest(test.getName(), "Test Start");
 
@@ -63,7 +67,7 @@ public class TestListener implements ITestListener {
 	 */
 	@Override
 	public void onTestSuccess(ITestResult result) {
-		System.out.println("Entering TestListener.onTestSuccess method " + getTestMethodName(result) + " succeed");
+		log.debug("Entering TestListener.onTestSuccess method " + getTestMethodName(result) + " succeed");
 		// Extentreports log operation for passed tests.
 		// ExtentTestManager.getTest().log(LogStatus.PASS, "Test passed");
 
@@ -79,7 +83,7 @@ public class TestListener implements ITestListener {
 		// logger.log(LogStatus.FAIL, logger.addScreenCapture(screenshotPath));
 
 		/*
-		 * System.out.println("Entering TestListener.onTestFailure method " +
+		 * log.debug("Entering TestListener.onTestFailure method " +
 		 * getTestMethodName(iTestResult) + " failed");
 		 * 
 		 * // Get driver from BaseTest and assign to local webdriver variable. Object
@@ -102,10 +106,10 @@ public class TestListener implements ITestListener {
 	 */
 	@Override
 	public void onTestSkipped(ITestResult iTestResult) {
-		System.out.println("Entering TestListener.onTestSkipped method " + getTestMethodName(iTestResult) + " skipped!");
+		log.debug("Entering TestListener.onTestSkipped method " + getTestMethodName(iTestResult) + " skipped!");
 		// Extentreports log operation for skipped tests.
 //		ExtentTestManager.getTest().log(LogStatus.SKIP, "Test Skipped");
-		System.out.println("===============TESTINGGGGGGG");
+		log.debug("===============TESTINGGGGGGG");
 		System.err.println("skip exception:: "+iTestResult.getThrowable());
 		iTestResult.getThrowable().printStackTrace();
 	}
@@ -115,7 +119,7 @@ public class TestListener implements ITestListener {
 	 */
 	@Override
 	public void onTestFailedButWithinSuccessPercentage(ITestResult iTestResult) {
-		System.out.println("Test failed but it is in defined success ratio " + getTestMethodName(iTestResult));
+		log.debug("Test failed but it is in defined success ratio " + getTestMethodName(iTestResult));
 
 	}
 
@@ -124,7 +128,7 @@ public class TestListener implements ITestListener {
 	 */
 	@Override
 	public void onStart(ITestContext context) {
-		System.out.println("Entering TestListener.onStart method " + context.getName());
+		log.debug("Entering TestListener.onStart method " + context.getName());
 //		context.setAttribute("WebDriver", this.getDriver());
 		
 	}
@@ -134,7 +138,7 @@ public class TestListener implements ITestListener {
 	 */
 	@Override
 	public void onFinish(ITestContext context) {
-		System.out.println("Entering TestListener.onFinish method " + context.getName());
+		log.debug("Entering TestListener.onFinish method " + context.getName());
 		ExtentTestManager.endTest();
 		ExtentTestManager.getReporter().flush();
 
