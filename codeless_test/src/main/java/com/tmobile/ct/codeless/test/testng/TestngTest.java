@@ -138,14 +138,14 @@ public class TestngTest{
 				});
 
 				try {
-					if (test.getResult().equals(Result.Fail)) {
+					if (test.getResult().equals(Result.FAIL)) {
 						step.setResult(Result.SKIP);
 
 					} else {
 						executor.run(step);
 					}
 
-					if (step.getResult().equals(Result.Fail)) {
+					if (step.getResult().equals(Result.FAIL)) {
 						test.setResult(Result.FAIL);
 					}
 				} catch (Exception e) {
@@ -166,7 +166,7 @@ public class TestngTest{
 		} catch (Exception e) {
 			throw e;
 		} finally {
-			if (test.getResult() != Result.Fail) {
+			if (test.getResult() != Result.FAIL) {
 				test.setResult(Result.PASS);
 			}
 
