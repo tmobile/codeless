@@ -15,6 +15,9 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.test.extentreport;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.relevantcodes.extentreports.LogStatus;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Step;
@@ -31,6 +34,7 @@ import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
  * @author Sai Chandra Korpu
  */
 public class TestStepReporter {
+	public static final Logger logger = LoggerFactory.getLogger(TestStepReporter.class);
 
 	public static void reporter(Step step) throws Exception {
 		try{
@@ -75,7 +79,16 @@ public class TestStepReporter {
 	}
 
 	private static String getDOMResult(ServiceCallDTO serviceCall) {
-		int statusCode = serviceCall.getStatusCode();
+		int statusCode = 0;
+		try {
+			statusCode = serviceCall.getStatusCode();
+		} catch (NullPointerException npex) {
+			logger.error(npex.getMessage());
+			logger.error("Setting status code to [400]");
+
+			statusCode = 400;
+		}
+
 		String requestBody = serviceCall.getRequestBody();
 		String responseBody = serviceCall.getResponseBody();
 		return "<div> <b>Request</b> : " + requestBody + "</div><div> <b>Response</b> : " + responseBody

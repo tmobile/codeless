@@ -42,7 +42,7 @@ public class ServiceLogFilter {
 	public static final Logger logger = LoggerFactory.getLogger(ServiceLogFilter.class);
 
 	public static ServiceCallDTO filter(ServiceCall serviceCall) {
-
+		logger.debug("Entering ServiceLogFilter.filter() for [{}]", serviceCall);
 		ObjectMapper mapper = new ObjectMapper();
 		ServiceCallDTO call = new ServiceCallDTO();
 		HttpRequest request = serviceCall.getHttpRequest();
@@ -69,6 +69,13 @@ public class ServiceLogFilter {
 		call.setSentAt(ZonedDateTime.now());
 
 		HttpResponse response = serviceCall.getHttpResponse();
+		if (response == null) {
+			logger.error("Response is null, returning call data");
+			return call;
+
+		} else if (!response.isSuccess()) {
+			logger.error("Error response: [{}]", response.getStatusCode());
+		}
 
 		call.setStatusCode(response.getStatusCode());
 		call.setResponseTime(response.getResponseTime());
