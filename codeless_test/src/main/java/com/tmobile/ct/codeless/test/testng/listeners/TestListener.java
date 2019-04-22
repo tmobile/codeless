@@ -52,7 +52,7 @@ public class TestListener implements ITestListener {
 	 */
 	@Override
 	public void onTestStart(ITestResult result) {
-		System.out.println("I am in onTestStart method " + getTestMethodName(result) + " start");
+		System.out.println("Entering TestListener.onTestStart method " + getTestMethodName(result) + " start");
 		Test test = (Test) result.getParameters()[0];
 		ExtentTestManager.startTest(test.getName(), "Test Start");
 
@@ -63,7 +63,7 @@ public class TestListener implements ITestListener {
 	 */
 	@Override
 	public void onTestSuccess(ITestResult result) {
-		System.out.println("I am in onTestSuccess method " + getTestMethodName(result) + " succeed");
+		System.out.println("Entering TestListener.onTestSuccess method " + getTestMethodName(result) + " succeed");
 		// Extentreports log operation for passed tests.
 		// ExtentTestManager.getTest().log(LogStatus.PASS, "Test passed");
 
@@ -79,7 +79,7 @@ public class TestListener implements ITestListener {
 		// logger.log(LogStatus.FAIL, logger.addScreenCapture(screenshotPath));
 
 		/*
-		 * System.out.println("I am in onTestFailure method " +
+		 * System.out.println("Entering TestListener.onTestFailure method " +
 		 * getTestMethodName(iTestResult) + " failed");
 		 * 
 		 * // Get driver from BaseTest and assign to local webdriver variable. Object
@@ -102,7 +102,7 @@ public class TestListener implements ITestListener {
 	 */
 	@Override
 	public void onTestSkipped(ITestResult iTestResult) {
-		System.out.println("I am in onTestSkipped method " + getTestMethodName(iTestResult) + " skipped!");
+		System.out.println("Entering TestListener.onTestSkipped method " + getTestMethodName(iTestResult) + " skipped!");
 		// Extentreports log operation for skipped tests.
 //		ExtentTestManager.getTest().log(LogStatus.SKIP, "Test Skipped");
 		System.out.println("===============TESTINGGGGGGG");
@@ -124,7 +124,7 @@ public class TestListener implements ITestListener {
 	 */
 	@Override
 	public void onStart(ITestContext context) {
-		System.out.println("I am in onStart method " + context.getName());
+		System.out.println("Entering TestListener.onStart method " + context.getName());
 //		context.setAttribute("WebDriver", this.getDriver());
 		
 	}
@@ -134,7 +134,7 @@ public class TestListener implements ITestListener {
 	 */
 	@Override
 	public void onFinish(ITestContext context) {
-		System.out.println("I am in onFinish method " + context.getName());
+		System.out.println("Entering TestListener.onFinish method " + context.getName());
 		ExtentTestManager.endTest();
 		ExtentTestManager.getReporter().flush();
 

@@ -64,24 +64,28 @@ public class TestImpl implements Test{
 	/** The log proxies. */
 	private List<LogProxy> logProxies = new ArrayList<>();
 
+	private Result result;
+
+	private Status status;
+
 	@Override
 	public Result getResult() {
-		return null;
+		return result;
 	}
 
 	@Override
 	public Status getStatus() {
-		return null;
+		return status;
 	}
 
 	@Override
 	public void setResult(Result result) {
-
+		this.result = result;
 	}
 
 	@Override
 	public void setStatus(Status status) {
-
+		this.status = status;
 	}
 
 	@Override

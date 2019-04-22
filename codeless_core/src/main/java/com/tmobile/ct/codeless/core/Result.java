@@ -22,8 +22,10 @@ package com.tmobile.ct.codeless.core;
  */
 public enum Result {
 	
-	/** The pass. */
-	PASS, 
- /** The fail. */
- FAIL
+    /** The pass. */
+    PASS,
+    /** The fail. */
+    FAIL,
+    /** the skip. */
+    SKIP
 }

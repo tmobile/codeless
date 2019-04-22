@@ -136,8 +136,19 @@ public class TestngTest{
 				});
 
 				try {
-					executor.run(step);
+					if (test.getResult().equals(Result.Fail)) {
+						step.setResult(Result.SKIP);
+
+					} else {
+						executor.run(step);
+					}
+
+					if (step.getResult().equals(Result.Fail)) {
+						test.setResult(Result.FAIL);
+					}
 				} catch (Exception e) {
+					test.setResult(Result.FAIL);
+
 					throw e;
 				} finally {
 
@@ -147,12 +158,18 @@ public class TestngTest{
 					});
 				}
 			}
+
 			WebDriverFactory.teardown();
 
 		} catch (Exception e) {
 			throw e;
 		} finally {
-			
+			if (test.getResult() != Result.Fail) {
+				test.setResult(Result.PASS);
+			}
+
+			test.setStatus(Status.COMPLETE);
+
 			// after test
 			execution.getTestHooks().forEach(hook -> {
 				hook.afterTest(test);
