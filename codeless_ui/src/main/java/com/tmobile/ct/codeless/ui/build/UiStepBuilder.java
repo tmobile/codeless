@@ -321,7 +321,11 @@ public class UiStepBuilder {
 				SuiteHeaders header = SuiteHeaders.parse(key.getKey());
 				TestDataProvider tdata= key.getValue().getValues().get(0);
 				String value = tdata.getKey();
-				TestDataSource testData = test.getTestData().get(value);
+				TestDataSource testData = null;
+				if(test.getTestData() != null) {
+					testData = test.getTestData().get(value);
+				}
+				
 
 				if(testData == null) {
 					return;

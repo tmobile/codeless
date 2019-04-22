@@ -55,6 +55,7 @@ public class CsvConfigTest {
 		props.setProperty("model.dir", File.separator + "model");
 		props.setProperty("suites.dir", File.separator + "suites");
 		props.setProperty("webdriver.runlocal", "TRUE");
+		props.setProperty("testdata.filename", "tesdata");
 		CodelessConfiguration.setProperties(props);
 	}
 }

@@ -17,25 +17,25 @@ package com.tmobile.ct.codeless.test.excel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Properties;
+
 import org.junit.Test;
-
-
+import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.test.BasicExecutor;
 
-
 public class ExcelSuiteBuilderTest {
-
+	
 	@Test
-	public void itShouldBuildSuite(){
+	public void itShouldBuildSuite() {
 		Suite suite = new ExcelSuiteBuilder().build("/suites/test_google.xlsx");
 		System.out.println(suite);
 		assertThat(suite.getTests()).describedAs("tests").isNotEmpty();
 		System.out.println(suite.getConfig());
-		suite.getTests().forEach(test ->{
-			System.out.println("\n"+test.getName());
-			test.getSteps().forEach(step ->{
-			System.out.println(step.getName());
+		suite.getTests().forEach(test -> {
+			System.out.println("\n" + test.getName());
+			test.getSteps().forEach(step -> {
+				System.out.println(step.getName());
 			});
 		});
 	}
@@ -48,13 +48,11 @@ public class ExcelSuiteBuilderTest {
 				test.getSteps().forEach( step ->
 					exec.run(step)));
 	}
-
-	@Test
-	public void itShouldRunSuite_Soap(){
-		Suite suites = new ExcelSuiteBuilder().build("/suites/soaptest.xlsx");
-		BasicExecutor exec = new BasicExecutor();
-		suites.getTests().forEach(test ->
-				test.getSteps().forEach( step ->
-						exec.run(step)));
+	
+	public static void setCsvProperties() {
+		
+		Properties props = new Properties();
+		props.setProperty("testdata.filename", "testdata.xlsx");
+		CodelessConfiguration.setProperties(props);
 	}
 }
