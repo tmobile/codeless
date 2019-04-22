@@ -122,6 +122,7 @@ public class TestngTest{
 	public void executeTest(Test test) throws Exception {
 
 		// before test
+		test.setStatus(Status.IN_PROGRESS);
 		execution.getTestHooks().forEach(hook -> {
 			hook.beforeTest(test);
 		});
@@ -138,7 +139,8 @@ public class TestngTest{
 				});
 
 				try {
-					if (test.getResult().equals(Result.FAIL)) {
+					if (test.getResult() != null &&
+						test.getResult().equals(Result.FAIL)) {
 						step.setResult(Result.SKIP);
 
 					} else {
@@ -166,7 +168,8 @@ public class TestngTest{
 		} catch (Exception e) {
 			throw e;
 		} finally {
-			if (test.getResult() != Result.FAIL) {
+			if (test.getResult() == null ||
+				test.getResult() != Result.FAIL) {
 				test.setResult(Result.PASS);
 			}
 

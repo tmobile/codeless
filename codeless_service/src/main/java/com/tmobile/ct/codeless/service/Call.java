@@ -30,12 +30,17 @@ import com.tmobile.ct.codeless.core.Trackable;
 import com.tmobile.ct.codeless.service.core.ServiceCall;
 import com.tmobile.ct.codeless.service.model.Operation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The Class Call.
  *
  * @author Rob Graff
  */
 public class Call implements ServiceCall, Step, Trackable, Retryable{
+
+	public static final Logger logger = LoggerFactory.getLogger(Call.class);
 
 	/** The operation. */
 	private Operation operation;
@@ -99,16 +104,19 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	 */
 	@Override
 	public void run() {
+		logger.debug("Entering Call.run()");
 		status = Status.IN_PROGRESS;
 		client.build(request);
 
 		while(status != Status.COMPLETE && retries < maxRetries+1){
 			try{
+				logger.debug("Initiating call()");
 				response = client.call();
 				validate();
 				status = Status.COMPLETE;
 				result = Result.PASS;
 			}catch(Exception e){
+				logger.error("Exception: [{}]", e.getMessage());
 				retries = retries + 1;
 				if(retries >= maxRetries){
 					status = Status.COMPLETE;
@@ -129,13 +137,14 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	 * @author Rob Graff
 	 */
 	private enum StepStatus{
-		
 		/** The pass. */
 		PASS,
-/** The fail. */
-FAIL,
-/** The info. */
-INFO
+		/** The fail. */
+		FAIL,
+		/** The info. */
+		INFO,
+		/** The skip. */
+		SKIP
 	}
 
 	/**
