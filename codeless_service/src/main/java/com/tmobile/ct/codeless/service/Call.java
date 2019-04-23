@@ -125,7 +125,7 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 					status = Status.COMPLETE;
 					result = Result.FAIL;
 					fail(e);
-//					e.printStackTrace();
+
 					throw e;
 				}
 			}finally{
@@ -142,34 +142,6 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 		this.endPoint = endPoint;
 	}
 
-	/**
-	 * The Enum StepStatus.
-	 *
-	 * @author Rob Graff
-	 */
-	private enum StepStatus{
-		/** The pass. */
-		PASS,
-		/** The fail. */
-		FAIL,
-		/** The info. */
-		INFO,
-		/** The skip. */
-		SKIP
-	}
-
-	/**
-	 * Log step.
-	 *
-	 * @param status the status
-	 * @param name the name
-	 * @param message the message
-	 */
-	private void logStep(StepStatus status, String name, String message){
-		test.getLogProxies().forEach(logger ->{
-			logger.log(status.name(), name, message);
-		});
-	}
 
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.core.Validatable#validate()
