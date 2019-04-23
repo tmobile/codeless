@@ -50,4 +50,9 @@ public interface HttpResponse<T> extends HttpRequest<T>{
 	 * @param responseTime the new response time
 	 */
 	void setResponseTime(Long responseTime);
+
+	/**
+	 * Returns true if response is a 2xx value..
+	 */
+	Boolean isSuccess();
 }

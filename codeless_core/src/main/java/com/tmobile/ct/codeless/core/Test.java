@@ -147,7 +147,4 @@ public interface Test extends Trackable{
 	 * @return the log proxies
 	 */
 	List<LogProxy> getLogProxies();
-
-
-	
 }

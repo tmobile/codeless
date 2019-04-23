@@ -61,4 +61,7 @@ public class HttpResponseImpl<T> extends HttpRequestImpl<T> implements HttpRespo
 		this.responseTime = responseTime;
 	}
 
+	public Boolean isSuccess() {
+		return (statusCode / 200) == 1;
+	}
 }

@@ -128,7 +128,7 @@ public class UiStepImpl implements UiStep {
 			if (assertionBuilder != null && !assertionBuilder.isEmpty()) {
 				UiAssertion.buildAssertions(test, getAssertionBuilder(), action.getElement());
 			}
-			validate();
+
 			status = Status.COMPLETE;
 			if(result == null)
 				result = Result.PASS;
