@@ -83,6 +83,8 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	
 	private Component component;
 
+	private String endPoint;
+
 	/**
 	 * Instantiates a new call.
 	 *
@@ -93,6 +95,7 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	public Call(HttpClient client, HttpRequest request, Integer maxRetries){
 		this.client = client;
 		this.request = request;
+		this.endPoint = String.format("%s%s", this.request.getHost().getValue(), this.request.getOperationPath().getValue());
 		this.maxRetries = maxRetries;
 		this.retries = 0;
 
@@ -129,6 +132,14 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 				markComplete();
 			}
 		}
+	}
+
+	public String getEndPoint() {
+		return endPoint;
+	}
+
+	public void setEndPoint(String endPoint) {
+		this.endPoint = endPoint;
 	}
 
 	/**
