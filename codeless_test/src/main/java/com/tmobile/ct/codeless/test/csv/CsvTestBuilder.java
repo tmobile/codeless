@@ -59,7 +59,6 @@ public class CsvTestBuilder implements TestBuilder {
 		CSVRecord header = rows.next();
 		while (rows.hasNext()) {
 			List<Step> steps = parseRow(rows.next(), header);
-			//test.addSteps(steps);
 		}
 		return test;
 	}
@@ -70,7 +69,6 @@ public class CsvTestBuilder implements TestBuilder {
 		CSVRecord header = rows.next();
 		while (rows.hasNext()) {
 			List<Step> steps = parseRow(rows.next(), header);
-			//test.addSteps(steps);
 		}
 		return test;
 	}

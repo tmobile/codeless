@@ -46,6 +46,11 @@ import com.tmobile.ct.codeless.test.csv.CsvTestBuilder;
 import com.tmobile.ct.codeless.test.excel.ExcelTestBuilder;
 import com.tmobile.ct.codeless.test.suite.SuiteImpl;
 import com.tmobile.ct.codeless.test.suite.TestImpl;
+/**
+ * The Class ComponentCache.
+ *
+ * @author Rob Graff, Fikreselam Elala
+ */
 
 public class ComponentCache {
 
@@ -114,7 +119,7 @@ public class ComponentCache {
 
 	private static List<Step> buildFromExcel(String path, String name,Test test){
 
-		Workbook workbook = readExcelFile(path);
+		Workbook workbook = createExcelWorkbook(path);
 		Stream<Sheet> sheets = StreamSupport
 				.stream(Spliterators.spliteratorUnknownSize(workbook.sheetIterator(), Spliterator.ORDERED), false);
 
@@ -131,7 +136,7 @@ public class ComponentCache {
 
 	}
 
-	public static Workbook readExcelFile(String resource) {
+	public static Workbook createExcelWorkbook(String resource) {
 		File workbookFile = new File(resource);
 		try {
 			return WorkbookFactory.create(workbookFile);
