@@ -22,10 +22,10 @@ package com.tmobile.ct.codeless.core;
  */
 public enum Status {
 	
-	/** The no run. */
-	NO_RUN, 
- /** The in progress. */
- IN_PROGRESS, 
- /** The complete. */
- COMPLETE
+    /** The no run. */
+    NO_RUN,
+    /** The in progress. */
+    IN_PROGRESS,
+    /** The complete. */
+    COMPLETE
 }

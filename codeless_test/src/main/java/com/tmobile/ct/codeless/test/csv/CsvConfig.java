@@ -18,6 +18,7 @@ package com.tmobile.ct.codeless.test.csv;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import com.google.common.base.Optional;
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.TestDataSource;
@@ -42,7 +43,7 @@ public class CsvConfig {
 		while (keys.hasMoreElements()) {
 			
 			String key = keys.nextElement().toString();
-			String value = properties.getProperty(key);
+			String value = Optional.fromNullable(properties.getProperty(key)).or(com.tmobile.ct.codeless.core.config.Config.EMPTY);
 			
 			StaticTestDataSource staticSource = new StaticTestDataSource(key, value);
 			SourcedValue<TestDataSource> dS = new SourcedValue<>();

@@ -19,9 +19,12 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.ct.codeless.core.Execution;
 import com.tmobile.ct.codeless.core.Suite;
+import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.test.ExecutionContainer;
 import com.tmobile.ct.codeless.test.csv.CsvSuiteBuilder;
 import com.tmobile.ct.codeless.test.excel.ExcelSuiteBuilder;
@@ -56,7 +59,6 @@ public class MainTest {
 			suitePath = Optional.ofNullable(System.getProperty("SUITE.DIR")).orElse("suites/testard");
 			suite = new CsvSuiteBuilder().build(suitePath);
 		}
-
 		if (suite == null || suite.getTests() == null || suite.getTests().size() == 0) {
 			throw new RuntimeException("Invalid Test Suite, No Tests Found");
 		}
@@ -86,14 +88,18 @@ public class MainTest {
 	private static void parseArgs(String[] args) {
 		Arrays.asList(args).forEach(arg -> {
 			String[] parts = arg.trim().split("=");
+			String fileName = "";
+			if (parts.length == 2) {
+				fileName = parts[1].trim();
+			}
 			if (parts[0].equalsIgnoreCase("-SUITE")) {
-				String fileName = parts[1].trim();
-				if (fileName.contains(".")) { // .xlsx
-					System.setProperty("SUITE.FILE", CodelessConfiguration.getSuiteDir() + "/" + parts[1].trim());
+				if (fileName.contains(Config.EXCEL_EXTENSION)) { // .xlsx
+					System.setProperty("SUITE.FILE", CodelessConfiguration.getSuiteDir() + "/" + fileName);
 				} else {
-					System.setProperty("SUITE.DIR", CodelessConfiguration.getSuiteDir() + "/" + parts[1].trim());
+					System.setProperty("SUITE.DIR", CodelessConfiguration.getSuiteDir() + "/" + fileName);
 				}
-
+			} else if (parts[0].equalsIgnoreCase("-DATASHEET") && StringUtils.isNotBlank(fileName)) {
+				System.setProperty(Config.ENV_TESTDATA_SHEETNAME, fileName);
 			}
 		});
 	}

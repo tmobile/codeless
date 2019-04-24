@@ -337,13 +337,21 @@ public class HttpRequestImpl<T> implements HttpRequest<T>, Serializable{
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("HttpRequestImpl [headers=").append(headers).append(", queryParams=").append(queryParams)
-				.append(", pathParams=").append(pathParams).append(", cookies=").append(cookies).append(", multiParts=")
-				.append(multiParts).append(", forms=").append(forms).append(", body=").append(body).append(", auth=")
-				.append(auth).append(", httpMethod=").append(httpMethod).append(", protocal=").append(protocal)
-				.append(", host=").append(host).append(", port=").append(port).append(", servicePath=")
-				.append(servicePath).append(", operationPath=").append(operationPath).append(", endpoint=")
-				.append(endpoint).append("]");
+		builder.append("HttpRequestImpl [headers=").append(headers)
+				.append(", queryParams=").append(queryParams == null ? "null" : queryParams)
+				.append(", pathParams=").append(pathParams == null ? "null" : pathParams)
+				.append(", cookies=").append(cookies == null ? "null" : cookies)
+				.append(", multiParts=").append(multiParts == null ? "null" : multiParts)
+				.append(", forms=").append(forms == null ? "null" : forms)
+				.append(", body=").append(body == null ? "null" : body)
+				.append(", auth=").append(auth == null ? "null" : auth)
+				.append(", httpMethod=").append(httpMethod == null ? "null" : httpMethod.name())
+				.append(", protocal=").append(protocal == null ? "null" : protocal.name())
+				.append(", host=").append(host == null ? "null" : host.getValue())
+				.append(", port=").append(port == null ? "null" : port.toString())
+				.append(", servicePath=").append(servicePath == null ? "null" : servicePath.getValue())
+				.append(", operationPath=").append(operationPath == null ? "null" : operationPath.getValue())
+				.append(", endpoint=").append(endpoint == null ? "null" : endpoint.getValue()).append("]");
 		return builder.toString();
 	}
 

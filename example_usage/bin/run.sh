@@ -7,7 +7,7 @@ echo ===============================================
 echo Executing suite $1
 echo ===============================================
 cd "$script_path/../lib"
-java -jar codeless_test-0.0.3-SNAPSHOT-jar-with-dependencies.jar -suite="$1"
+java -jar codeless_test-0.0.3-SNAPSHOT-jar-with-dependencies.jar -suite="$1" -datasheet="$2"
 
 echo ===============================================
 echo Collecting log files

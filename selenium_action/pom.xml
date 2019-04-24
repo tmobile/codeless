@@ -9,16 +9,14 @@
   <artifactId>selenium_action</artifactId>
   
   <properties>
-		<java.version>1.8</java.version>
-		<retro.version>2.2.0</retro.version>
-		<selenium.version>3.8.1</selenium.version>
-		<!-- <selenium.version>2.5.3</selenium.version> -->
-		<sl4j.version>1.7.21</sl4j.version>
-		<testng.version>6.8</testng.version>
+	  <java.version>1.8</java.version>
+	  <retro.version>2.2.0</retro.version>
+	  <selenium.version>3.141.59</selenium.version>
+	  <sl4j.version>1.7.21</sl4j.version>
+	  <testng.version>6.8</testng.version>
 	</properties>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>com.tmobile.ct.codeless.core</groupId>
 			<artifactId>codeless_core</artifactId>

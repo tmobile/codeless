@@ -1,4 +1,8 @@
-"Step","Action","Target","Input","Overrides"
-"Get customer info","serviceCall","customer.api.v1.employee.{id}","GET","path::id::42823"
-"Load Google Page","goto","","https://www.google.com","assertEquals::WebDriver::getTitle::Google"
-"type in some text","sendKeys","Google.googlepage.searchbar","test",""
+Step,Action,Target,Input,Overrides,Overrides
+Navigate to UI page,goto,,{{website}},export::title::WebDriver::getTitle,
+type title of the page,sendKeys,{{txtBox}},{{title}},assertEquals::WebDriver::getTitle::{{title}},
+click search button,click,{{btnClick}},,waitType::clickable,
+get text of the element,move,{{element1}},,waitType::visible,export::abc::WebElement::getText
+move to the search bar,sendKeys,{{txtBox}},{{abc}},,
+get call to customer api,serviceCall,customer.api.v1.employee.{id},GET,path::id::{{abc}},
+close browser,close,,,,

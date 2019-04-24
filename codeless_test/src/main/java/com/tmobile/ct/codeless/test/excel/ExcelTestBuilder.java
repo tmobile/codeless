@@ -33,8 +33,8 @@ import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
 import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
-import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
 import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
+import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
 import com.tmobile.ct.codeless.test.component.ComponentCache;
 import com.tmobile.ct.codeless.test.suite.TestImpl;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
@@ -81,6 +81,21 @@ public class ExcelTestBuilder implements TestBuilder{
 		return test;
 	}
 
+	public List<Step> build(Sheet sheet, Test test){
+		this.test = (TestImpl) test;
+		List<Step> steps = new ArrayList<>();
+		int count = -1;
+		for(Row row: sheet){
+			count++;
+			if(count <2) continue;
+			List<Step> sp = parseRow(row);
+			if(sp!=null) {
+				steps.addAll(sp);
+			}
+		}
+		return steps;
+	}
+
 
 	/**
 	 * Parses the row.
@@ -89,35 +104,36 @@ public class ExcelTestBuilder implements TestBuilder{
 	 * @return the step
 	 */
 	private List<Step> parseRow(Row row) {
-		
+
 		if (row.getCell(0) != null) {
-			
+
 			String stepName = row.getCell(0).getStringCellValue();
 			if (stepName == null || stepName == "" || stepName.startsWith("#")) {
 				return null;
 			}
 		}
 		List<Step> steps = new ArrayList<>();
-		
+
 		if (getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("SERVICECALL")) {
 			steps.add(buildServiceStep(test, row));
 		} else if (getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("CONFIG")) {
 			parseConfigStep(row);
 			return null;
 		} else if(getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("COMPONENT")) {
-			steps.addAll(ComponentCache.getComponent(getSafeStringFromCell(row.getCell(2))));
+			steps.addAll(ComponentCache.getComponent(getSafeStringFromCell(row.getCell(2)),test));
+			steps.forEach(x -> x.setTest(test));
 			return steps;
 		} else {
 			steps.add(buildUiStep(test, row));
 		}
-		
+
 		if(steps != null) {
 			steps.forEach(step -> {
 				step.setTest(test);
 				test.addStep(step);
 			});
 		}
-		
+
 		return steps;
 	}
 
@@ -156,8 +172,8 @@ public class ExcelTestBuilder implements TestBuilder{
 	@Override
 	public Test getTest() {
 		return test;
-	}	
-	
+	}
+
 	private Step buildServiceStep(Test test, Row row) {
 
 		ServiceStepBuilder serviceStepBuilder = new ServiceStepBuilder();
@@ -174,7 +190,7 @@ public class ExcelTestBuilder implements TestBuilder{
 	}
 
 	private Step buildUiStep(Test test, Row row) {
-		
+
 		UiStepBuilder uiStepBuilder = new UiStepBuilder();
 		UiStepInput input = new UiStepInput();
 

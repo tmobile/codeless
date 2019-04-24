@@ -29,6 +29,8 @@ import com.tmobile.ct.codeless.core.Execution;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
+import com.tmobile.ct.codeless.core.Result;
+import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.test.BasicExecutor;
 import com.tmobile.ct.codeless.test.ExecutionContainer;
 import com.tmobile.ct.codeless.test.extentreport.ExtentTestManager;
@@ -120,6 +122,7 @@ public class TestngTest{
 	public void executeTest(Test test) throws Exception {
 
 		// before test
+		test.setStatus(Status.IN_PROGRESS);
 		execution.getTestHooks().forEach(hook -> {
 			hook.beforeTest(test);
 		});
@@ -136,8 +139,20 @@ public class TestngTest{
 				});
 
 				try {
-					executor.run(step);
+					if (test.getResult() != null &&
+						test.getResult().equals(Result.FAIL)) {
+						step.setResult(Result.SKIP);
+
+					} else {
+						executor.run(step);
+					}
+
+					if (step.getResult().equals(Result.FAIL)) {
+						test.setResult(Result.FAIL);
+					}
 				} catch (Exception e) {
+					test.setResult(Result.FAIL);
+
 					throw e;
 				} finally {
 
@@ -147,12 +162,19 @@ public class TestngTest{
 					});
 				}
 			}
+
 			WebDriverFactory.teardown();
 
 		} catch (Exception e) {
 			throw e;
 		} finally {
-			
+			if (test.getResult() == null ||
+				test.getResult() != Result.FAIL) {
+				test.setResult(Result.PASS);
+			}
+
+			test.setStatus(Status.COMPLETE);
+
 			// after test
 			execution.getTestHooks().forEach(hook -> {
 				hook.afterTest(test);

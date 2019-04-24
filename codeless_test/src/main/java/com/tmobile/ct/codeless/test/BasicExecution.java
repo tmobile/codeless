@@ -57,6 +57,7 @@ public class BasicExecution implements Execution{
 	
 	public BasicExecution(LifecyclePluginFilter pluginFilter){
 		this.pluginFilter = pluginFilter;
+		this.id = UUID.randomUUID().toString();
 	}
 	
 	private List<Plugin> filterPlugins(Plugin plugin){

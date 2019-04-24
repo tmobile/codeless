@@ -30,12 +30,17 @@ import com.tmobile.ct.codeless.core.Trackable;
 import com.tmobile.ct.codeless.service.core.ServiceCall;
 import com.tmobile.ct.codeless.service.model.Operation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The Class Call.
  *
  * @author Rob Graff
  */
 public class Call implements ServiceCall, Step, Trackable, Retryable{
+
+	public static final Logger logger = LoggerFactory.getLogger(Call.class);
 
 	/** The operation. */
 	private Operation operation;
@@ -78,6 +83,8 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	
 	private Component component;
 
+	private String endPoint;
+
 	/**
 	 * Instantiates a new call.
 	 *
@@ -88,6 +95,7 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	public Call(HttpClient client, HttpRequest request, Integer maxRetries){
 		this.client = client;
 		this.request = request;
+		this.endPoint = String.format("%s%s", this.request.getHost().getValue(), this.request.getOperationPath().getValue());
 		this.maxRetries = maxRetries;
 		this.retries = 0;
 
@@ -99,22 +107,25 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	 */
 	@Override
 	public void run() {
+		logger.debug("Entering Call.run()");
 		status = Status.IN_PROGRESS;
 		client.build(request);
 
 		while(status != Status.COMPLETE && retries < maxRetries+1){
 			try{
+				logger.debug("Initiating call()");
 				response = client.call();
 				validate();
 				status = Status.COMPLETE;
 				result = Result.PASS;
 			}catch(Exception e){
+				logger.error("Exception: [{}]", e.getMessage());
 				retries = retries + 1;
 				if(retries >= maxRetries){
 					status = Status.COMPLETE;
 					result = Result.FAIL;
 					fail(e);
-//					e.printStackTrace();
+
 					throw e;
 				}
 			}finally{
@@ -123,33 +134,14 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 		}
 	}
 
-	/**
-	 * The Enum StepStatus.
-	 *
-	 * @author Rob Graff
-	 */
-	private enum StepStatus{
-		
-		/** The pass. */
-		PASS,
-/** The fail. */
-FAIL,
-/** The info. */
-INFO
+	public String getEndPoint() {
+		return endPoint;
 	}
 
-	/**
-	 * Log step.
-	 *
-	 * @param status the status
-	 * @param name the name
-	 * @param message the message
-	 */
-	private void logStep(StepStatus status, String name, String message){
-		test.getLogProxies().forEach(logger ->{
-			logger.log(status.name(), name, message);
-		});
+	public void setEndPoint(String endPoint) {
+		this.endPoint = endPoint;
 	}
+
 
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.core.Validatable#validate()

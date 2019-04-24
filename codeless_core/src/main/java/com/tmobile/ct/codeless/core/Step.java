@@ -63,4 +63,12 @@ public interface Step extends Executable, Validatable{
 	 * @param parent component
 	 */
 	void setComponent(Component component);
+
+	void setResult(Result result);
+
+	Result getResult();
+
+	void setStatus(Status status);
+
+	Status getStatus();
 }

@@ -10,26 +10,20 @@
 	<artifactId>codeless_ui</artifactId>
 
 	<properties>
-		<selenium.version>3.8.1</selenium.version>
+		<selenium.version>3.141.59</selenium.version>
+		<appiumclient.version>7.0.0</appiumclient.version>
 	</properties>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>com.tmobile.ct.selenium.action</groupId>
 			<artifactId>selenium_action</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.tmobile.ct.codeless.core</groupId>
 			<artifactId>codeless_core</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>3.8.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.yaml</groupId>
@@ -40,6 +34,17 @@
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>${selenium.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.appium</groupId>
+			<artifactId>java-client</artifactId>
+			<version>${appiumclient.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.seleniumhq.selenium</groupId>
+					<artifactId>selenium-java</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 

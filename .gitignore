@@ -6,6 +6,10 @@
 /src/test/javascript/PhantomJS*/
 /test-output/
 
+example_usage/lib/test-output/
+example_usage/lib/ExtentReport.html
+example_usage/lib/codeless_test-0.0.3-SNAPSHOT-jar-with-dependencies.jar
+
 ######################
 # Node
 ######################
@@ -142,3 +146,4 @@ Desktop.ini
 # ESLint
 ######################
 .eslintcache
+
