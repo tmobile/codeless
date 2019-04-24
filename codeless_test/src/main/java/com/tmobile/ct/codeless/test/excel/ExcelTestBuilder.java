@@ -122,7 +122,6 @@ public class ExcelTestBuilder implements TestBuilder{
 		} else if(getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("COMPONENT")) {
 			steps.addAll(ComponentCache.getComponent(getSafeStringFromCell(row.getCell(2)),test));
 			steps.forEach(x -> x.setTest(test));
-			//test.setSteps(steps);
 			return steps;
 		} else {
 			steps.add(buildUiStep(test, row));
