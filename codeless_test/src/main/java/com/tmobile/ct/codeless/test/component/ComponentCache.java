@@ -19,12 +19,22 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.tmobile.ct.codeless.core.Component;
 import com.tmobile.ct.codeless.core.Step;
@@ -33,53 +43,57 @@ import com.tmobile.ct.codeless.files.ClassPathUtil;
 import com.tmobile.ct.codeless.files.FileDotIdentifier;
 import com.tmobile.ct.codeless.files.FileMapper;
 import com.tmobile.ct.codeless.test.csv.CsvTestBuilder;
+import com.tmobile.ct.codeless.test.excel.ExcelTestBuilder;
 import com.tmobile.ct.codeless.test.suite.SuiteImpl;
+import com.tmobile.ct.codeless.test.suite.TestImpl;
 
 public class ComponentCache {
 
 	private static ConcurrentHashMap<String, List<Step>> cache = new ConcurrentHashMap<>();
 	private static ConcurrentHashMap<String, FileDotIdentifier> files;
-	
+
+	private TestImpl test;
+
 	private ComponentCache() {}
-	
+
 	private static void init() {
 		String path = ClassPathUtil.getAbsolutePath(".."+File.separator+"components");
 		FileMapper mapper = new FileMapper(Paths.get(path), "component");
 		files = mapper.map();
 	}
-	
-	public static List<Step> getComponent(String name){
-		
+
+	public static List<Step> getComponent(String name,Test test){
+
 		if(files == null) {
 			init();
 		}
-		
+
 		if(StringUtils.isBlank(name)) {
 			return null;
 		}
-		
+
 		if(!cache.containsKey(name)) {
-			buildComponentSteps(name);
+			buildComponentSteps(name,test);
 		}
-		
+
 		return cache.get(name);
 	}
 
-	private static void buildComponentSteps(String name) {
+	private static void buildComponentSteps(String name, Test test) {
 		FileDotIdentifier fdId = files.get(name);
-		
+
 		if(fdId == null) {
 			return;
 		}
-		
+
 		if(fdId.getExtension().equalsIgnoreCase("csv")) {
-			cache.put(name, buildFromCsv(fdId.getPath(), fdId.getName()));
+			cache.put(name, buildFromCsv(fdId.getPath(), fdId.getName(), test));
 		}else {
-			// parse xslx, xls
+			cache.put(name, buildFromExcel(fdId.getPath(), fdId.getName(),test));
 		}
 	}
 
-	private static List<Step> buildFromCsv(String path, String name) {
+	private static List<Step> buildFromCsv(String path, String name,Test test) {
 		Iterable<CSVRecord> records;
 		try {
 			records = CSVFormat.DEFAULT.parse(new FileReader(path));
@@ -87,14 +101,43 @@ public class ComponentCache {
 			e.printStackTrace();
 			return null;
 		}
-		
+
 		CsvTestBuilder builder = new CsvTestBuilder();
-		Test test = builder.build(new SuiteImpl(""), records.iterator(), "", null);
+		builder.build(new SuiteImpl(""), records.iterator(), "", null,test);
 		Component component = new ComponentImpl();
 		component.setName(name);
 		test.getSteps().forEach(step -> step.setComponent(component));
-		
+
 		return test.getSteps();
-		
+
+	}
+
+	private static List<Step> buildFromExcel(String path, String name,Test test){
+
+		Workbook workbook = readExcelFile(path);
+		Stream<Sheet> sheets = StreamSupport
+				.stream(Spliterators.spliteratorUnknownSize(workbook.sheetIterator(), Spliterator.ORDERED), false);
+
+		List<Step> steps = new ArrayList<>();
+
+
+		sheets.forEach(x -> {
+			if(!x.getSheetName().startsWith("c-")) {
+				steps.addAll(new ExcelTestBuilder().build(x,test));
+			}
+		});
+
+		return steps;
+
+	}
+
+	public static Workbook readExcelFile(String resource) {
+		File workbookFile = new File(resource);
+		try {
+			return WorkbookFactory.create(workbookFile);
+		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

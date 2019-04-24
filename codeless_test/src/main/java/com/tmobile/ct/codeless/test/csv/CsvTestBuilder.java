@@ -28,8 +28,8 @@ import com.tmobile.ct.codeless.core.TestBuilder;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.data.BasicTestData;
-import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
 import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
+import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
 import com.tmobile.ct.codeless.test.component.ComponentCache;
 import com.tmobile.ct.codeless.test.suite.TestImpl;
 import com.tmobile.ct.codeless.ui.build.UiStepBuilder;
@@ -41,7 +41,7 @@ import com.tmobile.ct.codeless.ui.build.UiStepInput;
  * @author Sai Chandra Korpu
  */
 public class CsvTestBuilder implements TestBuilder {
-	
+
 	TestImpl test = new TestImpl();
 
 	TestData data = new BasicTestData();
@@ -51,6 +51,7 @@ public class CsvTestBuilder implements TestBuilder {
 	UiStepBuilder uiStepBuilder = new UiStepBuilder();
 
 	public Test build(Suite suite, Iterator<CSVRecord> rows, String name, TestData testData) {
+
 		test.setSuite(suite);
 		test.setName(name);
 		test.setConfig(suite.getConfig());
@@ -58,8 +59,19 @@ public class CsvTestBuilder implements TestBuilder {
 		CSVRecord header = rows.next();
 		while (rows.hasNext()) {
 			List<Step> steps = parseRow(rows.next(), header);
+			//test.addSteps(steps);
 		}
+		return test;
+	}
 
+	public Test build(Suite suite, Iterator<CSVRecord> rows, String name, TestData testData,Test test) {
+
+		this.test = (TestImpl) test;
+		CSVRecord header = rows.next();
+		while (rows.hasNext()) {
+			List<Step> steps = parseRow(rows.next(), header);
+			//test.addSteps(steps);
+		}
 		return test;
 	}
 
@@ -85,9 +97,9 @@ public class CsvTestBuilder implements TestBuilder {
 		Iterator<String> headerCell = header.iterator();
 
 		List<Step> steps = new ArrayList<>();
-		
+
 		String actionType = row.get(1);
-		
+
 		if ("SERVICECALL".equalsIgnoreCase(actionType)) {
 
 			ServiceCallInput input = new ServiceCallInput();
@@ -95,10 +107,10 @@ public class CsvTestBuilder implements TestBuilder {
 				serviceStepBuilder.buildServiceStep(headerCell.next(), cells.next(), input, test);
 			}
 			steps.add(serviceStepBuilder.build(test, input));
-			
+
 		} else if ("COMPONENT".equalsIgnoreCase(actionType)) {
 
-			steps = ComponentCache.getComponent(row.get(2));
+			steps = ComponentCache.getComponent(row.get(2),test);
 		} else {
 
 			UiStepInput input = new UiStepInput();
@@ -109,9 +121,9 @@ public class CsvTestBuilder implements TestBuilder {
 
 			steps.add(uiStepBuilder.build(input, test));
 		}
-		if (steps != null) {
+		if (steps != null && !"COMPONENT".equalsIgnoreCase(actionType)) {
 			steps.forEach(step -> {
-				step.setTest(test);
+		step.setTest(test);
 				test.addStep(step);
 			});
 		}
