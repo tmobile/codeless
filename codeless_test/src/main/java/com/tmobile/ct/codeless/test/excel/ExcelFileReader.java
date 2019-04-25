@@ -32,8 +32,14 @@ import com.tmobile.ct.codeless.files.ClassPathUtil;
  */
 public class ExcelFileReader {
 
-	public static Workbook readExcelFile(String resource) {
-		File workbookFile = new File(ClassPathUtil.getAbsolutePath(resource));
+	public static Workbook readExcelFile(String resource, boolean addClassPath) {
+		File workbookFile = null;
+
+		if(addClassPath) {
+			workbookFile = new File(ClassPathUtil.getAbsolutePath(resource));
+		}else {
+			workbookFile = new File(resource);
+		}
 		try {
 			return WorkbookFactory.create(workbookFile);
 		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
@@ -41,4 +47,5 @@ public class ExcelFileReader {
 			return null;
 		}
 	}
+
 }

@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.tmobile.ct.codeless.core.Assertion;
 import com.tmobile.ct.codeless.core.Component;
 import com.tmobile.ct.codeless.core.Result;
@@ -29,9 +32,6 @@ import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.Trackable;
 import com.tmobile.ct.codeless.service.core.ServiceCall;
 import com.tmobile.ct.codeless.service.model.Operation;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class Call.
@@ -44,43 +44,43 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 
 	/** The operation. */
 	private Operation operation;
-	
+
 	/** The name. */
 	private String name;
 
 	/** The request. */
 	private HttpRequest request;
-	
+
 	/** The response. */
 	private HttpResponse response;
-	
+
 	/** The client. */
 	private HttpClient client;
 
 	/** The result. */
 	private Result result;
-	
+
 	/** The status. */
 	private Status status;
 
 	/** The max retries. */
 	private Integer maxRetries;
-	
+
 	/** The retries. */
 	private Integer retries;
-	
+
 	/** The assertions. */
 	private List<Assertion> assertions;
-	
+
 	/** The failure cause. */
 	private Throwable failureCause;
-	
+
 	/** The test. */
 	private Test test;
-	
+
 	/** The is complete. */
 	private CompletableFuture<Boolean> isComplete = new CompletableFuture<>();
-	
+
 	private Component component;
 
 	private String endPoint;
@@ -95,7 +95,13 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	public Call(HttpClient client, HttpRequest request, Integer maxRetries){
 		this.client = client;
 		this.request = request;
-		this.endPoint = String.format("%s%s", this.request.getHost().getValue(), this.request.getOperationPath().getValue());
+		try {
+			this.endPoint = String.format("%s%s", this.request.getHost().getValue(), this.request.getOperationPath().getValue());
+		} catch (NullPointerException npe) {
+			// soap tests won't have an operationPath value, so...
+			this.endPoint = this.request.getHost().getValue();
+		}
+
 		this.maxRetries = maxRetries;
 		this.retries = 0;
 
