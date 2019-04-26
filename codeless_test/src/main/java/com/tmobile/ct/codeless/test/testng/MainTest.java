@@ -92,6 +92,7 @@ public class MainTest {
 			if (parts.length == 2) {
 				fileName = parts[1].trim();
 			}
+
 			if (parts[0].equalsIgnoreCase("-SUITE")) {
 				if (fileName.contains(Config.EXCEL_EXTENSION)) { // .xlsx
 					System.setProperty("SUITE.FILE", CodelessConfiguration.getSuiteDir() + "/" + fileName);
@@ -100,10 +101,14 @@ public class MainTest {
 				}
 			} else if (parts[0].equalsIgnoreCase("-DATASHEET") && StringUtils.isNotBlank(fileName)) {
 				System.setProperty(Config.ENV_TESTDATA_SHEETNAME, fileName);
-			} else if (parts[0].startsWith("-") && parts.length == 2) {
-				// handles any other switches and values passed.
-				System.setProperty(parts[0].replace("-", "").trim(), parts[1].trim());
-			}
+			} else if (parts[0].startsWith("-")) {
+                if (parts.length == 2) {
+                    // handles any other switches and values passed.
+                    System.setProperty(parts[0].replace("-", "").trim(), parts[1].trim());
+                } else {
+                    System.setProperty(parts[0].replace("-", "").trim(), null);
+                }
+            }
 		});
 	}
 }
