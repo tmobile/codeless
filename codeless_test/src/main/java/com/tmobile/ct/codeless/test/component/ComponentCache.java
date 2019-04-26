@@ -30,11 +30,8 @@ import java.util.stream.StreamSupport;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.tmobile.ct.codeless.core.Component;
 import com.tmobile.ct.codeless.core.Step;
@@ -43,6 +40,7 @@ import com.tmobile.ct.codeless.files.ClassPathUtil;
 import com.tmobile.ct.codeless.files.FileDotIdentifier;
 import com.tmobile.ct.codeless.files.FileMapper;
 import com.tmobile.ct.codeless.test.csv.CsvTestBuilder;
+import com.tmobile.ct.codeless.test.excel.ExcelFileReader;
 import com.tmobile.ct.codeless.test.excel.ExcelTestBuilder;
 import com.tmobile.ct.codeless.test.suite.SuiteImpl;
 import com.tmobile.ct.codeless.test.suite.TestImpl;
@@ -119,7 +117,7 @@ public class ComponentCache {
 
 	private static List<Step> buildFromExcel(String path, String name,Test test){
 
-		Workbook workbook = createExcelWorkbook(path);
+		Workbook workbook = ExcelFileReader.readExcelFile(path,false);
 		Stream<Sheet> sheets = StreamSupport
 				.stream(Spliterators.spliteratorUnknownSize(workbook.sheetIterator(), Spliterator.ORDERED), false);
 
@@ -134,15 +132,5 @@ public class ComponentCache {
 
 		return steps;
 
-	}
-
-	public static Workbook createExcelWorkbook(String resource) {
-		File workbookFile = new File(resource);
-		try {
-			return WorkbookFactory.create(workbookFile);
-		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 }

@@ -37,11 +37,11 @@ import com.tmobile.ct.codeless.test.testdata.TestDataReader;
  * @author Rob Graff
  */
 public class ExcelTestData {
-	
+
 	private TestData testData;
-	
+
 	private Suite suite;
-	
+
 	private DataFormatter formatter = new DataFormatter();
 
 	public ExcelTestData(Suite suite, TestData testData) {
@@ -51,7 +51,7 @@ public class ExcelTestData {
 	}
 
 	public void parseExcelTestDataFile(String path) {
-		Workbook workbook = ExcelFileReader.readExcelFile(path);
+		Workbook workbook = ExcelFileReader.readExcelFile(path,true);
 		Stream<Sheet> sheets = StreamSupport
 				.stream(Spliterators.spliteratorUnknownSize(workbook.sheetIterator(), Spliterator.ORDERED), false);
 		sheets.forEach(this::parseDefaultTestDataSheet);
@@ -67,7 +67,7 @@ public class ExcelTestData {
 		if (!fullname.equalsIgnoreCase(Config.DEFAULT_TEST_DATA)) {
 			return;
 		}
-		
+
 		createTestData(sheet, Config.DEFAULT_TEST_DATA);
 
 	}
@@ -80,7 +80,7 @@ public class ExcelTestData {
 
 		// check in system properties for environment specific test data sheet
 		String envTestDataSheet = System.getProperty(Config.ENV_TESTDATA_SHEETNAME);
-		
+
 		// check in environment properties
 		if(StringUtils.isBlank(envTestDataSheet)) {
 			envTestDataSheet = System.getenv(Config.ENV_TESTDATA_SHEETNAME);
