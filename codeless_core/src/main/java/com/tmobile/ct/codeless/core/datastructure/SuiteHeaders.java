@@ -46,6 +46,9 @@ public enum SuiteHeaders {
 	/** The target operation. */
 	TARGET,
 
+	/** the description */
+	DESCRIPTION,
+
 	/** The testdata. */
 	TESTDATA;
 

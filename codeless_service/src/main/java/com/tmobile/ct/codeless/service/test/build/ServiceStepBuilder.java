@@ -185,6 +185,9 @@ public class ServiceStepBuilder {
 				case EXPECTEDSTATUS:
 					testRow.expectedStatus = value;
 					break;
+				case DESCRIPTION:
+					testRow.description = value;
+					break;
 				case TESTDATA:
 					testRow.testData.add(value);
 					break;
@@ -247,6 +250,7 @@ public class ServiceStepBuilder {
 
 		call.setOperation(operation);
 		call.setName(testRow.testName);
+		call.setDescription(testRow.description);
 		call.setAssertions(assertions);
 		return call;
 	}

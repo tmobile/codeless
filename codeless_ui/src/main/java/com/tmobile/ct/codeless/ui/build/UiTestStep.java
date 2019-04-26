@@ -45,6 +45,8 @@ public class UiTestStep {
 	
 	/** The Action override. */
 	private String Action_Override;
+
+	private String description;
 	
 	/** The test data. */
 	private List<String> testData = new ArrayList<>();
@@ -194,6 +196,13 @@ public class UiTestStep {
 		Action_Override = action_Override;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }
 
 

@@ -91,6 +91,8 @@ public class UiStepImpl implements UiStep {
 	
 	private List<UiStepExportBuilder> uiStepExportBuilder;
 
+	private String description;
+
 	/**
 	 * Instantiates a new ui step impl.
 	 */
@@ -251,7 +253,6 @@ public class UiStepImpl implements UiStep {
 
 	@Override
 	public void validate() {
-		
 	}
 
 	@Override
@@ -262,7 +263,6 @@ public class UiStepImpl implements UiStep {
 	@Override
 	public void setName(String name) {
 	this.name = name;
-
 	}
 
 	@Override
@@ -375,5 +375,15 @@ public class UiStepImpl implements UiStep {
 	@Override
 	public List<UiStepExportBuilder> getUiStepExportBuilder() {
 		return this.uiStepExportBuilder;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }
