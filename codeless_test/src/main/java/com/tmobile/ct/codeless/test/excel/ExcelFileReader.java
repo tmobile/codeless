@@ -35,6 +35,7 @@ public class ExcelFileReader {
 	public static Workbook readExcelFile(String resource, boolean addClassPath) {
 		File workbookFile = null;
 
+		// true if you need to prefix resource with absolute path
 		if(addClassPath) {
 			workbookFile = new File(ClassPathUtil.getAbsolutePath(resource));
 		}else {
