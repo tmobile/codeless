@@ -100,6 +100,9 @@ public class MainTest {
 				}
 			} else if (parts[0].equalsIgnoreCase("-DATASHEET") && StringUtils.isNotBlank(fileName)) {
 				System.setProperty(Config.ENV_TESTDATA_SHEETNAME, fileName);
+			} else if (parts[0].startsWith("-")) {
+				// handles any other switches and values passed.
+				System.setProperty(parts[0].replace("-", "").trim(), parts[1].trim());
 			}
 		});
 	}
