@@ -106,7 +106,7 @@ public class MainTest {
                     // handles any other switches and values passed.
                     System.setProperty(parts[0].replace("-", "").trim(), parts[1].trim());
                 } else {
-                    System.setProperty(parts[0].replace("-", "").trim(), null);
+                    System.setProperty(parts[0].replace("-", "").trim(), "null");
                 }
             }
 		});

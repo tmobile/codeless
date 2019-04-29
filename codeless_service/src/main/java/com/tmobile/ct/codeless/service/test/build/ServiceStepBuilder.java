@@ -141,6 +141,10 @@ public class ServiceStepBuilder {
 			input.add(SuiteHeaders.TESTNAME.name(),
 					new MultiValue<String, String>(SuiteHeaders.TESTNAME.name(), value));
 			break;
+		case "DESCRIPTION":
+			input.add(SuiteHeaders.DESCRIPTION.name(),
+					new MultiValue<String, String>(SuiteHeaders.DESCRIPTION.name(), value));
+			break;
 		case "ACTION":
 			// do nothing
 			break;
