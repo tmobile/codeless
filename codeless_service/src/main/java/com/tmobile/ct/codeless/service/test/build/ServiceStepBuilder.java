@@ -526,7 +526,7 @@ public class ServiceStepBuilder {
  *
  * @param excelData the excel data
  */
-private void parseTestData(String excelData){
+	private void parseTestData(String excelData){
 
 		if(StringUtils.isBlank(excelData)){
 			return;
