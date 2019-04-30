@@ -29,6 +29,7 @@ import com.tmobile.ct.codeless.core.Execution;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
+import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.test.BasicExecutor;
@@ -36,6 +37,7 @@ import com.tmobile.ct.codeless.test.ExecutionContainer;
 import com.tmobile.ct.codeless.test.extentreport.ExtentTestManager;
 import com.tmobile.ct.codeless.test.extentreport.TestStepReporter;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
+import com.tmobile.selenium.sam.action.log.UiActionLogger;
 
 /**
  * The Class TestngTest.
@@ -139,8 +141,7 @@ public class TestngTest{
 				});
 
 				try {
-					if (test.getResult() != null &&
-						test.getResult().equals(Result.FAIL)) {
+					if (test.getResult() != null && test.getResult().equals(Result.FAIL)) {
 						step.setResult(Result.SKIP);
 						step.setStatus(Status.NO_RUN);
 
@@ -175,6 +176,11 @@ public class TestngTest{
 			}
 
 			test.setStatus(Status.COMPLETE);
+			if (test.getConfig().get(Config.UI_ACTION_LOG_ENABLE).fullfill().equalsIgnoreCase("TRUE")) {
+				test.setUiActionLog(UiActionLogger.get());
+			}
+			UiActionLogger.destroy();
+			
 
 			// after test
 			execution.getTestHooks().forEach(hook -> {

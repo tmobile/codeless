@@ -13,52 +13,44 @@
  *  * License for the specific language governing permissions and limitations under
  *  * the License.
  ******************************************************************************/
-package com.tmobile.selenium.sam.action.types;
+package com.tmobile.selenium.sam.action.log;
+
+import java.util.List;
+import com.tmobile.ct.codeless.core.UiActionLog;
 
 /**
- * The Enum ActionType.
+ * The Class UiActionLogger.
  *
- * @author Rob Graff
+ * @author Sai Chandra Korpu
  */
-public enum ActionType {
-
-	/** The Action. */
-	Action,
-	/** The Go. */
-	Go,
-	/** The Click. */
-	Click,
-	/** The Cookie. */
-	Cookie,
-	/** The Send. */
-	Send,
-	/** The Read. */
-	Read,
-	/** The Validate. */
-	Validate,
-	/** The Alert. */
-	Alert,
-	/** The Frame. */
-	Frame,
-	/** The Switch default. */
-	SwitchDefault,
-	/** The Window. */
-	Window,
-	/** The Condition. */
-	Condition,
-	/** The Key. */
-	Key,
-	/** The Move. */
-	Move,
-	/** The Select. */
-	Select,
-	/** The Go to step. */
-	GoToStep,
-	/** The Navigate. */
-	Navigate,
-	/** The Wait. */
-	Wait,
-	/** The Close. */
-	Close
+public class UiActionLogger {
+		
+		private static ThreadLocal<UiActionLogContainer> bucket = new InheritableThreadLocal<>();
+		
+		private UiActionLogger(){}
+		
+		private static UiActionLogContainer getBucket(){
+			if(null == bucket.get()){
+				bucket.set(new UiActionLogContainer());
+			}
+			return bucket.get();
+		}
+		
+		public static void init(){
+			bucket.remove();
+			bucket.set(new UiActionLogContainer());
+		}
+		
+		public static void add(UiActionLog uiActionLog){
+			getBucket().addUiActionLog(uiActionLog);
+		}
+		
+		public static List<UiActionLog> get(){
+			return getBucket().getUiAcitonLogs();
+		}
+		
+		public static void destroy(){
+			bucket.remove();
+		}
 
 }

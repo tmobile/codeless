@@ -147,4 +147,8 @@ public interface Test extends Trackable{
 	 * @return the log proxies
 	 */
 	List<LogProxy> getLogProxies();
+	
+	void setUiActionLog(List<UiActionLog> uiActionLog);
+	
+	List<UiActionLog> getUiActionLog();
 }
