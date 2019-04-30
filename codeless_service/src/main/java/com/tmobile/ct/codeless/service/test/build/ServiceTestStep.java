@@ -43,6 +43,9 @@ public class ServiceTestStep {
 	/** The expected status. */
 	public String expectedStatus;
 
+	/** The description */
+	public String description;
+
 	/** The test data. */
 	public List<String> testData = new ArrayList<>();
 

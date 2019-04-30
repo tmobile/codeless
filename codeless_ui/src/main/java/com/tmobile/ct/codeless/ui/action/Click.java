@@ -47,10 +47,13 @@ public class Click extends BaseAction implements UiAction {
 	@Override
 	public void run() {
 
+
 		try{
+			new Wait(driver, config, element).run();
 			new ClickFactory(getDriver(), config).click(element).execute();
 		}catch(Exception e){
 			fail(e);
+
 			throw e;
 		}
 	}

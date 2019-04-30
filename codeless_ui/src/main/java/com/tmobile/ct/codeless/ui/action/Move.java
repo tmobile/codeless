@@ -33,6 +33,7 @@ public class Move extends BaseAction implements UiAction {
 	public void run() {
 		
 		try{
+			new Wait(driver, config, element).run();
 			new MoveFactory(getDriver(), config).move(element).execute();
 		}catch(Exception e){
 			fail(e);

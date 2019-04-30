@@ -52,6 +52,7 @@ public class Select extends BaseAction implements UiAction {
 	@Override
 	public void run() {
 		try{
+			new Wait(driver, config, element).run();
 			new SelectFactory(getDriver(), config).selectFrom(element).item(text).execute();
 		}catch(Exception e){
 			fail(e);

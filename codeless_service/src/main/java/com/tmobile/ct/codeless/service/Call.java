@@ -85,6 +85,8 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 
 	private String endPoint;
 
+	private String description;
+
 	/**
 	 * Instantiates a new call.
 	 *
@@ -372,5 +374,15 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	@Override
 	public void setComponent(Component component) {
 		this.component = component;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

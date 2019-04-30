@@ -142,6 +142,7 @@ public class TestngTest{
 					if (test.getResult() != null &&
 						test.getResult().equals(Result.FAIL)) {
 						step.setResult(Result.SKIP);
+						step.setStatus(Status.NO_RUN);
 
 					} else {
 						executor.run(step);

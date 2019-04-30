@@ -64,11 +64,45 @@ public interface Step extends Executable, Validatable{
 	 */
 	void setComponent(Component component);
 
+	/**
+	 * Set the result
+	 *
+	 * @param result new result
+	 */
 	void setResult(Result result);
 
+	/**
+	 * Gets the result.
+	 *
+	 * @return the result
+	 */
 	Result getResult();
 
+	/**
+	 * Set the status
+	 *
+	 * @param status new status
+	 */
 	void setStatus(Status status);
 
+	/**
+	 * Gets the status.
+	 *
+	 * @return the status
+	 */
 	Status getStatus();
+
+	/**
+	 * Gets the description.
+	 *
+	 * @return the description
+	 */
+	String getDescription();
+
+	/**
+	 * Set the description
+	 *
+	 * @param description new description
+	 */
+	void setDescription(String description);
 }

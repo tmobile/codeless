@@ -52,6 +52,7 @@ public class Drag extends BaseAction implements UiAction {
 	@Override
 	public void run() {
 		try{
+			new Wait(driver, config, element).run();
 			new DragFactory(getDriver(), config).drag(element).to(target).execute();
 		}catch(Exception e){
 			fail(e);
