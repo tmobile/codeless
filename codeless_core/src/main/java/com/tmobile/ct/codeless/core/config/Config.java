@@ -35,4 +35,5 @@ public class Config {
 	public static final String ENV_TESTDATA_SHEETNAME = "ENV_TESTDATA_SHEET";
 	public static final String DEFAULT_TEST_DATA = "DATASHEET";
 	
+	public static final String UI_ACTION_LOG_ENABLE = "uiActionLog.deatails.enabled";
 }

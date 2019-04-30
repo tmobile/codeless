@@ -13,52 +13,14 @@
  *  * License for the specific language governing permissions and limitations under
  *  * the License.
  ******************************************************************************/
-package com.tmobile.selenium.sam.action.types;
+package com.tmobile.ct.codeless.core;
 
-/**
- * The Enum ActionType.
- *
- * @author Rob Graff
- */
-public enum ActionType {
-
-	/** The Action. */
-	Action,
-	/** The Go. */
-	Go,
-	/** The Click. */
-	Click,
-	/** The Cookie. */
-	Cookie,
-	/** The Send. */
-	Send,
-	/** The Read. */
-	Read,
-	/** The Validate. */
-	Validate,
-	/** The Alert. */
-	Alert,
-	/** The Frame. */
-	Frame,
-	/** The Switch default. */
-	SwitchDefault,
-	/** The Window. */
-	Window,
-	/** The Condition. */
-	Condition,
-	/** The Key. */
-	Key,
-	/** The Move. */
-	Move,
-	/** The Select. */
-	Select,
-	/** The Go to step. */
-	GoToStep,
-	/** The Navigate. */
-	Navigate,
-	/** The Wait. */
-	Wait,
-	/** The Close. */
-	Close
-
+public enum UiAction {
+	
+	CLICK,
+	SEND_TEXT,
+	GET_URL,
+	SCRIPT,
+	GET_TEXT,
+	NAVIGATE
 }
