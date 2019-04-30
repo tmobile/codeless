@@ -105,7 +105,7 @@ public class ActionDriver {
 			UiActionLogger.add(new UiActionLog(UiAction.GET_URL, url, duration));
 			break;
 		case Read:
-			String text = (String) getFieldByClassType(action, String.class, "url");
+			String text = (String) getFieldByClassType(action, String.class, "output");
 			UiActionLogger.add(new UiActionLog(UiAction.GET_TEXT, text, duration));
 			break;
 		case Navigate:
