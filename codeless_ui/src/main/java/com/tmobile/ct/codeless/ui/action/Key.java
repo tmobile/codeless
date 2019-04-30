@@ -33,6 +33,7 @@ public class Key extends BaseAction implements UiAction {
 	public void run() {
 		
 		try{
+			new Wait(driver, config, element).run();
 			new KeyFactory(getDriver(), config).sendKeyTo(element).key(config.keyType).execute();
 		}catch(Exception e){
 			fail(e);

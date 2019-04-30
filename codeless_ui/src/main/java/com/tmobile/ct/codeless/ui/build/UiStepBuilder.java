@@ -304,6 +304,9 @@ public class UiStepBuilder {
 					case TESTDATA:
 						testRow.getTestData().add(value);
 						break;
+					case DESCRIPTION:
+						testRow.setDescription(value);
+						break;
 					default:
 						break;
 					}

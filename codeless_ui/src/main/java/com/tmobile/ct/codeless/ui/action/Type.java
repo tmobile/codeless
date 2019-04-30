@@ -52,6 +52,7 @@ public class Type extends BaseAction implements UiAction {
 	@Override
 	public void run() {
 		try{
+			new Wait(driver, config, element).run();
 			new SendFactory(getDriver(), config).sendTo(element).text(this.text).execute();
 			/*CtSeleniumPageActions pageObjects = new CtSeleniumPageActions(test.getWebDriver());
 			pageObjects.buildAssertions(g, element);*/
