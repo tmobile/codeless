@@ -21,12 +21,13 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+
+import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.SuiteBuilder;
@@ -74,10 +75,10 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 	 */
 	public Suite build(String resource){
 
-		Workbook workbook = ExcelFileReader.readExcelFile(resource);
+		Workbook workbook = ExcelFileReader.readExcelFile(resource,true);
 
 		suite = new SuiteImpl(resource);
-		
+
 		Stream<Sheet> sheets = StreamSupport
 				.stream(Spliterators.spliteratorUnknownSize(workbook.sheetIterator(), Spliterator.ORDERED), false);
 		sheets.forEach(this::parseConfigSheet);
@@ -85,9 +86,9 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 		// read test data sheet before sorting / building tests
 		testData = TestDataReader.getTestData(suite, testData);
 		sheets = StreamSupport.stream(Spliterators.spliteratorUnknownSize(workbook.sheetIterator(), Spliterator.ORDERED), false);
-		
+
 		sheets.forEach(this::sortsheets);
-		
+
 
 		return suite;
 	}
@@ -141,17 +142,17 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 	 * @return the config
 	 */
 	private void parseConfigSheet(Sheet sheet) {
-		
+
 		String fullname = sheet.getSheetName();
 		String name = fullname.substring(2, fullname.length());
 		String prefix = fullname.substring(0, 2);
-		
+
 		if(!sheetIsValid(prefix)){
 			return;
 		}
-		
+
 		if(!prefix.toUpperCase().equalsIgnoreCase(CONFIG_SHEET_PREFIX)) return;
-		
+
 		Config config = new BasicConfig();
 		boolean foundWaitTimeConfig = false;
 		Properties globalproperties = CodelessConfiguration.getProperties();

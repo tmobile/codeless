@@ -37,7 +37,10 @@ public enum SuiteHeaders {
 	INPUT,
 	
 	/** The testdata. */
-	TESTDATA;
+	TESTDATA,
+
+	/** The description. */
+	DESCRIPTION;
 	
 	/**
 	 * Instantiates a new suite headers.

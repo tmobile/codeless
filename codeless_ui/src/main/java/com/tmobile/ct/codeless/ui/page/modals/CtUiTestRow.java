@@ -54,6 +54,9 @@ public class CtUiTestRow implements Step, Trackable {
 	/** The test. */
 	private Test test;
 
+	/** The description */
+	private String description;
+
 	/**
 	 * Gets the assertion builder.
 	 *
@@ -252,4 +255,13 @@ public class CtUiTestRow implements Step, Trackable {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }

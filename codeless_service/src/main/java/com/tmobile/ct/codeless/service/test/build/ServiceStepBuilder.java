@@ -141,6 +141,10 @@ public class ServiceStepBuilder {
 			input.add(SuiteHeaders.TESTNAME.name(),
 					new MultiValue<String, String>(SuiteHeaders.TESTNAME.name(), value));
 			break;
+		case "DESCRIPTION":
+			input.add(SuiteHeaders.DESCRIPTION.name(),
+					new MultiValue<String, String>(SuiteHeaders.DESCRIPTION.name(), value));
+			break;
 		case "ACTION":
 			// do nothing
 			break;
@@ -184,6 +188,9 @@ public class ServiceStepBuilder {
 					break;
 				case EXPECTEDSTATUS:
 					testRow.expectedStatus = value;
+					break;
+				case DESCRIPTION:
+					testRow.description = value;
 					break;
 				case TESTDATA:
 					testRow.testData.add(value);
@@ -247,6 +254,7 @@ public class ServiceStepBuilder {
 
 		call.setOperation(operation);
 		call.setName(testRow.testName);
+		call.setDescription(testRow.description);
 		call.setAssertions(assertions);
 		return call;
 	}
@@ -518,7 +526,7 @@ public class ServiceStepBuilder {
  *
  * @param excelData the excel data
  */
-private void parseTestData(String excelData){
+	private void parseTestData(String excelData){
 
 		if(StringUtils.isBlank(excelData)){
 			return;
