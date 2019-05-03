@@ -31,6 +31,7 @@ import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestData;
+import com.tmobile.ct.codeless.core.UiActionLog;
 import com.tmobile.ct.codeless.data.BasicConfig;
 
 /**
@@ -67,6 +68,8 @@ public class TestImpl implements Test{
 	private Result result;
 
 	private Status status;
+	
+	private List<UiActionLog> uiActionLog = new ArrayList<>();
 
 	@Override
 	public Result getResult() {
@@ -179,6 +182,16 @@ public class TestImpl implements Test{
 	@Override
 	public void addSteps(List<Step> steps) {
 		this.steps.addAll(steps);
+	}
+
+	@Override
+	public void setUiActionLog(List<UiActionLog> uiActionLog) {
+		this.uiActionLog = uiActionLog;
+	}
+
+	@Override
+	public List<UiActionLog> getUiActionLog() {
+		return uiActionLog;
 	}
 
 }
