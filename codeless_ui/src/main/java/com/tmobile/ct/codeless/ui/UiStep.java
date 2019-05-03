@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.ui;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -49,6 +50,8 @@ public interface UiStep extends Step, Trackable, Retryable {
 	 * @param action the new action
 	 */
 	void setAction(UiAction action);
+	
+	UiAction getAction();
 
 	List<TestDataInput> getTestDataInputs();
 
@@ -61,5 +64,9 @@ public interface UiStep extends Step, Trackable, Retryable {
 	void setUiStepExportBuilder(List<UiStepExportBuilder> uiStepExportBuilder);
 	
 	List<UiStepExportBuilder> getUiStepExportBuilder();
+	
+	String getScreenShotPath();
+	
+	void setScreenShotPath(String screenShotPath);
 	
 }

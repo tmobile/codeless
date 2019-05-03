@@ -39,7 +39,7 @@ public class UiAssertionMethod {
 		} else if (expected.trim().length() == 0) {
 			return org.testng.Assert.class.getDeclaredMethod(assertionMethodName, Object.class);
 		} else {
-			return org.testng.Assert.class.getDeclaredMethod(assertionMethodName, String.class, String.class);
+			return org.testng.Assert.class.getDeclaredMethod(assertionMethodName, Object.class, Object.class);
 		}
 	}
 

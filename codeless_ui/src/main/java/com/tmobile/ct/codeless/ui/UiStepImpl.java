@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.ui;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -92,6 +93,8 @@ public class UiStepImpl implements UiStep {
 	private List<UiStepExportBuilder> uiStepExportBuilder;
 
 	private String description;
+	
+	private String screenShotPath;
 
 	/**
 	 * Instantiates a new ui step impl.
@@ -385,5 +388,15 @@ public class UiStepImpl implements UiStep {
 	@Override
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Override
+	public String getScreenShotPath() {
+		return screenShotPath;
+	}
+
+	@Override
+	public void setScreenShotPath(String screenShotPath) {
+		this.screenShotPath = screenShotPath;
 	}
 }
