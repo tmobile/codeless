@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.test.extentreport;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,8 +98,13 @@ public class TestStepReporter {
 				}
 			}
 		}
-		ExtentTestManager.getTest().log(status, step.getName(),
-				ExtentTestManager.getTest().addBase64ScreenShot(screenshotPath));
+		
+		if (StringUtils.isNotBlank(screenshotPath)) {
+			ExtentTestManager.getTest().log(status, step.getName(),
+					ExtentTestManager.getTest().addBase64ScreenShot(screenshotPath));
+		} else {
+			ExtentTestManager.getTest().log(status, step.getName(), "");
+		}
 	}
 
 	private static String getDOMResult(ServiceCallDTO serviceCall) {
