@@ -108,9 +108,8 @@ public class TestListener implements ITestListener {
 	public void onTestSkipped(ITestResult iTestResult) {
 		log.debug("Entering TestListener.onTestSkipped method " + getTestMethodName(iTestResult) + " skipped!");
 		// Extentreports log operation for skipped tests.
-//		ExtentTestManager.getTest().log(LogStatus.SKIP, "Test Skipped");
-		log.debug("===============TESTINGGGGGGG");
-		System.err.println("skip exception:: "+iTestResult.getThrowable());
+		// ExtentTestManager.getTest().log(LogStatus.SKIP, "Test Skipped");
+		log.error("skip exception:: "+iTestResult.getThrowable());
 		iTestResult.getThrowable().printStackTrace();
 	}
 

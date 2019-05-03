@@ -258,7 +258,7 @@ public class WebDriverFactory {
 		TakesScreenshot ts = (TakesScreenshot) driver;
 		File source = ts.getScreenshotAs(OutputType.FILE);
 		// after execution, you could see a folder "FailedTestsScreenshots" folder
-		String destination = System.getProperty("user.dir") + "/FailedTestsScreenshots/" + string + dateName + ".png";
+		String destination = System.getProperty("user.dir") + "/TestsScreenshots/" + string + dateName + ".png";
 		File finalDestination = new File(destination);
 		FileUtils.copyFile(source, finalDestination);
 		return destination;

@@ -25,6 +25,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
 
+import com.google.common.base.Optional;
 import com.tmobile.ct.codeless.core.Execution;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Suite;
@@ -53,6 +54,8 @@ public class TestngTest{
 	BasicExecutor executor = new BasicExecutor();
 
 	Execution execution;
+	
+	private boolean enableUiActionLog = false;
 
 	/**
 	 * Suite setup.
@@ -64,13 +67,13 @@ public class TestngTest{
 	public void beforeSuite(ITestContext context) throws IOException {
 
 		File directory = null;
-		if (!new File(System.getProperty("user.dir") + "/FailedTestsScreenshots").exists()) {
-			boolean created = new File(System.getProperty("user.dir") + "/FailedTestsScreenshots").mkdir();
+		if (!new File(System.getProperty("user.dir") + "/TestsScreenshots").exists()) {
+			boolean created = new File(System.getProperty("user.dir") + "/TestsScreenshots").mkdir();
 			if (created) {
-				directory = new File(System.getProperty("user.dir") + "/FailedTestsScreenshots");
+				directory = new File(System.getProperty("user.dir") + "/TestsScreenshots");
 			}
 		} else {
-			directory = new File(System.getProperty("user.dir") + "/FailedTestsScreenshots");
+			directory = new File(System.getProperty("user.dir") + "/TestsScreenshots");
 			FileUtils.cleanDirectory(directory);
 		}
 		
@@ -165,18 +168,23 @@ public class TestngTest{
 				}
 			}
 
-			WebDriverFactory.teardown();
-
 		} catch (Exception e) {
 			throw e;
 		} finally {
+			WebDriverFactory.teardown();
 			if (test.getResult() == null ||
 				test.getResult() != Result.FAIL) {
 				test.setResult(Result.PASS);
 			}
 
 			test.setStatus(Status.COMPLETE);
-			if (test.getConfig().get(Config.UI_ACTION_LOG_ENABLE).fullfill().equalsIgnoreCase("TRUE")) {
+			if (test.getConfig().asMap().containsKey(Config.UI_ACTION_LOG_ENABLE)) {
+				enableUiActionLog = Optional
+						.fromNullable(
+								Boolean.parseBoolean(test.getConfig().get(Config.UI_ACTION_LOG_ENABLE).fullfill()))
+						.or(false);
+			}
+			if (enableUiActionLog) {
 				test.setUiActionLog(UiActionLogger.get());
 			}
 			UiActionLogger.destroy();

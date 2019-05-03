@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.core.TestDataSource;
@@ -48,19 +49,22 @@ public class TestDataReader {
 
 		if (suite.getConfig() != null) {
 
-			String testDataFileName = suite.getConfig().get(Config.TESTDATA_FILENAME).fullfill();
-			String path = ".." + File.separator + "testdata" + File.separator + testDataFileName;
-			if (path.contains(Config.EXCEL_EXTENSION)) {
-				new ExcelTestData(suite, testData).parseExcelTestDataFile(path);
-				
-			} else if (path.contains(Config.CSV_EXTENSION)) {
+			String testDataFileName = Optional.fromNullable(suite.getConfig().get(Config.TESTDATA_FILENAME).fullfill())
+					.or(Config.EMPTY);
+			if (StringUtils.isNotBlank(testDataFileName)) {
+				String path = ".." + File.separator + "testdata" + File.separator + testDataFileName;
+				if (path.contains(Config.EXCEL_EXTENSION)) {
+					new ExcelTestData(suite, testData).parseExcelTestDataFile(path);
 
-				try {
-					new CsvTestData(suite, testData).parseCsvTestDataSheet(path);
-				} catch (IOException e) {
-					e.printStackTrace();
+				} else if (path.contains(Config.CSV_EXTENSION)) {
+
+					try {
+						new CsvTestData(suite, testData).parseCsvTestDataSheet(path);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
 				}
-
 			}
 		}
 
