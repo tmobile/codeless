@@ -36,4 +36,9 @@ public class Config {
 	public static final String DEFAULT_TEST_DATA = "DATASHEET";
 	
 	public static final String UI_ACTION_LOG_ENABLE = "uiActionLog.details.enabled";
+	public static final String LOGGING_DETAILS_ENABLED = "logging.details.enabled";
+	
+	public static final String TEST_SCREENSHOT_POLICY = "test.screenshot.policy";
+	public static final String FAILURE_ONLY = "FAILUREONLY";
+	public static final String ALL_STEPS = "ALLSTEPS";
 }

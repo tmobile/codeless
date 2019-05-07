@@ -15,16 +15,20 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.test.extentreport;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.relevantcodes.extentreports.LogStatus;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Step;
+import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.service.Call;
 import com.tmobile.ct.codeless.service.core.ServiceCall;
 import com.tmobile.ct.codeless.test.service.ServiceCallDTO;
 import com.tmobile.ct.codeless.test.service.ServiceLogFilter;
+import com.tmobile.ct.codeless.ui.UiStep;
 import com.tmobile.ct.codeless.ui.UiStepImpl;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
 
@@ -34,7 +38,10 @@ import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
  * @author Sai Chandra Korpu
  */
 public class TestStepReporter {
-	public static final Logger logger = LoggerFactory.getLogger(TestStepReporter.class);
+	
+	private static final Logger logger = LoggerFactory.getLogger(TestStepReporter.class);
+	
+	private static boolean loggingEnabled = false;
 
 	public static void reporter(Step step) throws Exception {
 		try{
@@ -42,40 +49,62 @@ public class TestStepReporter {
 				logServiceStepResult(step);
 
 			} else {
-				logUiStepResult(step);
+				logUiStepResult((UiStep)step);
 
 			}
 		}catch(Exception e){
-			System.err.println("TestStepReporter Failure");
-			e.printStackTrace();
+			logger.error(e.getMessage());
+			logger.error("TestStepReporter Failure");
 		}
 	}
 
 	private static void logServiceStepResult(Step step) {
 
-		if (step.getTest().getConfig().asMap().containsKey("logging.details.enabled")
-				&& step.getTest().getConfig().get("logging.details.enabled").fullfill().equalsIgnoreCase("TRUE")) {
+		LogStatus status = logStepResult(step);
+		if (step.getTest().getConfig().asMap().containsKey(Config.LOGGING_DETAILS_ENABLED)) {
+			loggingEnabled = Optional
+					.fromNullable(Boolean
+							.parseBoolean(step.getTest().getConfig().get(Config.LOGGING_DETAILS_ENABLED).fullfill()))
+					.or(false);
+		}
 
+		if (loggingEnabled) {
 			ServiceCallDTO serviceCall = ServiceLogFilter.filter((ServiceCall) step);
-			ExtentTestManager.getTest().log(logStepResult(step), step.getName(), getDOMResult(serviceCall));
-
+			ExtentTestManager.getTest().log(status, step.getName(), getDOMResult(serviceCall));
 		} else {
-			ExtentTestManager.getTest().log(logStepResult(step), step.getName(), "");
-
+			ExtentTestManager.getTest().log(status, step.getName(), "");
 		}
 	}
 
-	private static void logUiStepResult(Step step) throws Exception {
+	private static void logUiStepResult(UiStep step) throws Exception {
 
-		if (logStepResult(step) == LogStatus.PASS) {
-			ExtentTestManager.getTest().log(logStepResult(step), step.getName(), "");
+		String screenshotPath = "";
+		LogStatus status = logStepResult(step);
+		if (step.getTest().getConfig().asMap().containsKey(Config.TEST_SCREENSHOT_POLICY)) {
+			 String screenShotPolicy = Optional
+					.fromNullable(step.getTest().getConfig().get(Config.TEST_SCREENSHOT_POLICY).fullfill())
+					.or(Config.EMPTY);
 
-		} else {
-			String screenshotPath = WebDriverFactory.getScreenhot(step.getTest().getWebDriver(), step.getName());
-			ExtentTestManager.getTest().log(LogStatus.FAIL, step.getName(),
-					ExtentTestManager.getTest().addBase64ScreenShot(screenshotPath));
+			String actionName = step.getAction().getClass().getSimpleName();
+
+			if (!actionName.equalsIgnoreCase("close") && status != LogStatus.SKIP) {
+
+				if (screenShotPolicy.equalsIgnoreCase(Config.ALL_STEPS)) {
+					screenshotPath = WebDriverFactory.getScreenhot(step.getTest().getWebDriver(), step.getName());
+					step.setScreenShotPath(screenshotPath);
+				} else if (screenShotPolicy.equalsIgnoreCase(Config.FAILURE_ONLY) && status == LogStatus.FAIL) {
+					screenshotPath = WebDriverFactory.getScreenhot(step.getTest().getWebDriver(), step.getName());
+					step.setScreenShotPath(screenshotPath);
+				}
+			}
 		}
-
+		
+		if (StringUtils.isNotBlank(screenshotPath)) {
+			ExtentTestManager.getTest().log(status, step.getName(),
+					ExtentTestManager.getTest().addBase64ScreenShot(screenshotPath));
+		} else {
+			ExtentTestManager.getTest().log(status, step.getName(), "");
+		}
 	}
 
 	private static String getDOMResult(ServiceCallDTO serviceCall) {
@@ -102,8 +131,15 @@ public class TestStepReporter {
 	}
 
 	private static LogStatus getLog(Result result) {
-		return result == Result.PASS ? LogStatus.PASS : LogStatus.FAIL;
-
+		switch (result) {
+		case PASS:
+			return LogStatus.PASS;
+		case FAIL:
+			return LogStatus.FAIL;
+		case SKIP:
+			return LogStatus.SKIP;
+		}
+		return null;
 	}
-
+	
 }
