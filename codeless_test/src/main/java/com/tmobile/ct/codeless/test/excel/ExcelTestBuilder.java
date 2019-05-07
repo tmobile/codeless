@@ -17,12 +17,16 @@ package com.tmobile.ct.codeless.test.excel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
+import com.tmobile.ct.codeless.data.BasicConfig;
+import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
@@ -68,7 +72,7 @@ public class ExcelTestBuilder implements TestBuilder{
 	public Test build(Suite suite, Sheet sheet, String name, TestData testData){
 		test.setSuite(suite);
 		test.setName(name);
-		test.setConfig(suite.getConfig());
+		test.setConfig(cloneConfig(suite.getConfig()));
 		test.setTestData(testData);
 
 		int count = -1;
@@ -96,6 +100,21 @@ public class ExcelTestBuilder implements TestBuilder{
 		return steps;
 	}
 
+	private com.tmobile.ct.codeless.core.Config cloneConfig(com.tmobile.ct.codeless.core.Config config) {
+		Map<String, String> configMap = config.asMap();
+		BasicConfig clonedConfig = new BasicConfig();
+		for (String propKey : configMap.keySet()) {
+			String propValue = configMap.get(propKey);
+			StaticTestDataSource staticSource = new StaticTestDataSource(propKey, propValue);
+			SourcedValue<TestDataSource> value = new SourcedValue<>();
+			value.setValue(staticSource);
+			com.tmobile.ct.codeless.data.SourcedDataItem<String,TestDataSource> di = new SourcedDataItem<>(propKey, value);
+			clonedConfig.put(propKey, di);
+		}
+
+		return (com.tmobile.ct.codeless.core.Config)clonedConfig;
+
+	}
 
 	/**
 	 * Parses the row.
