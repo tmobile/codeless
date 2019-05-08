@@ -114,12 +114,15 @@ public class UiStepOverrides {
 						if (seleniumMethod != null) {
 							String dataValue[] = StringUtils.substringsBetween(expected, "{{", "}}");
 
-							if (dataValue != null && dataValue.length > 0) {
+							if (dataValue != null && dataValue.length > 0 && test.getTestData().asMap().containsKey(dataValue[0])) {
 								TestDataSource tData = test.getTestData().get(dataValue[0]);
 								RequestModifier modifier = new AssertionModifer(dataValue[0], tData);
 								step.getRequestModifiers().add(modifier);
-
+							}else {
+								RequestModifier modifier = new AssertionModifer(dataValue[0], null);
+								step.getRequestModifiers().add(modifier);
 							}
+
 							Method assertionMethod = UiAssertionMethod.getAssertionMethod(assertionMethodName,
 									expected);
 							log.info("UiStepName [" + uiTestStep.getStep() + "] Assertion Type ["

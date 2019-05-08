@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.ui.build;
 
+import static com.tmobile.ct.codeless.configuration.CodelessConfiguration.getModelDir;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,7 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.DataFormatter;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
@@ -31,6 +32,7 @@ import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
+import com.tmobile.ct.codeless.testdata.TestDataHelper;
 import com.tmobile.ct.codeless.testdata.TestDataInput;
 import com.tmobile.ct.codeless.testdata.TestDataProvider;
 import com.tmobile.ct.codeless.ui.UiStep;
@@ -63,8 +65,6 @@ import com.tmobile.selenium.sam.action.types.WindowType;
 import com.tmobile.selenium.sam.config.ActionConfig;
 import com.tmobile.selenium.sam.config.ConfigManager;
 
-import static com.tmobile.ct.codeless.configuration.CodelessConfiguration.getModelDir;
-
 /**
  * The Class ExcelUiStepBuilder.
  *
@@ -72,7 +72,7 @@ import static com.tmobile.ct.codeless.configuration.CodelessConfiguration.getMod
  */
 public class UiStepBuilder {
 
-	Test test;	
+	Test test;
 
 	/**
 	 * Builds the.
@@ -81,7 +81,7 @@ public class UiStepBuilder {
 	 * @return the ui step
 	 */
 	public UiStep build(UiStepInput input, Test test) {
-		
+
 		this.test = test;
 		UiStep step = new UiStepImpl();
 
@@ -102,13 +102,13 @@ public class UiStepBuilder {
 	 * Builds the action.
 	 *
 	 * @param testRow the test row
-	 * @param config the config
-	 * @param step the step
+	 * @param config  the config
+	 * @param step    the step
 	 * @return the ui action
 	 */
 	private UiAction buildAction(UiTestStep testRow, ActionConfig config, UiStep step) {
 		String actionType = testRow.getAction();
-		if(StringUtils.isBlank(actionType)){
+		if (StringUtils.isBlank(actionType)) {
 			return null;
 		}
 		UiAction action = null;
@@ -117,7 +117,7 @@ public class UiStepBuilder {
 		WebElement element = buildTargetElement(testRow.getTarget(), step);
 		String input = Optional.ofNullable(testRow.getInput()).map(String::trim).orElse("");
 
-		switch(actionType){
+		switch (actionType) {
 		case "CLICK":
 			action = new Click(step.getWebDriver(), config, element);
 			break;
@@ -168,7 +168,7 @@ public class UiStepBuilder {
 	 * Builds the target element.
 	 *
 	 * @param target the target
-	 * @param step the step
+	 * @param step   the step
 	 * @return the web element
 	 */
 	private WebElement buildTargetElement(String target, UiStep step) {
@@ -182,9 +182,9 @@ public class UiStepBuilder {
 			String appName = parts[0];
 			String modelName = parts[1];
 			String targetName = parts[2];
-			String basePath = getModelDir() + File.separator + appName + File.separator + modelName +".yaml";
+			String basePath = getModelDir() + File.separator + appName + File.separator + modelName + ".yaml";
 			Map<String, ControlElement> controls = YamlReader.ReadControl(basePath);
-			if(controls != null && controls.containsKey(targetName)){
+			if (controls != null && controls.containsKey(targetName)) {
 				ControlElement control = controls.get(targetName);
 				return new WebElementProxyFactory().fromControlElement(step.getWebDriver(), control);
 			}
@@ -199,12 +199,12 @@ public class UiStepBuilder {
 	 * @param testData the test data
 	 * @return the action config
 	 */
-	public ActionConfig buildConfig(List<String> testData){
+	public ActionConfig buildConfig(List<String> testData) {
 
 		ActionConfig config = new ActionConfig(ConfigManager.getActionConfig());
-		for(String item : testData){
+		for (String item : testData) {
 
-			if(!item.contains("::")){
+			if (!item.contains("::")) {
 				continue;
 			}
 
@@ -212,14 +212,14 @@ public class UiStepBuilder {
 			String key = parts[0];
 			String value = parts[1];
 
-			if(StringUtils.isBlank(key) || StringUtils.isBlank(value)){
+			if (StringUtils.isBlank(key) || StringUtils.isBlank(value)) {
 				continue;
 			}
 
 			key = key.toUpperCase().trim();
 			value = value.trim();
 
-			switch(key){
+			switch (key) {
 			case "WAITTIME":
 				config.waitTime = Integer.valueOf(value);
 				break;
@@ -267,18 +267,20 @@ public class UiStepBuilder {
 	 * @param input the input
 	 * @return the excel ui test row
 	 */
-	public UiTestStep buildTestRow(UiStepInput input, Test test ,UiStep step){
+	public UiTestStep buildTestRow(UiStepInput input, Test test, UiStep step) {
 		UiTestStep testRow = new UiTestStep();
 		input.stream().forEach(item -> {
 			SuiteHeaders header = SuiteHeaders.parse(item.getKey());
 			for (String value : item.getValue().getValues()) {
 
-				if(!StringUtils.isEmpty(value)) {
+				if (!StringUtils.isEmpty(value)) {
 					TestDataInput datainput = null;
-					String[] dataValue = StringUtils.substringsBetween(value, Config.OVERRIDE_INPUT_START, Config.OVERRIDE_INPUT_END);
-					if(dataValue != null && dataValue.length > 0 ) {
-						datainput= new TestDataInput();
-						datainput.add(item.getKey(), new MultiValue<String,TestDataProvider>(item.getKey(), new TestDataProvider(test, dataValue[0])));
+					String[] dataValue = StringUtils.substringsBetween(value, Config.OVERRIDE_INPUT_START,
+							Config.OVERRIDE_INPUT_END);
+					if (dataValue != null && dataValue.length > 0) {
+						datainput = new TestDataInput();
+						datainput.add(item.getKey(), new MultiValue<String, TestDataProvider>(item.getKey(),
+								new TestDataProvider(test, dataValue[0])));
 						step.getTestDataInputs().add(datainput);
 					}
 				}
@@ -313,42 +315,51 @@ public class UiStepBuilder {
 				}
 			}
 		});
-		UiStepOverrides.parseOverrides(test,testRow,step);
+		UiStepOverrides.parseOverrides(test, testRow, step);
 		return testRow;
 	}
 
 	private UiTestStep parseTestData(UiTestStep testRow, UiStep step) {
 
-		for(TestDataInput input : step.getTestDataInputs()) {
-			input.stream().forEach(key ->{
+		for (TestDataInput input : step.getTestDataInputs()) {
+			input.stream().forEach(key -> {
 				SuiteHeaders header = SuiteHeaders.parse(key.getKey());
-				TestDataProvider tdata= key.getValue().getValues().get(0);
+				TestDataProvider tdata = key.getValue().getValues().get(0);
+				Map dataMap = test.getTestData().asMap();
 				String value = tdata.getKey();
-				TestDataSource testData = null;
-				if(test.getTestData() != null) {
-					testData = test.getTestData().get(value);
-				}
-				
-
-				if(testData == null) {
-					return;
-				}
 
 				RequestModifier modifier = null;
+				TestDataSource testData = null;
 
-				switch(header){
+				if (test.getTestData() != null && dataMap.containsKey(value)) {
+					testData = test.getTestData().get(value);
+				}
+
+				switch (header) {
 				case TARGET:
-					testRow.setTarget(testData.fullfill());
+					testRow.setTarget((String) testData.fullfill());
 					break;
 				case INPUT:
-					modifier = new InputModifer(value,testData);
+					String tcds_value = "";
+					if (test.getTcdsData() && dataMap.containsKey(test.getName())) {
+						TestDataSource td = test.getTestData().get(test.getName());
+						tcds_value = TestDataHelper.fullfill(value, td);
+						if (!StringUtils.isEmpty(tcds_value)) {
+							testRow.setInput(tcds_value);
+						}
+					}
+					if (StringUtils.isEmpty(tcds_value) && testData != null) {
+						modifier = new InputModifer(value, testData);
+					}
 					break;
 				default:
 					// do nothing
 					break;
 				}
 
-				step.getRequestModifiers().add(modifier);
+				if (modifier != null) {
+					step.getRequestModifiers().add(modifier);
+				}
 
 			});
 		}

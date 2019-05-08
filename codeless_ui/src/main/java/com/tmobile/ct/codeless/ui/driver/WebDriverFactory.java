@@ -19,7 +19,6 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -95,13 +94,13 @@ public class WebDriverFactory {
 		String webDriver = "";
 		String webDriverPath = "";
 		String path = System.getProperty("user.dir");
-		platformType = Optional.fromNullable(testConfig.get("platform-type").fullfill()).or(EMPTY);
+		platformType = Optional.fromNullable((String)testConfig.get("platform-type").fullfill()).or(EMPTY);
 
 		if ("iPad".equalsIgnoreCase(platformType)) {
 			createMobileWebDriver(platformType); //create iPad WebDriver
 		} else {
 
-			String runLocal = Optional.fromNullable(testConfig.get("webdriver.runlocal").fullfill()).or(EMPTY);
+			String runLocal = Optional.fromNullable((String)testConfig.get("webdriver.runlocal").fullfill()).or(EMPTY);
 			if ("false".equalsIgnoreCase(runLocal)) {
 				return createRemoteDriver(platformType);
 			}
@@ -109,7 +108,7 @@ public class WebDriverFactory {
 				case "firefox": {
 					webDriver = "webdriver.gecko.driver";
 					if (testConfig.get("webdriver.path.firefox") == null)	return null;
-					webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.firefox").fullfill());
+					webDriverPath = getWebDriverPath((String)testConfig.get("webdriver.path.firefox").fullfill());
 					System.setProperty(webDriver, webDriverPath);
 					driver = new FirefoxDriver();
 					break;
@@ -117,7 +116,7 @@ public class WebDriverFactory {
 				case "microsoftedge": {
 					webDriver = "webdriver.ie.driver";
 					if (testConfig.get("webdriver.path.ie") == null)	return null;
-					webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.ie").fullfill());
+					webDriverPath = getWebDriverPath((String)testConfig.get("webdriver.path.ie").fullfill());
 					System.setProperty(webDriver, webDriverPath);
 					driver = new InternetExplorerDriver();
 					break;
@@ -125,7 +124,7 @@ public class WebDriverFactory {
 				default: {
 					webDriver = "webdriver.chrome.driver";
 					if (testConfig.get("webdriver.path.chrome") == null)	return null;
-					webDriverPath = getWebDriverPath(testConfig.get("webdriver.path.chrome").fullfill());
+					webDriverPath = getWebDriverPath((String)testConfig.get("webdriver.path.chrome").fullfill());
 					System.setProperty(webDriver, webDriverPath);
 					driver = new ChromeDriver();
 					break;
@@ -135,7 +134,7 @@ public class WebDriverFactory {
 		initWebDriver();
 		return driver;
 	}
-	
+
 	private static String getWebDriverPath(String webDriverPath) {
 
 		String opertatingSystem = System.getProperty("os.name").toLowerCase();
@@ -168,16 +167,16 @@ public class WebDriverFactory {
 	 * @return the web driver
 	 */
 	private static WebDriver createRemoteDriver(String plateformType) {
-		String hubOS = Optional.fromNullable(testConfig.get(WEBDRIVER_CONFIG.concat("."+plateformType.toLowerCase())).fullfill()).or(EMPTY);
-		String plateformVersion = Optional.fromNullable(testConfig.get(WEBDRIVER_VERSION.concat("."+plateformType.toLowerCase())).fullfill()).or(EMPTY);
+		String hubOS = Optional.fromNullable((String)testConfig.get(WEBDRIVER_CONFIG.concat("."+plateformType.toLowerCase())).fullfill()).or(EMPTY);
+		String plateformVersion = Optional.fromNullable((String)testConfig.get(WEBDRIVER_VERSION.concat("."+plateformType.toLowerCase())).fullfill()).or(EMPTY);
 		SupportedPlatform platform = SupportedPlatform.findFor(platformType);
-		String hub = Optional.fromNullable(testConfig.get("webdriver.hub").fullfill()).or(EMPTY);
-		String parentTunnel = Optional.fromNullable(testConfig.get("webdriver.parentTunnel").fullfill()).or(EMPTY);
-		String tunnelIdentifier = Optional.fromNullable(testConfig.get("webdriver.tunnelIdentifier").fullfill()).or(EMPTY);
-		String sboxToken = Optional.fromNullable(testConfig.get("webdriver.e34:token").fullfill()).or(EMPTY);
-		String sboxVideo = Optional.fromNullable(testConfig.get("webdriver.e34:video").fullfill()).or(EMPTY);
-		String testName = Optional.fromNullable(testConfig.get("webdriver.e34:l_testName").fullfill()).or(EMPTY);
-		String testTimeout = Optional.fromNullable(testConfig.get("webdriver.e34:per_test_timeout_ms").fullfill()).or(EMPTY);
+		String hub = Optional.fromNullable((String)testConfig.get("webdriver.hub").fullfill()).or(EMPTY);
+		String parentTunnel = Optional.fromNullable((String)testConfig.get("webdriver.parentTunnel").fullfill()).or(EMPTY);
+		String tunnelIdentifier = Optional.fromNullable((String)testConfig.get("webdriver.tunnelIdentifier").fullfill()).or(EMPTY);
+		String sboxToken = Optional.fromNullable((String)testConfig.get("webdriver.e34:token").fullfill()).or(EMPTY);
+		String sboxVideo = Optional.fromNullable((String)testConfig.get("webdriver.e34:video").fullfill()).or(EMPTY);
+		String testName = Optional.fromNullable((String)testConfig.get("webdriver.e34:l_testName").fullfill()).or(EMPTY);
+		String testTimeout = Optional.fromNullable((String)testConfig.get("webdriver.e34:per_test_timeout_ms").fullfill()).or(EMPTY);
 		Map<String, String> additionalProperties = new HashMap<String, String>();
 		additionalProperties.put("platform", hubOS);
 		additionalProperties.put("version", plateformVersion);
@@ -201,14 +200,14 @@ public class WebDriverFactory {
 	 * @return the web driver for iPad
 	 */
 	private static WebDriver createMobileWebDriver(String platformType) {
-		String deviceName = Optional.fromNullable(testConfig.get("webdriver.deviceName".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
-		String platformVersion = Optional.fromNullable(testConfig.get("webdriver.platformVersion".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
-		String platformName = Optional.fromNullable(testConfig.get("webdriver.platformName".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
-		String bundleId = Optional.fromNullable(testConfig.get("webdriver.bundleId".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
-		String udid = Optional.fromNullable(testConfig.get("webdriver.udid".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
+		String deviceName = Optional.fromNullable((String)testConfig.get("webdriver.deviceName".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
+		String platformVersion = Optional.fromNullable((String)testConfig.get("webdriver.platformVersion".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
+		String platformName = Optional.fromNullable((String)testConfig.get("webdriver.platformName".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
+		String bundleId = Optional.fromNullable((String)testConfig.get("webdriver.bundleId".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
+		String udid = Optional.fromNullable((String)testConfig.get("webdriver.udid".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
 
 		SupportedPlatform platform = SupportedPlatform.findFor(platformType);
-		String hub = Optional.fromNullable(testConfig.get("webdriver.hub").fullfill()).or(EMPTY);
+		String hub = Optional.fromNullable((String)testConfig.get("webdriver.hub").fullfill()).or(EMPTY);
 		Map<String, String> additionalProperties = new HashMap<String, String>();
 		additionalProperties.put("platformName", platformName);
 		additionalProperties.put("platformVersion", platformVersion);

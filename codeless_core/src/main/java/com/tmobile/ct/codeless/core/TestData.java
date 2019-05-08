@@ -22,14 +22,14 @@ import java.util.Map;
  *
  * @author Rob Graff
  */
-public interface TestData extends SourcedData{
+public interface TestData<T> extends SourcedData{
 
 	/**
 	 * As map.
 	 *
 	 * @return the map
 	 */
-	Map<String, TestDataSource> asMap();
+	Map<String, T> asMap();
 
 	String getValue(String key);
 

@@ -1,0 +1,21 @@
+navigationBarName:
+  by: "xpath"
+  locator: "//XCUIElementTypeOther[@name=\"Actions Sheets\"]"
+catalogButton:
+  by: "xpath"
+  locator: "//XCUIElementTypeButton[@name=\"UICatalog\"]"
+alertview:
+  by: "xpath"
+  locator: "//XCUIElementTypeStaticText[@name=\"Alert Views\"]"
+alertviewTitle:
+  by: "xpath"
+  locator: "//XCUIElementTypeOther[@name=\"Alert Views\"]"
+row3:
+  by: "xpath"
+  locator: "//XCUIElementTypeOther[@name=\"PopoverDismissRegion\"]/XCUIElementTypeOther/XCUIElementTypeOther[2]/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeOther/XCUIElementTypeTable/XCUIElementTypeCell[3]"
+alertviewtitle:
+  by: "xpath"
+  locator: "//XCUIElementTypeOther[@name=\"Alert Views\"]"
+uiCatalogApp:
+  by: "xpath"
+  locator: "//XCUIElementTypeApplication[@name=\"UICatalog\"]"

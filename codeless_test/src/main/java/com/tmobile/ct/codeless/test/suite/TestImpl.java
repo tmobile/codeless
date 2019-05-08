@@ -68,8 +68,10 @@ public class TestImpl implements Test{
 	private Result result;
 
 	private Status status;
-	
+
 	private List<UiActionLog> uiActionLog = new ArrayList<>();
+
+	private boolean isTcdsData = false;
 
 	@Override
 	public Result getResult() {
@@ -178,7 +180,7 @@ public class TestImpl implements Test{
 	public List<LogProxy> getLogProxies() {
 		return logProxies;
 	}
-	
+
 	@Override
 	public void addSteps(List<Step> steps) {
 		this.steps.addAll(steps);
@@ -192,6 +194,16 @@ public class TestImpl implements Test{
 	@Override
 	public List<UiActionLog> getUiActionLog() {
 		return uiActionLog;
+	}
+
+	@Override
+	public void setTcdsData(boolean isTcds) {
+		this.isTcdsData = isTcds;
+	}
+
+	@Override
+	public boolean getTcdsData() {
+		return isTcdsData;
 	}
 
 }

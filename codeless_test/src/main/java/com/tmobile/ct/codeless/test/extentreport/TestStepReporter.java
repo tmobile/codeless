@@ -38,9 +38,9 @@ import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
  * @author Sai Chandra Korpu
  */
 public class TestStepReporter {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(TestStepReporter.class);
-	
+
 	private static boolean loggingEnabled = false;
 
 	public static void reporter(Step step) throws Exception {
@@ -64,10 +64,9 @@ public class TestStepReporter {
 		if (step.getTest().getConfig().asMap().containsKey(Config.LOGGING_DETAILS_ENABLED)) {
 			loggingEnabled = Optional
 					.fromNullable(Boolean
-							.parseBoolean(step.getTest().getConfig().get(Config.LOGGING_DETAILS_ENABLED).fullfill()))
+							.parseBoolean((String)step.getTest().getConfig().get(Config.LOGGING_DETAILS_ENABLED).fullfill()))
 					.or(false);
 		}
-
 		if (loggingEnabled) {
 			ServiceCallDTO serviceCall = ServiceLogFilter.filter((ServiceCall) step);
 			ExtentTestManager.getTest().log(status, step.getName(), getDOMResult(serviceCall));
@@ -82,7 +81,7 @@ public class TestStepReporter {
 		LogStatus status = logStepResult(step);
 		if (step.getTest().getConfig().asMap().containsKey(Config.TEST_SCREENSHOT_POLICY)) {
 			 String screenShotPolicy = Optional
-					.fromNullable(step.getTest().getConfig().get(Config.TEST_SCREENSHOT_POLICY).fullfill())
+					.fromNullable((String)step.getTest().getConfig().get(Config.TEST_SCREENSHOT_POLICY).fullfill())
 					.or(Config.EMPTY);
 
 			String actionName = step.getAction().getClass().getSimpleName();
@@ -98,7 +97,7 @@ public class TestStepReporter {
 				}
 			}
 		}
-		
+
 		if (StringUtils.isNotBlank(screenshotPath)) {
 			ExtentTestManager.getTest().log(status, step.getName(),
 					ExtentTestManager.getTest().addBase64ScreenShot(screenshotPath));
@@ -141,5 +140,5 @@ public class TestStepReporter {
 		}
 		return null;
 	}
-	
+
 }

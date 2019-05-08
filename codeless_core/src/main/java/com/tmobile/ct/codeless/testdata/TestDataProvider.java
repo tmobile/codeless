@@ -72,19 +72,19 @@ public class TestDataProvider implements TestDataReference<String>{
 			Map<String, TestDataSource> data = testData.asMap();
 			// check test data for override value
 			if(data.containsKey(key)) {
-				String overrideValue = data.get(key).fullfill();
+				String overrideValue = (String) data.get(key).fullfill();
 				if(!StringUtils.isEmpty(overrideValue.trim())) {
 					return overrideValue;
 				}
 			}else {
 				if(test.getConfig() != null && test.getConfig().asMap().containsKey(key)) {
-					String configValue = test.getConfig().get(key).fullfill();
+					String configValue = (String) test.getConfig().get(key).fullfill();
 					return configValue;
 				}
 			}
 		}else if(td != null) {
 			Map<String, TestDataSource> data = td.asMap();
-			return data.get(key).fullfill();
+			return (String) data.get(key).fullfill();
 		}
 		return key;
 	}

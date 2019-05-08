@@ -15,32 +15,34 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.test.excel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-import com.tmobile.ct.codeless.data.BasicConfig;
-import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestBuilder;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.core.TestDataSource;
+import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
+import com.tmobile.ct.codeless.data.BasicConfig;
 import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
 import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
 import com.tmobile.ct.codeless.test.component.ComponentCache;
 import com.tmobile.ct.codeless.test.suite.TestImpl;
+import com.tmobile.ct.codeless.test.tcds.BuildTcdsDataSource;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 import com.tmobile.ct.codeless.ui.build.UiStepBuilder;
 import com.tmobile.ct.codeless.ui.build.UiStepInput;
@@ -112,7 +114,7 @@ public class ExcelTestBuilder implements TestBuilder{
 			clonedConfig.put(propKey, di);
 		}
 
-		return (com.tmobile.ct.codeless.core.Config)clonedConfig;
+		return clonedConfig;
 
 	}
 
@@ -137,6 +139,7 @@ public class ExcelTestBuilder implements TestBuilder{
 			steps.add(buildServiceStep(test, row));
 		} else if (getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("CONFIG")) {
 			parseConfigStep(row);
+			parseTcdsData(row);
 			return null;
 		} else if(getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("COMPONENT")) {
 			steps.addAll(ComponentCache.getComponent(getSafeStringFromCell(row.getCell(2)),test));
@@ -176,6 +179,24 @@ public class ExcelTestBuilder implements TestBuilder{
 				test.getConfig().put(key, item);
 			}
 		}
+	}
+
+	private void parseTcdsData(Row row) {
+		for(Cell cell : row){
+			String cellvalue = getSafeStringFromCell(cell);
+			if(cellvalue.equalsIgnoreCase(Config.TESTDATA+"::"+Config.TCDS) || cellvalue.equalsIgnoreCase(Config.TCDS)) {
+				String testFileName = test.getName();
+				if(!StringUtils.isEmpty(testFileName)) {
+					test.setTcdsData(true);
+					try {
+						new BuildTcdsDataSource(test.getTestData()).parseTcdsTestData(testFileName);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
 	}
 
 	/**
