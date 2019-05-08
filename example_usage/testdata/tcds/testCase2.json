@@ -1,0 +1,10 @@
+{
+  "templateURL" : "https://bitbucket.service.edp.t-mobile.com/projects/CTA/repos/tep_tcdata/raw/src/main/resources/template_id_1.json?at=refs%2Fheads%2Fdevelop",
+  "almId" : "alm_333",
+  "almName" : "Test 3",
+  "login" : {
+    "user" : "1",
+    "password" : "value C",
+    "phoneNum" : "3302274396"
+  }
+}
