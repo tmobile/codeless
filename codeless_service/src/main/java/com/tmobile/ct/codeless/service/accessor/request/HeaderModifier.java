@@ -19,6 +19,11 @@ import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.Header;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
+import com.tmobile.ct.codeless.testdata.RuntimeTestDataSource;
+import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 /**
  * The Class HeaderModifier.
@@ -29,7 +34,7 @@ public class HeaderModifier implements RequestModifier<Header, HttpRequest>{
 
 	/** The key. */
 	private String key;
-
+	private String original;
 	/** The dataSource to override. */
 	private TestDataSource dataSource;
 
@@ -43,13 +48,21 @@ public class HeaderModifier implements RequestModifier<Header, HttpRequest>{
 		this.key = key;
 		this.dataSource = dataSource;
 	}
+	public HeaderModifier(String key, String original, TestDataSource dataSource){
+		this.key = key;
+		this.dataSource = dataSource;
+		this.original = original;
+	}
 
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.service.accessor.request.RequestModifier#modify(com.tmobile.ct.codeless.service.HttpRequest)
 	 */
 	@Override
 	public void modify(HttpRequest request) {
-		Header newHeader = new Header(key, dataSource.fullfill());
+		String[] dataValue = StringUtils.substringsBetween(original, "{{", "}}");
+		String replace = "{{" + dataValue[0] + "}}";
+		String newVal = original.replace(replace,dataSource.fullfill());
+		Header newHeader = new Header(key, newVal);
 		request.getHeaders().put(newHeader.getKey(), newHeader);
 	}
 }

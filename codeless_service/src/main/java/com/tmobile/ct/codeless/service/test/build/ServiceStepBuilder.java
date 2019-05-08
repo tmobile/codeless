@@ -809,7 +809,7 @@ public class ServiceStepBuilder {
         			modifier = new QueryParamsModifier(key, source);
         			break;
         		case "HEADER":
-        			modifier = new HeaderModifier(key, source);
+        			modifier = new HeaderModifier(key,value, source);
         			break;
         		case "PATH":
         			modifier = new PathModifier(key, source);
