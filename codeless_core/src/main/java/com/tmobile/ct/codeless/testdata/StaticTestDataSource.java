@@ -25,7 +25,7 @@ import com.tmobile.ct.codeless.core.Accessor;
 
 import com.tmobile.ct.codeless.core.TestDataSource;
 
-public class StaticTestDataSource implements TestDataSource {
+public class StaticTestDataSource implements TestDataSource<String> {
 
 	private String key;
 	private String value;

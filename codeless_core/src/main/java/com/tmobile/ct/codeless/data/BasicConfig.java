@@ -47,7 +47,7 @@ public class BasicConfig extends BasicSourcedDataMap implements Config{
 	public Map<String,String> asMap(){
 		HashMap<String,String> map = new HashMap<>();
 		super.keySet().forEach(key ->{
-			map.put(key, super.get(key).fullfill());
+			map.put(key, (String)super.get(key).fullfill());
 		});
 		return map;
 	}

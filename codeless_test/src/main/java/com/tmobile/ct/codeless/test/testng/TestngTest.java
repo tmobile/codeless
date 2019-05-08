@@ -27,12 +27,12 @@ import org.testng.annotations.Listeners;
 
 import com.google.common.base.Optional;
 import com.tmobile.ct.codeless.core.Execution;
+import com.tmobile.ct.codeless.core.Result;
+import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.config.Config;
-import com.tmobile.ct.codeless.core.Result;
-import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.test.BasicExecutor;
 import com.tmobile.ct.codeless.test.ExecutionContainer;
 import com.tmobile.ct.codeless.test.extentreport.ExtentTestManager;
@@ -47,14 +47,14 @@ import com.tmobile.selenium.sam.action.log.UiActionLogger;
  * @author Sai Chandra Korpu
  */
 @Listeners(com.tmobile.ct.codeless.test.testng.listeners.TestListener.class)
-public class TestngTest{
-	
+public class TestngTest {
+
 	Suite suite;
 
 	BasicExecutor executor = new BasicExecutor();
 
 	Execution execution;
-	
+
 	private boolean enableUiActionLog = false;
 
 	/**
@@ -76,32 +76,33 @@ public class TestngTest{
 			directory = new File(System.getProperty("user.dir") + "/TestsScreenshots");
 			FileUtils.cleanDirectory(directory);
 		}
-		
+
 		// get suite container from execution
 		String id = context.getCurrentXmlTest().getParameter("codeless.suite.id");
 		execution = ExecutionContainer.getExecution();
 		suite = execution.getSuite(id);
-		execution.getSuiteHooks().forEach(hook ->{
+		execution.getSuiteHooks().forEach(hook -> {
 			hook.beforeSuite(suite);
 		});
 
 	}
-	
+
 	@AfterSuite
-	public void afterSuite(){
-		execution.getSuiteHooks().forEach(hook ->{
+	public void afterSuite() {
+		execution.getSuiteHooks().forEach(hook -> {
 			hook.afterSuite(suite);
 		});
 	}
 
 	/**
-	 * Codeless data provider - data driver spawn 1 method for each Test object in the Suite
+	 * Codeless data provider - data driver spawn 1 method for each Test object in
+	 * the Suite
 	 *
 	 * @return the object[][]
 	 */
 	@DataProvider(name = "codeless", parallel = false)
 	public Object[][] codelessDataProvider() {
-		
+
 		if (suite == null || suite.getTests() == null || suite.getTests().size() == 0) {
 			throw new RuntimeException("Invliad Test Suite, No Tests Found");
 		}
@@ -171,6 +172,7 @@ public class TestngTest{
 		} catch (Exception e) {
 			throw e;
 		} finally {
+
 			WebDriverFactory.teardown();
 			if (test.getResult() == null ||
 				test.getResult() != Result.FAIL) {
@@ -181,14 +183,14 @@ public class TestngTest{
 			if (test.getConfig().asMap().containsKey(Config.UI_ACTION_LOG_ENABLE)) {
 				enableUiActionLog = Optional
 						.fromNullable(
-								Boolean.parseBoolean(test.getConfig().get(Config.UI_ACTION_LOG_ENABLE).fullfill()))
+								Boolean.parseBoolean((String)test.getConfig().get(Config.UI_ACTION_LOG_ENABLE).fullfill()))
 						.or(false);
 			}
 			if (enableUiActionLog) {
 				test.setUiActionLog(UiActionLogger.get());
 			}
 			UiActionLogger.destroy();
-			
+
 
 			// after test
 			execution.getTestHooks().forEach(hook -> {

@@ -70,8 +70,8 @@ public class SoapRequestCache {
 			return null;
 		}
 
-		TestDataSource data = test.getTestData().asMap().get(hostKey);
-		String host = data.fullfill();
+		TestDataSource data = (TestDataSource) test.getTestData().asMap().get(hostKey);
+		String host = (String)data.fullfill();
 
 		if (StringUtils.isEmpty(host)) {
 			System.err.println("Please provide host in you test data sheet for host key " + hostKey);

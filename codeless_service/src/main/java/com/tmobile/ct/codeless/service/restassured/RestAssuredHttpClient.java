@@ -91,7 +91,7 @@ public class RestAssuredHttpClient implements HttpClient{
 	public void invokeRequestModifiers() {
 		if(request == null) return;
 		List<RequestModifier> modifiers = request.getRequestModifiers();
-		modifiers.forEach(modifier -> modifier.modify(request));
+		modifiers.forEach(modifier -> modifier.modify(request,null));
 
 	}
 

@@ -16,7 +16,7 @@
 package com.tmobile.ct.codeless.core.config;
 
 public class Config {
-	
+
 	public static final int ONE = 1;
 	public static final int TWO = 2;
 	public static final int Three = 3;
@@ -27,18 +27,20 @@ public class Config {
 	public static final String OVERRIDE_INPUT_START = "{{";
 	public static final String OVERRIDE_INPUT_END = "}}";
 	public static final String EMPTY = "";
-	
+
 	public static final String TESTDATA_FILENAME = "testdata.filename";
 	public static final String TESTDATA_SHEETNAME = "testdata.sheetname";
 	public static final String EXCEL_EXTENSION = ".xlsx";
 	public static final String CSV_EXTENSION = ".csv";
 	public static final String ENV_TESTDATA_SHEETNAME = "ENV_TESTDATA_SHEET";
 	public static final String DEFAULT_TEST_DATA = "DATASHEET";
-	
+
 	public static final String UI_ACTION_LOG_ENABLE = "uiActionLog.details.enabled";
 	public static final String LOGGING_DETAILS_ENABLED = "logging.details.enabled";
-	
+
 	public static final String TEST_SCREENSHOT_POLICY = "test.screenshot.policy";
 	public static final String FAILURE_ONLY = "FAILUREONLY";
 	public static final String ALL_STEPS = "ALLSTEPS";
+	public static final String TESTDATA = "testData";
+	public static final String TCDS = "tcds";
 }
