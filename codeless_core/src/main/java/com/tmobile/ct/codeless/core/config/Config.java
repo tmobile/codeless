@@ -35,12 +35,19 @@ public class Config {
 	public static final String ENV_TESTDATA_SHEETNAME = "ENV_TESTDATA_SHEET";
 	public static final String DEFAULT_TEST_DATA = "DATASHEET";
 
-	public static final String UI_ACTION_LOG_ENABLE = "uiActionLog.details.enabled";
+	public static final String UI_ACTION_LOG_ENABLE = "uiactionlog.details.enabled";
 	public static final String LOGGING_DETAILS_ENABLED = "logging.details.enabled";
 
 	public static final String TEST_SCREENSHOT_POLICY = "test.screenshot.policy";
 	public static final String FAILURE_ONLY = "FAILUREONLY";
 	public static final String ALL_STEPS = "ALLSTEPS";
+	
 	public static final String TESTDATA = "testData";
 	public static final String TCDS = "tcds";
+	
+	public static final String TEST_RUN_PARALLEL = "test.runparallel";
+	public static final String RUN_PARALLEL_THREADCOUNT = "test.runparallel.threadcount";
+	
+	public static final String PLATFORM_TYPE = "platform-type";
+	public static final String WEBDRIVER_RUN_LOCAL = "webdriver.runlocal";
 }
