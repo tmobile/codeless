@@ -15,13 +15,13 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.ui;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import org.openqa.selenium.WebDriver;
+
 import com.tmobile.ct.codeless.core.Assertion;
 import com.tmobile.ct.codeless.core.Component;
 import com.tmobile.ct.codeless.core.Config;
@@ -31,14 +31,14 @@ import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
 import com.tmobile.ct.codeless.testdata.TestDataInput;
 import com.tmobile.ct.codeless.ui.action.UiAction;
-import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
 import com.tmobile.ct.codeless.ui.assertion.UiAssertion;
+import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
 import com.tmobile.ct.codeless.ui.build.UiTestStep;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
 import com.tmobile.ct.codeless.ui.model.ControlElement;
 import com.tmobile.ct.codeless.ui.modifiers.AssertionModifer;
-import com.tmobile.ct.codeless.ui.testdata.UiStepExportVariable;
 import com.tmobile.ct.codeless.ui.testdata.UiStepExportBuilder;
+import com.tmobile.ct.codeless.ui.testdata.UiStepExportVariable;
 
 /**
  * The Class UiStepImpl.
@@ -87,13 +87,13 @@ public class UiStepImpl implements UiStep {
 	private CompletableFuture<WebDriver> driver = new CompletableFuture<>();
 
 	private List<TestDataInput> testDataInputs;
-	
+
 	private Component component;
-	
+
 	private List<UiStepExportBuilder> uiStepExportBuilder;
 
 	private String description;
-	
+
 	private String screenShotPath;
 
 	/**
@@ -116,7 +116,7 @@ public class UiStepImpl implements UiStep {
 	public void run() {
 
 		try {
-			buildRequestModifier();			
+			buildRequestModifier();
 			if(test.getWebDriver() == null){
 				Config config = test.getConfig();
 			    WebDriverFactory.setConfig(config);
@@ -126,7 +126,7 @@ public class UiStepImpl implements UiStep {
 
 			setWebDriver(test.getWebDriver());
 			this.action.run();
-			
+
 			if (uiStepExportBuilder != null && !uiStepExportBuilder.isEmpty()) {
 				UiStepExportVariable.buildExport(test, getUiStepExportBuilder(), action.getElement());
 			}
@@ -154,10 +154,10 @@ public class UiStepImpl implements UiStep {
 		for(RequestModifier modifier : requestModifiers) {
 			if(modifier != null)
 				if(modifier instanceof AssertionModifer) {
-					modifier.modify(assertionBuilder.get(0));
+					modifier.modify(assertionBuilder.get(0),test);
 				}else {
 
-					modifier.modify(action);
+					modifier.modify(action,test);
 				}
 		}
 	}
@@ -317,6 +317,7 @@ public class UiStepImpl implements UiStep {
 	 *
 	 * @return the action
 	 */
+	@Override
 	public UiAction getAction() {
 		return action;
 	}
@@ -371,7 +372,7 @@ public class UiStepImpl implements UiStep {
 	@Override
 	public void setUiStepExportBuilder(List<UiStepExportBuilder> uiStepExportBuilder) {
 		this.uiStepExportBuilder = uiStepExportBuilder;
-		
+
 	}
 
 	@Override

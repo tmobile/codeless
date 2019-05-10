@@ -73,6 +73,6 @@ public class BasicSourcedDataMap extends HashMap<String, SourcedDataItem<String,
 
 	@Override
 	public Optional<String> getOptional(String key) {
-		return Optional.ofNullable(Optional.ofNullable(super.get(key)).map(x -> x.getValue().getValue().fullfill()).orElse(null));
+		return Optional.ofNullable(Optional.ofNullable(super.get(key)).map(x -> (String)x.getValue().getValue().fullfill()).orElse(null));
 	}
 }

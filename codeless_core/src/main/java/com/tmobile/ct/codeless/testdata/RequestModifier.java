@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.testdata;
 
+import com.tmobile.ct.codeless.core.Test;
+
 /**
  * The Interface RequestModifier.
  *
@@ -35,5 +37,5 @@ public interface RequestModifier<T,U> {
 	 *
 	 * @param request the request
 	 */
-	void modify(U request);
+	void modify(U request,Test test);
 }

@@ -15,8 +15,13 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.ui.modifiers;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
+import com.tmobile.ct.codeless.testdata.TcdsTestDataSource;
+import com.tmobile.ct.codeless.testdata.TestDataHelper;
 import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
 
 public class AssertionModifer implements RequestModifier<String, UiAssertionBuilder> {
@@ -33,10 +38,19 @@ public class AssertionModifer implements RequestModifier<String, UiAssertionBuil
 	}
 
 	@Override
-	public void modify(UiAssertionBuilder input) {
-		if(input == null)
+	public void modify(UiAssertionBuilder input, Test test) {
+		String tcds_value = "";
+		if (input == null)
 			return;
-		input.setExpectedValue(dataSource.fullfill());
+		if (test.getTcdsData() && test.getTestData().asMap().containsKey(test.getName())) {
+			TestDataSource tc_source = test.getTestData().get(test.getName());
+			tcds_value = TestDataHelper.fullfill(key, tc_source);
+		}
+		if(StringUtils.isEmpty(tcds_value) && dataSource != null && !(dataSource instanceof TcdsTestDataSource)) {
+			input.setExpectedValue((String) dataSource.fullfill());
+		}else {
+			input.setExpectedValue(tcds_value);
+		}
 	}
 
 }
