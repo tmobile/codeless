@@ -118,7 +118,7 @@ public class UiStepOverrides {
 								TestDataSource tData = test.getTestData().get(dataValue[0]);
 								RequestModifier modifier = new AssertionModifer(dataValue[0], tData);
 								step.getRequestModifiers().add(modifier);
-							}else {
+							}else if (dataValue[0] ! = null) {
 								RequestModifier modifier = new AssertionModifer(dataValue[0], null);
 								step.getRequestModifiers().add(modifier);
 							}
