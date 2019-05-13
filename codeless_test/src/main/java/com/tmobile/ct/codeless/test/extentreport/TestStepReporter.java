@@ -53,8 +53,7 @@ public class TestStepReporter {
 
 			}
 		}catch(Exception e){
-			logger.error(e.getMessage());
-			logger.error("TestStepReporter Failure");
+			logger.error("TestStepReporter Failure {}",e.getStackTrace().toString());
 		}
 	}
 
