@@ -19,10 +19,12 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
@@ -34,9 +36,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.google.common.base.Optional;
-import com.tmobile.ct.codeless.core.Config;
 
 /**
  * A factory for creating WebDriver objects.
@@ -45,169 +47,158 @@ import com.tmobile.ct.codeless.core.Config;
  */
 public class WebDriverFactory {
 
-	/** The test config. */
-	private static Config testConfig;
+	private static final Logger logger = LoggerFactory.getLogger(WebDriverFactory.class);
 
-	/** The Constant EMPTY. */
 	private static final String EMPTY = "";
 
-	/** The Constant WEBDRIVER_CONFIG. */
+	private Map<String, String> testConfig;
+
+	private String testName;
+
+	private boolean runLocal;
+
+	private String platformType;
+
+	private WebDriver driver = null;
+	
+	private final static String userDir = System.getProperty("user.dir");
+
 	private static final String WEBDRIVER_CONFIG = "webdriver.platform";
 
-	/** The Constant WEBDRIVER_VERSION. */
 	private static final String WEBDRIVER_VERSION = "webdriver.version";
 
-	/** The driver. */
-	private static WebDriver driver = null;
-
-	/** The platform type. */
-	private static String platformType = null;
-
 	/**
-	 * Sets the config.
-	 *
-	 * @param config the new config
+	 * Creates a instance of driver factory and configures with relevant data.
+	 * 
+	 * @param testConfig
 	 */
-	public static void setConfig(Config config) {
-		// setup properties for driver creation
-		testConfig = config;
-	}
+	public WebDriverFactory(Map<String, String> testConfig, String testName) {
+		this.testConfig = testConfig;
+		this.testName = testName;
 
-	/**
-	 * Teardown.
-	 */
-	public static void teardown() {
-		if (driver != null)
-		{
-			driver.quit();
+		platformType = Optional.fromNullable(testConfig.get(com.tmobile.ct.codeless.core.config.Config.PLATFORM_TYPE))
+				.or(EMPTY);
+		runLocal = Optional
+				.fromNullable(Boolean
+						.parseBoolean(testConfig.get(com.tmobile.ct.codeless.core.config.Config.WEBDRIVER_RUN_LOCAL)))
+				.or(true);
+		logger.info("testName: {}", testName);
+		logger.info("runLocal: {}", runLocal); 
+		logger.info("platformType: {}", platformType);
+
+		// if not local run
+		if (runLocal) {
+			for (Entry<String, String> e : testConfig.entrySet()) {
+				if (e.getKey().startsWith("webdriver.path") && e.getKey().contains(platformType)) {
+					String driverName = "chrome";
+					switch (platformType.toLowerCase()) {
+					case "firefox":
+						driverName = "gecko";
+						break;
+					case "emulator":
+						driverName = "chrome";
+						break;
+					case "microsoftedge":
+						driverName = "edge";
+						break;
+					default:
+						driverName = platformType;
+						break;
+					}
+					if (System.getProperty("webdriver." + driverName + ".driver") == null)
+						System.setProperty("webdriver." + driverName + ".driver", getWebDriverPath(e.getValue()));
+				}
+			}
 		}
-		driver = null;
 	}
 
-	/**
-	 * Creates a new WebDriver object.
-	 *
-	 * @author Rob Graff
-	 * @return the web driver
-	 */
-	private static WebDriver createLocalDriver() {
-		String webDriver = "";
-		String webDriverPath = "";
-		String path = System.getProperty("user.dir");
-		platformType = Optional.fromNullable((String)testConfig.get("platform-type").fullfill()).or(EMPTY);
+	public WebDriver create() {
 
 		if ("iPad".equalsIgnoreCase(platformType)) {
-			createMobileWebDriver(platformType); //create iPad WebDriver
+
+			driver = createMobileWebDriver(platformType); // create iPad WebDriver
 		} else {
 
-			String runLocal = Optional.fromNullable((String)testConfig.get("webdriver.runlocal").fullfill()).or(EMPTY);
-			if ("false".equalsIgnoreCase(runLocal)) {
-				return createRemoteDriver(platformType);
-			}
-			switch (platformType.toLowerCase()) {
-				case "firefox": {
-					webDriver = "webdriver.gecko.driver";
-					if (testConfig.get("webdriver.path.firefox") == null)	return null;
-					webDriverPath = getWebDriverPath((String)testConfig.get("webdriver.path.firefox").fullfill());
-					System.setProperty(webDriver, webDriverPath);
-					driver = new FirefoxDriver();
-					break;
-				}
-				case "microsoftedge": {
-					webDriver = "webdriver.ie.driver";
-					if (testConfig.get("webdriver.path.ie") == null)	return null;
-					webDriverPath = getWebDriverPath((String)testConfig.get("webdriver.path.ie").fullfill());
-					System.setProperty(webDriver, webDriverPath);
-					driver = new InternetExplorerDriver();
-					break;
-				}
-				default: {
-					webDriver = "webdriver.chrome.driver";
-					if (testConfig.get("webdriver.path.chrome") == null)	return null;
-					webDriverPath = getWebDriverPath((String)testConfig.get("webdriver.path.chrome").fullfill());
-					System.setProperty(webDriver, webDriverPath);
-					driver = new ChromeDriver();
-					break;
-				}
+			if (runLocal) {
+				driver = createLocalDriver(platformType); // creates local driver.
+				initWebDriver(driver);
+			} else {
+				driver = createRemoteDriver(platformType); // creates remote driver.
 			}
 		}
-		initWebDriver();
+		return driver;
+	}
+	
+	
+
+	private WebDriver createLocalDriver(String platformType) {
+
+		switch (platformType.toLowerCase()) {
+		case "firefox":
+			driver = new FirefoxDriver();
+			break;
+		case "microsoftedge":
+			driver = new InternetExplorerDriver();
+			break;
+		default:
+			driver = new ChromeDriver();
+			break;
+		}
 		return driver;
 	}
 
-	private static String getWebDriverPath(String webDriverPath) {
+	private WebDriver createRemoteDriver(String platformType) {
 
-		String opertatingSystem = System.getProperty("os.name").toLowerCase();
-		String path = System.getProperty("user.dir");
-		if (opertatingSystem.contains("windows")) {
+		String hubOS = Optional.fromNullable(testConfig.get(WEBDRIVER_CONFIG.concat("." + platformType.toLowerCase())))
+				.or(EMPTY);
+		String plateformVersion = Optional
+				.fromNullable(testConfig.get(WEBDRIVER_VERSION.concat("." + platformType.toLowerCase()))).or(EMPTY);
 
-			webDriverPath = path + "\\" + webDriverPath.replace("/", "\\");
-			return webDriverPath;
-
-		}
-		return  path + "//" + webDriverPath;
-	}
-
-	/**
-	 * Gets the web driver.
-	 *
-	 * @return the web driver
-	 */
-	public static WebDriver getWebDriver() {
-		if(driver != null)
-			return driver;
-		return createLocalDriver();
-	}
-
-	/**
-	 * Creates a new WebDriver object.
-	 *
-	 * @author Rob Graff
-	 * @param plateformType the plateform type
-	 * @return the web driver
-	 */
-	private static WebDriver createRemoteDriver(String plateformType) {
-		String hubOS = Optional.fromNullable((String)testConfig.get(WEBDRIVER_CONFIG.concat("."+plateformType.toLowerCase())).fullfill()).or(EMPTY);
-		String plateformVersion = Optional.fromNullable((String)testConfig.get(WEBDRIVER_VERSION.concat("."+plateformType.toLowerCase())).fullfill()).or(EMPTY);
 		SupportedPlatform platform = SupportedPlatform.findFor(platformType);
-		String hub = Optional.fromNullable((String)testConfig.get("webdriver.hub").fullfill()).or(EMPTY);
-		String parentTunnel = Optional.fromNullable((String)testConfig.get("webdriver.parentTunnel").fullfill()).or(EMPTY);
-		String tunnelIdentifier = Optional.fromNullable((String)testConfig.get("webdriver.tunnelIdentifier").fullfill()).or(EMPTY);
-		String sboxToken = Optional.fromNullable((String)testConfig.get("webdriver.e34:token").fullfill()).or(EMPTY);
-		String sboxVideo = Optional.fromNullable((String)testConfig.get("webdriver.e34:video").fullfill()).or(EMPTY);
-		String testName = Optional.fromNullable((String)testConfig.get("webdriver.e34:l_testName").fullfill()).or(EMPTY);
-		String testTimeout = Optional.fromNullable((String)testConfig.get("webdriver.e34:per_test_timeout_ms").fullfill()).or(EMPTY);
+		String hub = Optional.fromNullable(testConfig.get("webdriver.hub")).or(EMPTY);
+
+		String parentTunnel = Optional.fromNullable(testConfig.get("webdriver.parentTunnel")).or(EMPTY);
+		String tunnelIdentifier = (String) Optional.fromNullable(testConfig.get("webdriver.tunnelIdentifier"))
+				.or(EMPTY);
+
+		String sboxToken = Optional.fromNullable(testConfig.get("webdriver.e34:token")).or(EMPTY);
+		String sboxVideo = Optional.fromNullable(testConfig.get("webdriver.e34:video")).or(EMPTY);
+		String testTimeout = Optional.fromNullable(testConfig.get("webdriver.e34:per_test_timeout_ms")).or(EMPTY);
+
 		Map<String, String> additionalProperties = new HashMap<String, String>();
 		additionalProperties.put("platform", hubOS);
 		additionalProperties.put("version", plateformVersion);
-		additionalProperties.put("parentTunnel",parentTunnel);
+		additionalProperties.put("parentTunnel", parentTunnel);
 		additionalProperties.put("tunnelIdentifier", tunnelIdentifier);
 
-		//adding support for sbox execution.
+		// adding support for sbox execution.
 		additionalProperties.put("e34:token", sboxToken);
 		additionalProperties.put("e34:video", sboxVideo);
 		additionalProperties.put("e34:l_testName", testName);
 		additionalProperties.put("e34:per_test_timeout_ms", testTimeout);
+		while (additionalProperties.values().remove(EMPTY));
 
 		return getWebDriver(platform, hub, additionalProperties);
 	}
 
-	/**
-	 * Creates a new WebDriver object for iPad connected with Appium Server.
-	 *
-	 * @author Albert Lin
-	 * @param plateformType the plateform type
-	 * @return the web driver for iPad
-	 */
-	private static WebDriver createMobileWebDriver(String platformType) {
-		String deviceName = Optional.fromNullable((String)testConfig.get("webdriver.deviceName".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
-		String platformVersion = Optional.fromNullable((String)testConfig.get("webdriver.platformVersion".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
-		String platformName = Optional.fromNullable((String)testConfig.get("webdriver.platformName".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
-		String bundleId = Optional.fromNullable((String)testConfig.get("webdriver.bundleId".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
-		String udid = Optional.fromNullable((String)testConfig.get("webdriver.udid".concat("." + platformType.toLowerCase())).fullfill()).or(EMPTY);
+	private WebDriver createMobileWebDriver(String platformType) {
+
+		String deviceName = Optional
+				.fromNullable(testConfig.get("webdriver.deviceName".concat("." + platformType.toLowerCase())))
+				.or(EMPTY);
+		String platformVersion = Optional
+				.fromNullable(testConfig.get("webdriver.platformVersion".concat("." + platformType.toLowerCase())))
+				.or(EMPTY);
+		String platformName = Optional
+				.fromNullable(testConfig.get("webdriver.platformName".concat("." + platformType.toLowerCase())))
+				.or(EMPTY);
+		String bundleId = Optional
+				.fromNullable(testConfig.get("webdriver.bundleId".concat("." + platformType.toLowerCase()))).or(EMPTY);
+		String udid = Optional.fromNullable(testConfig.get("webdriver.udid".concat("." + platformType.toLowerCase())))
+				.or(EMPTY);
 
 		SupportedPlatform platform = SupportedPlatform.findFor(platformType);
-		String hub = Optional.fromNullable((String)testConfig.get("webdriver.hub").fullfill()).or(EMPTY);
+		String hub = Optional.fromNullable(testConfig.get("webdriver.hub")).or(EMPTY);
 		Map<String, String> additionalProperties = new HashMap<String, String>();
 		additionalProperties.put("platformName", platformName);
 		additionalProperties.put("platformVersion", platformVersion);
@@ -220,21 +211,13 @@ public class WebDriverFactory {
 		return getWebDriver(platform, hub, additionalProperties);
 	}
 
-	private static WebDriver getWebDriver(SupportedPlatform platform, String hub, Map<String, String> additionalProperties) {
-		DesiredCapabilities desiredCap = platform.createCapabilities().merge(new DesiredCapabilities(additionalProperties));
-		try {
-			driver = platform.getDriverClass().getConstructor(URL.class, Capabilities.class).newInstance(new URL(hub), desiredCap);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException | MalformedURLException e) {
-			e.printStackTrace();
-		}
-		return driver;
+	private String getWebDriverPath(String webDriverPath) {
+		webDriverPath = Paths.get(userDir + File.separator + webDriverPath).toString();
+		logger.debug("webDriverPath {}",webDriverPath);
+		return webDriverPath;
 	}
 
-	/**
-	 * Inits the web driver.
-	 */
-	public static void initWebDriver() {
+	private void initWebDriver(WebDriver driver) {
 		try {
 			driver.manage().window().maximize();
 			driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
@@ -244,22 +227,36 @@ public class WebDriverFactory {
 		}
 	}
 
-	/**
-	 * Gets the screenhot.
-	 *
-	 * @param driver the driver
-	 * @param string the string
-	 * @return the screenhot
-	 * @throws Exception the exception
-	 */
+	public static void teardown(WebDriver driver) {
+		if (driver != null) {
+			driver.quit();
+		}
+		driver = null;
+	}
+
 	public static String getScreenhot(WebDriver driver, String string) throws Exception {
 		String dateName = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
 		TakesScreenshot ts = (TakesScreenshot) driver;
 		File source = ts.getScreenshotAs(OutputType.FILE);
-		// after execution, you could see a folder "FailedTestsScreenshots" folder
-		String destination = System.getProperty("user.dir") + "/TestsScreenshots/" + string + dateName + ".png";
-		File finalDestination = new File(destination);
+		// after execution, you could see a folder "TestsScreenshots" folder
+		String destination = userDir + File.separator + "TestsScreenshots" + File.separator + string + dateName + ".png";
+		File finalDestination = new File(Paths.get(destination).toString());
 		FileUtils.copyFile(source, finalDestination);
 		return destination;
+	}
+
+	private WebDriver getWebDriver(SupportedPlatform platform, String hub, Map<String, String> additionalProperties) {
+
+		DesiredCapabilities desiredCap = platform.createCapabilities()
+				.merge(new DesiredCapabilities(additionalProperties));
+		try {
+			WebDriver driver = platform.getDriverClass().getConstructor(URL.class, Capabilities.class)
+					.newInstance(new URL(hub), desiredCap);
+			return driver;
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException | MalformedURLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
