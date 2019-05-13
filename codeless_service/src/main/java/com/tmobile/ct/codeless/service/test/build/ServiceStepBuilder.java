@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.tmobile.ct.codeless.testdata.GetTestData;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -118,9 +119,10 @@ public class ServiceStepBuilder {
 	
 	/** The Constant SOAP_WSDL. */
 	private static final String SOAP_WSDL = "wsdlFile.wsdl";
+	private ArrayList<String> keys = new ArrayList();
+	private ArrayList<String> values = new ArrayList();
 	
 	public void buildServiceStep(String header, String value, ServiceCallInput input, Test test) {
-		
 		switch (header.toUpperCase()) {
 		case "TARGET":
 			String[] parts = value.split("\\.");
@@ -555,6 +557,8 @@ public class ServiceStepBuilder {
 			request.getQueryParams().put(key,new QueryParam(key, value));
 			break;
 		case "HEADER":
+//			keys.add(key);
+//			values.add(value);
 			request.getHeaders().put(key, new Header(key, value));
 			break;
 		case "PATH":
@@ -787,7 +791,7 @@ public class ServiceStepBuilder {
                 test.setTestData(new BasicTestData());
             }
 
-        	SourcedDataItem<String, TestDataSource> sourceValue = null;
+        	ArrayList<SourcedDataItem<String, TestDataSource> > sourceValue = new ArrayList<>();
 
         	String type = values[0];
     		String key = values[1];
@@ -795,36 +799,43 @@ public class ServiceStepBuilder {
     		String[] dataValue = StringUtils.substringsBetween(value, "{{", "}}");
 
     		if(dataValue != null && dataValue.length > 0) {
-    			sourceValue = test.getTestData().getSourcedValue(dataValue[0]);
+    			for (String source: dataValue){
+					sourceValue.add(test.getTestData().getSourcedValue(source));
+				}
     		}else {
     			return cellValue;
     		}
-    		if(sourceValue != null) {
-    			TestDataSource source = sourceValue.getValue().getValue();
+    		if(sourceValue != null && sourceValue.size() != 0) {
+    			ArrayList<TestDataSource> source = new ArrayList<>();
+    			for (SourcedDataItem item : sourceValue){
+    				source.add((TestDataSource) item.getValue().getValue());
+				}
 
             	RequestModifier modifier = null;
 
         		switch(type.trim().toUpperCase()){
         		case "QUERY":
-        			modifier = new QueryParamsModifier(key, source);
+        			modifier = new QueryParamsModifier(key,value,source);
         			break;
         		case "HEADER":
-        			modifier = new HeaderModifier(key,value, source);
+        			this.keys.add(key);
+        			this.values.add(value);
+        			modifier = new HeaderModifier(this.keys,this.values, source);
         			break;
         		case "PATH":
-        			modifier = new PathModifier(key, source);
+        			modifier = new PathModifier(key,value, source);
         			break;
         		case "FORM":
-        			modifier = new FormModifier(key, source);
+        			modifier = new FormModifier(key,value, source);
         			break;
         		case "COOKIE":
-        			modifier = new CookieModifier(key, source);
+        			modifier = new CookieModifier(key,value, source);
         			break;
         		case "BODY":
-        			modifier = new BodyModifier(source);
+        			modifier = new BodyModifier(value, source);
         			break;
         		case "BODYTEMPLATE":
-        			modifier = new BodyTemplateModifier(key, source);
+        			modifier = new BodyTemplateModifier(key, source.get(0));
         		}
 
         		if (request == null && modifier != null) {
@@ -835,26 +846,57 @@ public class ServiceStepBuilder {
         		}
     		}
         }
+		ArrayList<SourcedDataItem<String, TestDataSource> > sourceValue = new ArrayList<SourcedDataItem<String,TestDataSource>>();
+		String[] dataValue = StringUtils.substringsBetween(cellValue, "{{", "}}");
+		if(dataValue != null && dataValue.length > 0) {
+			for (int i =0;i<dataValue.length;i++){
+				if (!(test.getTestData().getSourcedValue(dataValue[i]).getValue().getValue() instanceof RuntimeTestDataSource)){
+					sourceValue.add(test.getTestData().getSourcedValue(dataValue[i]));
+				}
+			}
+		}else {
+			return cellValue;
+		}
+		if(sourceValue != null && sourceValue.size() != 0) {
+			ArrayList<TestDataSource> source = new ArrayList<>();
 
-        Pattern p = Pattern.compile("\\{\\{(.*)\\}\\}");
-        String[] parts = cellValue.split("::");
-        for (int i = 0; i < parts.length; i++) {
-            Matcher m = p.matcher(parts[i]);
-            while (m.find()) {
-                SourcedDataItem<String, TestDataSource> value = test.getTestData().getSourcedValue(m.group(1));
-                if (value != null) {
-                	TestDataSource source = value.getValue().getValue();
-                	String key = value.getKey();
-                	if(source instanceof StaticTestDataSource) {
-                		String Value = source.fullfill();
-                			if (StringUtils.isNotBlank(Value))
-							cellValue = cellValue.replace(parts[i], Value);
-                	}
+			for(int i=0;i<sourceValue.size();i++){
+				if (!(sourceValue.get(i).getValue().getValue() instanceof RuntimeTestDataSource)) {
+					String dataVal = sourceValue.get(i).getValue().getValue().fullfill();
+					if (dataVal != null && !StringUtils.isBlank(dataVal))
+						source.add(sourceValue.get(i).getValue().getValue());
+				}
+			}
 
-                }
-            }
-        }
+			if (source.size() > 0) {
+				GetTestData getTestData = new GetTestData();
+				String newVal = getTestData.replaceValueWithTestData(cellValue, source);
+				if (StringUtils.isNotBlank(newVal))
+					cellValue = newVal;
+			}
+		}
+
+
+//        Pattern p = Pattern.compile("\\{\\{(.*)\\}\\}");
+//        String[] parts = cellValue.split("::");
+//        for (int i = 0; i < parts.length; i++) {
+//            Matcher m = p.matcher(parts[i]);
+//            while (m.find()) {
+//                SourcedDataItem<String, TestDataSource> value = test.getTestData().getSourcedValue(m.group(1));
+//                if (value != null) {
+//                	TestDataSource source = value.getValue().getValue();
+//                	String key = value.getKey();
+//                	if(source instanceof StaticTestDataSource) {
+//                		String Value = source.fullfill();
+//                			if (StringUtils.isNotBlank(Value))
+//							cellValue = cellValue.replace(parts[i], Value);
+//                	}
+//
+//                }
+//            }
+//        }
         return cellValue;
 
     }
+
 }

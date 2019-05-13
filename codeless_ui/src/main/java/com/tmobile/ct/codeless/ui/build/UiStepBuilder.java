@@ -17,10 +17,12 @@ package com.tmobile.ct.codeless.ui.build;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.tmobile.ct.codeless.data.SourcedDataItem;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.openqa.selenium.Keys;
@@ -326,6 +328,7 @@ public class UiStepBuilder {
 				String value = tdata.getKey();
 				TestDataSource testData = null;
 				if(test.getTestData() != null) {
+
 					testData = test.getTestData().get(value);
 				}
 				
@@ -341,7 +344,21 @@ public class UiStepBuilder {
 					testRow.setTarget(testData.fullfill());
 					break;
 				case INPUT:
-					modifier = new InputModifer(value,testData);
+					String[] dataValue = StringUtils.substringsBetween(testRow.getInput(), "{{", "}}");
+					ArrayList<SourcedDataItem<String, TestDataSource>> sourceValue = new ArrayList<>();
+					if (dataValue != null && dataValue.length > 0){
+						for (String source: dataValue){
+							sourceValue.add(test.getTestData().getSourcedValue(source));
+						}
+					}
+					ArrayList<TestDataSource> source = new ArrayList<>();
+					if(sourceValue != null && sourceValue.size() != 0) {
+						for (SourcedDataItem item : sourceValue) {
+							source.add((TestDataSource) item.getValue().getValue());
+						}
+					}
+					modifier = new InputModifer(testRow.getInput(),source); //testing
+					//modifier = new InputModifer(value,testData);
 					break;
 				default:
 					// do nothing

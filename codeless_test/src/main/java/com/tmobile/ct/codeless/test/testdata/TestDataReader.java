@@ -18,6 +18,8 @@ package com.tmobile.ct.codeless.test.testdata;
 import java.io.File;
 import java.io.IOException;
 
+import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
+import com.tmobile.ct.codeless.files.ClassPathUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +54,8 @@ public class TestDataReader {
 			String testDataFileName = Optional.fromNullable(suite.getConfig().get(Config.TESTDATA_FILENAME).fullfill())
 					.or(Config.EMPTY);
 			if (StringUtils.isNotBlank(testDataFileName)) {
-				String path = ".." + File.separator + "testdata" + File.separator + testDataFileName;
+				String path = CodelessConfiguration.getTestDataDir() +File.separator + testDataFileName;
+				//String path = ".." + File.separator + "testdata" + File.separator + testDataFileName;
 				if (path.contains(Config.EXCEL_EXTENSION)) {
 					new ExcelTestData(suite, testData).parseExcelTestDataFile(path);
 

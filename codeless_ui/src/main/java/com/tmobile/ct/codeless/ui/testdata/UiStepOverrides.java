@@ -49,7 +49,6 @@ public class UiStepOverrides {
 	private static Logger log = LoggerFactory.getLogger(UiStepOverrides.class);
 
 	public static void parseOverrides(Test test, UiTestStep uiTestStep, UiStep step) {
-
 		List<UiAssertionBuilder> assertions = new ArrayList<>();
 		List<UiStepExportBuilder> uiStepExportBuilder = new ArrayList<>();
 
@@ -88,9 +87,7 @@ public class UiStepOverrides {
 						Method seleniumMethod = null;
 						String parameter = "";
 						String expected = "";
-
 						SeleniumMethodType type = SeleniumMethodType.valueOf(originalParts[1]);
-
 						if (originalParts.length > 2) {
 							seleniumMethodName = originalParts[2];
 						}
@@ -113,10 +110,20 @@ public class UiStepOverrides {
 
 						if (seleniumMethod != null) {
 							String dataValue[] = StringUtils.substringsBetween(expected, "{{", "}}");
-
+							ArrayList<SourcedDataItem<String, TestDataSource>> sourceValue = new ArrayList<>();
 							if (dataValue != null && dataValue.length > 0) {
-								TestDataSource tData = test.getTestData().get(dataValue[0]);
-								RequestModifier modifier = new AssertionModifer(dataValue[0], tData);
+								for (String source: dataValue){
+									sourceValue.add(test.getTestData().getSourcedValue(source));
+								}
+								ArrayList<TestDataSource> source = new ArrayList<>();
+								if(sourceValue != null && sourceValue.size() != 0) {
+									for (SourcedDataItem item : sourceValue) {
+										source.add((TestDataSource) item.getValue().getValue());
+									}
+								}
+								RequestModifier modifier = new AssertionModifer(d,source);
+								//TestDataSource tData = test.getTestData().get(dataValue[0]);
+								//RequestModifier modifier = new AssertionModifer(dataValue[0], tData);
 								step.getRequestModifiers().add(modifier);
 
 							}

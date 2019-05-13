@@ -18,7 +18,10 @@ package com.tmobile.ct.codeless.service.accessor.request;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.Body;
+import com.tmobile.ct.codeless.testdata.GetTestData;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
+
+import java.util.ArrayList;
 
 
 /**
@@ -29,15 +32,16 @@ import com.tmobile.ct.codeless.testdata.RequestModifier;
 public class BodyModifier implements RequestModifier<Body, HttpRequest>{
 
 
+	private String original;
 	/** The dataSource to override. */
-	private TestDataSource dataSource;
+	private ArrayList<TestDataSource> dataSource;
 
 	/**
-	 * Instantiates a new body modifier.
+	 * Instantiates a new header modifier.
 	 *
-	 * @param responseAccessor the response accessor
+	 * @param dataSource dataSource
 	 */
-	public BodyModifier(TestDataSource dataSource){
+	public BodyModifier( String original, ArrayList<TestDataSource> dataSource){
 		this.dataSource = dataSource;
 	}
 
@@ -46,7 +50,9 @@ public class BodyModifier implements RequestModifier<Body, HttpRequest>{
 	 */
 	@Override
 	public void modify(HttpRequest request) {
-		request.setBody(new Body<String>(dataSource.fullfill(), String.class));
+		GetTestData getTestData = new GetTestData();
+		Body newBody = new Body(getTestData.replaceValueWithTestData(original,dataSource),String.class);
+		request.setBody(newBody);
 
 	}
 

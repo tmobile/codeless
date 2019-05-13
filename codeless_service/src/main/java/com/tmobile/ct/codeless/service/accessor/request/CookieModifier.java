@@ -18,7 +18,10 @@ package com.tmobile.ct.codeless.service.accessor.request;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.Cookie;
+import com.tmobile.ct.codeless.testdata.GetTestData;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
+
+import java.util.ArrayList;
 
 /**
  * The Class CookieModifier.
@@ -29,19 +32,20 @@ public class CookieModifier implements RequestModifier<Cookie, HttpRequest>{
 
 	/** The key. */
 	private String key;
-
+	private String original;
 	/** The dataSource to override. */
-	private TestDataSource dataSource;
+	private ArrayList<TestDataSource> dataSource;
 
 	/**
-	 * Instantiates a new cookie modifier.
+	 * Instantiates a new header modifier.
 	 *
 	 * @param key the key
-	 * @param responseAccessor the response accessor
+	 * @param dataSource dataSource
 	 */
-	public CookieModifier(String key, TestDataSource dataSource){
+	public CookieModifier(String key, String original, ArrayList<TestDataSource> dataSource){
 		this.key = key;
 		this.dataSource = dataSource;
+		this.original = original;
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +53,8 @@ public class CookieModifier implements RequestModifier<Cookie, HttpRequest>{
 	 */
 	@Override
 	public void modify(HttpRequest request) {
-		Cookie newCookie = new Cookie(key, dataSource.fullfill());
+		GetTestData getTestData = new GetTestData();
+		Cookie newCookie = new Cookie(key, getTestData.replaceValueWithTestData(original,dataSource));
 		request.getCookies().put(key, newCookie);
 
 	}

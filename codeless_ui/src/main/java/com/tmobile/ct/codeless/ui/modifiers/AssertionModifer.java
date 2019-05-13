@@ -16,8 +16,11 @@
 package com.tmobile.ct.codeless.ui.modifiers;
 
 import com.tmobile.ct.codeless.core.TestDataSource;
+import com.tmobile.ct.codeless.testdata.GetTestData;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
 import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
+
+import java.util.ArrayList;
 
 public class AssertionModifer implements RequestModifier<String, UiAssertionBuilder> {
 
@@ -27,16 +30,25 @@ public class AssertionModifer implements RequestModifier<String, UiAssertionBuil
 	/** The dataSource to override. */
 	private TestDataSource dataSource;
 
+	private ArrayList<TestDataSource> dataSources;
 	public AssertionModifer(String key, TestDataSource dataSource) {
 		this.key = key;
 		this.dataSource = dataSource;
+	}
+
+	public AssertionModifer(String original, ArrayList datasource){
+		this.key = original;
+		this.dataSources = datasource;
 	}
 
 	@Override
 	public void modify(UiAssertionBuilder input) {
 		if(input == null)
 			return;
-		input.setExpectedValue(dataSource.fullfill());
+		GetTestData getTestData = new GetTestData();
+		String newVal = getTestData.replaceValueWithTestData(key,dataSources);
+		input.setExpectedValue(newVal);
+		//input.setExpectedValue(dataSource.fullfill());
 	}
 
 }

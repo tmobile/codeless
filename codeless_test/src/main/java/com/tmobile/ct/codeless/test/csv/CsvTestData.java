@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Iterator;
 
+import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
@@ -66,7 +67,7 @@ public class CsvTestData {
 		}
 		
 		if (StringUtils.isNotBlank(envTestDataSheet)) {
-			path = ".." + File.separator + "testdata" + File.separator + envTestDataSheet;
+			path = CodelessConfiguration.getTestDataDir() +File.separator + envTestDataSheet;
 			csvTestDataFileReader(path, envTestDataSheet);
 		}
 
