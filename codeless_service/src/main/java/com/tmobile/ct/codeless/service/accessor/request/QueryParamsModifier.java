@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.service.accessor.request;
 
+import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.QueryParam;
@@ -30,19 +31,24 @@ import java.util.ArrayList;
  */
 public class QueryParamsModifier implements RequestModifier<QueryParam, HttpRequest> {
 
-	/** The key. */
+	/**
+	 * The key.
+	 */
 	private String key;
 	private String original;
-	/** The dataSource to override. */
+	/**
+	 * The dataSource to override.
+	 */
 	private ArrayList<TestDataSource> dataSource;
 
 	/**
 	 * Instantiates a new query params modifier.
 	 *
-	 * @param key the key
-	 * @param responseAccessor the response accessor
+	 * @param key        the key
+	 * @param original   the original value
+	 * @param dataSource the dataSource
 	 */
-	public QueryParamsModifier(String key, String original, ArrayList<TestDataSource> dataSource){
+	public QueryParamsModifier(String key, String original, ArrayList<TestDataSource> dataSource) {
 		this.key = key;
 		this.dataSource = dataSource;
 		this.original = original;
@@ -52,9 +58,9 @@ public class QueryParamsModifier implements RequestModifier<QueryParam, HttpRequ
 	 * @see com.tmobile.ct.codeless.service.accessor.request.RequestModifier#modify(com.tmobile.ct.codeless.service.HttpRequest)
 	 */
 	@Override
-	public void modify(HttpRequest request) {
+	public void modify(HttpRequest request, Test test) {
 		GetTestData getTestData = new GetTestData();
-		QueryParam newQueryParam = new QueryParam(key,getTestData.replaceValueWithTestData(original,dataSource));
+		QueryParam newQueryParam = new QueryParam(key, getTestData.replaceValueWithTestData(original, dataSource));
 		request.getQueryParams().put(key, newQueryParam);
 	}
 }

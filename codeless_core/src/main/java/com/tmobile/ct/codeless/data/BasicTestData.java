@@ -39,7 +39,7 @@ public class BasicTestData extends BasicSourcedDataMap implements TestData{
 
 	@Override
 	public String getValue(String key) {
-		return super.get(key).fullfill();
+		return (String)super.get(key).fullfill();
 	}
 
 }

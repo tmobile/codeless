@@ -15,9 +15,14 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.ui.modifiers;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.testdata.GetTestData;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
+import com.tmobile.ct.codeless.testdata.TcdsTestDataSource;
+import com.tmobile.ct.codeless.testdata.TestDataHelper;
 import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
 
 import java.util.ArrayList;
@@ -31,10 +36,6 @@ public class AssertionModifer implements RequestModifier<String, UiAssertionBuil
 	private TestDataSource dataSource;
 
 	private ArrayList<TestDataSource> dataSources;
-	public AssertionModifer(String key, TestDataSource dataSource) {
-		this.key = key;
-		this.dataSource = dataSource;
-	}
 
 	public AssertionModifer(String original, ArrayList datasource){
 		this.key = original;
@@ -42,13 +43,12 @@ public class AssertionModifer implements RequestModifier<String, UiAssertionBuil
 	}
 
 	@Override
-	public void modify(UiAssertionBuilder input) {
-		if(input == null)
+	public void modify(UiAssertionBuilder input, Test test) {
+		String tcds_value = "";
+		if (input == null)
 			return;
 		GetTestData getTestData = new GetTestData();
-		String newVal = getTestData.replaceValueWithTestData(key,dataSources);
+		String newVal = getTestData.replaceValueWithTestData(key, dataSources, test);
 		input.setExpectedValue(newVal);
-		//input.setExpectedValue(dataSource.fullfill());
 	}
-
 }

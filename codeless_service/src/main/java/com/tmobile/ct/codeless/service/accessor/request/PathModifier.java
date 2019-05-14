@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.service.accessor.request;
 
+import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.PathParam;
@@ -40,6 +41,7 @@ public class PathModifier implements RequestModifier<PathParam, HttpRequest> {
 	 * Instantiates a new path modifier.
 	 *
 	 * @param key the key
+	 * @param original the original value
 	 * @param dataSource the response accessor
 	 */
 	public PathModifier(String key, String original, ArrayList<TestDataSource> dataSource){
@@ -52,10 +54,9 @@ public class PathModifier implements RequestModifier<PathParam, HttpRequest> {
 	 * @see com.tmobile.ct.codeless.service.accessor.request.RequestModifier#modify(com.tmobile.ct.codeless.service.HttpRequest)
 	 */
 	@Override
-	public void modify(HttpRequest request) {
+	public void modify(HttpRequest request,Test test) {
 		GetTestData getTestData = new GetTestData();
 		PathParam newPathParam = new PathParam(key, getTestData.replaceValueWithTestData(original,dataSource));
 		request.getPathParams().put(key, newPathParam);
-
 	}
 }

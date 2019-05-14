@@ -25,6 +25,7 @@ import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
+
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.core.config.Config;
@@ -37,9 +38,9 @@ import com.tmobile.ct.codeless.test.testdata.TestDataReader;
  * @author Sai Chandra Korpu
  */
 public class CsvTestData {
-	
+
     private TestData testData;
-	
+
 	private Suite suite;
 
 
@@ -48,11 +49,11 @@ public class CsvTestData {
 		this.suite = suite;
 		this.testData = testData;
 	}
-	
+
 	public void parseCsvTestDataSheet(String path) throws IOException {
 
 		csvTestDataFileReader(path, Config.DEFAULT_TEST_DATA);
-       
+
 		// check in system properties for environment specific test data sheet
 		String envTestDataSheet = System.getProperty(Config.ENV_TESTDATA_SHEETNAME);
 
@@ -63,18 +64,18 @@ public class CsvTestData {
 
 		// check in config for test data sheet name
 		if (StringUtils.isBlank(envTestDataSheet)) {
-			envTestDataSheet = suite.getConfig().get(Config.TESTDATA_SHEETNAME).fullfill();
+			envTestDataSheet = (String)suite.getConfig().get(Config.TESTDATA_SHEETNAME).fullfill();
 		}
-		
+
 		if (StringUtils.isNotBlank(envTestDataSheet)) {
 			path = CodelessConfiguration.getTestDataDir() +File.separator + envTestDataSheet;
 			csvTestDataFileReader(path, envTestDataSheet);
 		}
 
 	}
-	
+
 	private void csvTestDataFileReader(String path, String source) throws IOException {
-		
+
 		Reader reader = new FileReader(ClassPathUtil.getAbsolutePath(path));
 		Iterator<CSVRecord> records = CSVFormat.DEFAULT.parse(reader).iterator();
 		while(records.hasNext()) {

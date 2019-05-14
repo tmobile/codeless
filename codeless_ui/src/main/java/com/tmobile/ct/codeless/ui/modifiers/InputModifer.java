@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.ui.modifiers;
 
+import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.testdata.GetTestData;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
@@ -38,11 +39,11 @@ public class InputModifer implements RequestModifier<String, UiAction> {
 	}
 
 	@Override
-	public void modify(UiAction input) {
+	public void modify(UiAction input,Test test) {
 		if(input == null)
 			return;
 		GetTestData getTestData = new GetTestData();
-		String newInput = getTestData.replaceValueWithTestData(this.original,dataSources);
+		String newInput = getTestData.replaceValueWithTestData(this.original,dataSources, test);
 		input.setText(newInput);
 	}
 

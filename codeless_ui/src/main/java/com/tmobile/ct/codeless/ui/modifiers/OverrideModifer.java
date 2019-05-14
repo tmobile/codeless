@@ -16,6 +16,7 @@
 package com.tmobile.ct.codeless.ui.modifiers;
 
 import com.tmobile.ct.codeless.core.Accessor;
+import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
 
 public class OverrideModifer implements RequestModifier<String, String> {
@@ -32,7 +33,7 @@ public class OverrideModifer implements RequestModifier<String, String> {
 	}
 
 	@Override
-	public void modify(String input) {
+	public void modify(String input,Test test) {
 		input = accessor.getActual();
 	}
 

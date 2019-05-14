@@ -25,7 +25,7 @@ import com.tmobile.ct.codeless.core.Accessor;
 
 import com.tmobile.ct.codeless.core.TestDataSource;
 
-public class RuntimeTestDataSource implements TestDataSource {
+public class RuntimeTestDataSource implements TestDataSource<String> {
 
 	private Accessor accessor;
 
@@ -61,7 +61,13 @@ public class RuntimeTestDataSource implements TestDataSource {
 	@Override
 	public void setValue(String Value) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public String getKey() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -47,12 +47,13 @@ public class TestDataReader {
 
 	public static TestData getTestData(Suite suite, TestData testData) {
 
-		if (testData == null) testData = new BasicTestData();
+		if (testData == null)
+			testData = new BasicTestData();
 
 		if (suite.getConfig() != null) {
 
-			String testDataFileName = Optional.fromNullable(suite.getConfig().get(Config.TESTDATA_FILENAME).fullfill())
-					.or(Config.EMPTY);
+			String testDataFileName = Optional
+					.fromNullable((String) suite.getConfig().get(Config.TESTDATA_FILENAME).fullfill()).or(Config.EMPTY);
 			if (StringUtils.isNotBlank(testDataFileName)) {
 				String path = CodelessConfiguration.getTestDataDir() +File.separator + testDataFileName;
 				//String path = ".." + File.separator + "testdata" + File.separator + testDataFileName;
@@ -60,38 +61,48 @@ public class TestDataReader {
 					new ExcelTestData(suite, testData).parseExcelTestDataFile(path);
 
 				} else if (path.contains(Config.CSV_EXTENSION)) {
+					if (path.contains(Config.EXCEL_EXTENSION)) {
+						new ExcelTestData(suite, testData).parseExcelTestDataFile(path);
 
-					try {
-						new CsvTestData(suite, testData).parseCsvTestDataSheet(path);
-					} catch (IOException e) {
-						e.printStackTrace();
+					} else if (path.contains(Config.CSV_EXTENSION)) {
+
+						try {
+							new CsvTestData(suite, testData).parseCsvTestDataSheet(path);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						try {
+							new CsvTestData(suite, testData).parseCsvTestDataSheet(path);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
 					}
-
 				}
 			}
 		}
 
 		return testData;
 	}
-	
-	public static void createStaticTestData (String key, String key_value, TestData testData, String source ) {
-		
+
+	public static void createStaticTestData(String key, String key_value, TestData testData, String source) {
+
 		String value = "";
 		SourcedDataItem<String, TestDataSource> sourcedDataItem = testData.getSourcedValue(key);
-     
+
 		// create static test data
 		if (sourcedDataItem == null) {
-			
+
 			StaticTestDataSource staticSource = null;
-			
+
 			// check in system property
 			value = System.getProperty(key);
-			
+
 			// check in environment property
 			if (StringUtils.isBlank(value)) {
 				value = System.getenv(key);
 			}
-			
+
 			staticSource = !StringUtils.isEmpty(value) ? new StaticTestDataSource(key, value)
 					: new StaticTestDataSource(key, key_value);
 
@@ -100,7 +111,7 @@ public class TestDataReader {
 			sourcedValue.setSourceClass(TestDataReader.class);
 			sourcedValue.setValue(staticSource);
 			SourcedDataItem<String, TestDataSource> item = new SourcedDataItem<>(key, sourcedValue);
-			
+
 			testData.put(key, item);
 		} else {
 
@@ -111,7 +122,7 @@ public class TestDataReader {
 				testDataSource.setValue(key_value);
 			}
 		}
-		
+
 	}
 
 }

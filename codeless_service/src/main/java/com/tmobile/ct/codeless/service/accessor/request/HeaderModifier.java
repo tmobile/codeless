@@ -15,24 +15,21 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.service.accessor.request;
 
+import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.Header;
 import com.tmobile.ct.codeless.testdata.GetTestData;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
-import com.tmobile.ct.codeless.testdata.RuntimeTestDataSource;
-import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
-import java.util.List;
+
 
 /**
  * The Class HeaderModifier.
  *
  * @author Rob Graff
  */
-public class HeaderModifier implements RequestModifier<Header, HttpRequest>{
+public class HeaderModifier implements RequestModifier<Header, HttpRequest> {
 
 	/** The key. */
 	private ArrayList<String> key;
@@ -50,15 +47,19 @@ public class HeaderModifier implements RequestModifier<Header, HttpRequest>{
 		this.key = key;
 		this.dataSource = dataSource;
 		this.originals = original;
-	}
+		}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.service.accessor.request.RequestModifier#modify(com.tmobile.ct.codeless.service.HttpRequest)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * com.tmobile.ct.codeless.service.accessor.request.RequestModifier#modify(com.
+	 * tmobile.ct.codeless.service.HttpRequest)
 	 */
 	@Override
-	public void modify(HttpRequest request) {
+	public void modify(HttpRequest request,Test test) {
 		GetTestData getTestData = new GetTestData();
-		for (int i=0;i<key.size();i++) {
+		for (int i = 0; i < key.size(); i++) {
 			Header newHeader = new Header(key.get(i), getTestData.replaceValueWithTestData(originals.get(i), dataSource));
 			request.getHeaders().put(key.get(i), newHeader);
 		}

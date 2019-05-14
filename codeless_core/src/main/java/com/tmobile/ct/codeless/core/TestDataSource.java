@@ -21,14 +21,16 @@ package com.tmobile.ct.codeless.core;
  * @author Fikreselam Elala
  */
 
-public interface TestDataSource {
+public interface TestDataSource<T> {
 
-	String fullfill();
+	T fullfill();
 
 	void setAccessor(Accessor accessor);
 
 	Accessor getAccessor();
-	
-	void setValue(String Value);
+
+	void setValue(T Value);
+
+	String getKey();
 
 }

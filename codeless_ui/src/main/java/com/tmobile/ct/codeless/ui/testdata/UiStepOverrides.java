@@ -109,6 +109,7 @@ public class UiStepOverrides {
 						}
 
 						if (seleniumMethod != null) {
+							System.out.println("expected::" +expected);
 							String dataValue[] = StringUtils.substringsBetween(expected, "{{", "}}");
 							ArrayList<SourcedDataItem<String, TestDataSource>> sourceValue = new ArrayList<>();
 							if (dataValue != null && dataValue.length > 0) {
@@ -121,12 +122,13 @@ public class UiStepOverrides {
 										source.add((TestDataSource) item.getValue().getValue());
 									}
 								}
-								RequestModifier modifier = new AssertionModifer(d,source);
-								//TestDataSource tData = test.getTestData().get(dataValue[0]);
-								//RequestModifier modifier = new AssertionModifer(dataValue[0], tData);
+								RequestModifier modifier = new AssertionModifer(expected,source);
 								step.getRequestModifiers().add(modifier);
-
+							}else {
+								RequestModifier modifier = new AssertionModifer(dataValue[0], null);
+								step.getRequestModifiers().add(modifier);
 							}
+
 							Method assertionMethod = UiAssertionMethod.getAssertionMethod(assertionMethodName,
 									expected);
 							log.info("UiStepName [" + uiTestStep.getStep() + "] Assertion Type ["
