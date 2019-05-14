@@ -43,6 +43,7 @@ public class BodyModifier implements RequestModifier<Body, HttpRequest>{
 	 * @param dataSource dataSource
 	 */
 	public BodyModifier( String original, ArrayList<TestDataSource> dataSource){
+		this.original = original;
 		this.dataSource = dataSource;
 	}
 
