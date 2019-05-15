@@ -19,10 +19,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
+import com.tmobile.ct.codeless.testdata.GetTestData;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
 import com.tmobile.ct.codeless.testdata.TcdsTestDataSource;
 import com.tmobile.ct.codeless.testdata.TestDataHelper;
 import com.tmobile.ct.codeless.ui.assertion.UiAssertionBuilder;
+
+import java.util.ArrayList;
 
 public class AssertionModifer implements RequestModifier<String, UiAssertionBuilder> {
 
@@ -32,9 +35,11 @@ public class AssertionModifer implements RequestModifier<String, UiAssertionBuil
 	/** The dataSource to override. */
 	private TestDataSource dataSource;
 
-	public AssertionModifer(String key, TestDataSource dataSource) {
-		this.key = key;
-		this.dataSource = dataSource;
+	private ArrayList<TestDataSource> dataSources;
+
+	public AssertionModifer(String original, ArrayList datasource){
+		this.key = original;
+		this.dataSources = datasource;
 	}
 
 	@Override
@@ -42,15 +47,8 @@ public class AssertionModifer implements RequestModifier<String, UiAssertionBuil
 		String tcds_value = "";
 		if (input == null)
 			return;
-		if (test.getTcdsData() && test.getTestData().asMap().containsKey(test.getName())) {
-			TestDataSource tc_source = test.getTestData().get(test.getName());
-			tcds_value = TestDataHelper.fullfill(key, tc_source);
-		}
-		if(StringUtils.isEmpty(tcds_value) && dataSource != null && !(dataSource instanceof TcdsTestDataSource)) {
-			input.setExpectedValue((String) dataSource.fullfill());
-		}else {
-			input.setExpectedValue(tcds_value);
-		}
+		GetTestData getTestData = new GetTestData();
+		String newVal = getTestData.replaceValueWithTestData(key, dataSources, test);
+		input.setExpectedValue(newVal);
 	}
-
 }

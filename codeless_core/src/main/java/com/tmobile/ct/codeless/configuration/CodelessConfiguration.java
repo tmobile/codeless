@@ -32,7 +32,10 @@ public final class CodelessConfiguration {
 	
 	/** The suite dir. */
 	private static String suiteDir = File.separator + "suites";
-	
+
+	/**The testdata dir. */
+	private static String testDataDir = File.separator + "testdata";
+
 	private static Properties properties;
 
 	/**
@@ -45,6 +48,7 @@ public final class CodelessConfiguration {
 			properties.load(configStream);
 			modelDir = properties.getProperty("model.dir", File.separator + "model");
 			suiteDir = properties.getProperty("suites.dir", File.separator + "suites");
+			testDataDir = properties.getProperty("testdata.dir",File.separator + "testdata");
 		} catch (Exception e) {
 			// No config file present, default
 			System.out.println("************************************************************************");
@@ -77,5 +81,13 @@ public final class CodelessConfiguration {
 	 */
 	public static String getSuiteDir() {
 		return suiteDir;
+	}
+
+	/**
+	 * Gets the testdata dir.
+	 * @return the testdata dir
+	 */
+	public static String getTestDataDir() {
+		return testDataDir;
 	}
 }
