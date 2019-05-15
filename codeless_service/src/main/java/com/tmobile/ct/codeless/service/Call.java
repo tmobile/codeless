@@ -133,8 +133,6 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 					status = Status.COMPLETE;
 					result = Result.FAIL;
 					fail(e);
-
-					throw e;
 				}
 			}finally{
 				markComplete();

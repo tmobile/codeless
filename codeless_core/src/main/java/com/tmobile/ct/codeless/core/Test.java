@@ -16,6 +16,7 @@
 package com.tmobile.ct.codeless.core;
 
 import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
 
@@ -25,6 +26,19 @@ import org.openqa.selenium.WebDriver;
  * @author Rob Graff
  */
 public interface Test extends Trackable{
+
+	/**
+	 * Gets the id.
+	 * @return id
+	 */
+	Long getId ();
+
+	/**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
+	void setId (Long id);
 
 	/**
 	 * Sets the name.
@@ -151,6 +165,33 @@ public interface Test extends Trackable{
 	void setUiActionLog(List<UiActionLog> uiActionLog);
 
 	List<UiActionLog> getUiActionLog();
+
+	/**
+	 * Gets the reporting data map.
+	 *
+	 * @return the reporting data map
+	 */
+	Map<String, String> getReportingData();
+
+	/**
+	 * Sets the reporting data map.
+	 *
+	 * @param data
+	 */
+	void setReportingData(Map<String, String> data);
+
+	/**
+	 * Sets the reporting data map.
+	 * @param key
+	 * @param value
+	 */
+	void addReportingData(String key, String value);
+
+	/**
+	 * Removes a reporting data entry from the map.
+	 * @param key
+	 */
+	void removeReportingData(String key);
 
 	void setTcdsData(boolean isTcds);
 
