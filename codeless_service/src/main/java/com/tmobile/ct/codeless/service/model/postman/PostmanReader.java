@@ -99,37 +99,37 @@ public class PostmanReader {
 			return readCollectionFileClasspath(filePath);
 		}
 
-		ObjectNode collectionNode = (ObjectNode) om.readTree(new String(Files.readAllBytes(Paths.get(filePath))));
+		JsonNode collectionNode = om.readTree(new String(Files.readAllBytes(Paths.get(filePath))));
 		String fullJson = om.writeValueAsString(collectionNode);
 		fullJson = processNode(collectionNode, fullJson);
 
         return om.readValue(fullJson, PostmanCollection.class);
 	}
 
-	private String processNode(ObjectNode node, String fullJason) {
+	private String processNode(JsonNode node, String fullJson) {
 		List<JsonNode> items = node.findValues("item");
 		if (items != null) {
 			for (JsonNode itemNode : items) {
 				if (itemNode instanceof ArrayNode) {
-					fullJason =  processArrayNode((ArrayNode)itemNode, fullJason);
+					fullJson =  processArrayNode((ArrayNode)itemNode, fullJson);
 				}
 
-				if (itemNode instanceof ObjectNode) {
-					fullJason = processNode((ObjectNode) itemNode, fullJason);
+				if (itemNode instanceof JsonNode) {
+					fullJson = processNode(itemNode, fullJson);
 				}
 			}
 		}
 
-		return fullJason;
+		return fullJson;
 	}
 
-	private String processArrayNode(ArrayNode arrayNode, String fullJason) {
+	private String processArrayNode(ArrayNode arrayNode, String fullJson) {
 		try {
 			List<JsonNode> items = arrayNode.findValues("item");
 			if (items == null || items.size() == 0) {
 				JsonNode url = arrayNode.findValue("url");
 				if (url == null) {
-					return fullJason;
+					return fullJson;
 				}
 
 				if (url.findValue("raw") != null) {
@@ -137,18 +137,18 @@ public class PostmanReader {
 					String urlJson = om.writeValueAsString(url);
 					String newUrlJson = "\"" + url.findValue("raw").textValue() + "\"";
 					String newNodeJson = nodeJson.replace(urlJson, newUrlJson);
-					fullJason = fullJason.replace(nodeJson, newNodeJson);
+					fullJson = fullJson.replace(nodeJson, newNodeJson);
 				}
 			} else {
 				for (JsonNode item : items) {
-					processNode((ObjectNode) item, fullJason);
+					processNode((ObjectNode) item, fullJson);
 				}
 			}
 		} catch (Exception ex) {
 			// do nothing
 		}
 
-		return fullJason;
+		return fullJson;
 	}
 
 	/**
