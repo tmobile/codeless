@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.tmobile.ct.codeless.testdata.GetTestData;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -120,6 +121,9 @@ public class ServiceStepBuilder {
 	/** The Constant SOAP_WSDL. */
 	private static final String SOAP_WSDL = "wsdlFile.wsdl";
 
+	private ArrayList<String> keys = new ArrayList();
+	private ArrayList<String> values = new ArrayList();
+	
 	public void buildServiceStep(String header, String value, ServiceCallInput input, Test test) {
 
 		switch (header.toUpperCase()) {
@@ -555,6 +559,8 @@ public class ServiceStepBuilder {
 			request.getQueryParams().put(key, new QueryParam(key, value));
 			break;
 		case "HEADER":
+//			keys.add(key);
+//			values.add(value);
 			request.getHeaders().put(key, new Header(key, value));
 			break;
 		case "PATH":
@@ -727,135 +733,157 @@ public class ServiceStepBuilder {
 
 	public String parseExport(String cellValue, Test test, ServiceCallInput input) {
 		String[] values = cellValue.split("::");
-		if (cellValue.contains("export")) {
-			List<String> stepName = input.get(SuiteHeaders.TESTNAME.name()).getValues();
-			if (values.length >= 2) {
+        if (cellValue.contains("export")) {
+            List<String> stepName = input.get(SuiteHeaders.TESTNAME.name()).getValues();
+            if (values.length >= 2) {
 
-				ServiceCallReference callRef;
-				callRef = new CallRefByTest(test, stepName.get(0));
+            	ServiceCallReference callRef;
+        		callRef = new CallRefByTest(test, stepName.get(0));
 
-				String key = values[1];
-				String accessType = values[2];
-				String accessorValue = values[3];
+        		String key = values[1];
+        		String accessType = values[2];
+        		String accessorValue = values[3];
 
-				Accessor accessor = null;
-				switch (accessType.trim().toUpperCase()) {
-				case "HEADER":
-					accessor = new HeaderAccessor(callRef, key);
-					break;
-				case "BODYSTRING":
-					accessor = new BodyStringAccessor(callRef);
-					break;
-				case "JSONPATH":
-					accessor = new JsonPathAccessor(callRef, accessorValue, String.class);
-					break;
-				case "XMLPATH":
-					accessor = new XmlPathAccessor(callRef, key, String.class);
-					break;
+        		Accessor accessor = null;
+        		switch(accessType.trim().toUpperCase()){
+        		case "HEADER":
+        			accessor = new HeaderAccessor(callRef, key);
+        			break;
+        		case "BODYSTRING":
+        			accessor = new BodyStringAccessor(callRef);
+        			break;
+        		case "JSONPATH":
+        			accessor = new JsonPathAccessor(callRef, accessorValue, String.class);
+        			break;
+        		case "XMLPATH":
+        			accessor = new XmlPathAccessor(callRef, key, String.class);
+        			break;
+        		}
+
+
+        		TestDataSource testdata = new RuntimeTestDataSource(accessor);
+
+        		if (test.getTestData() == null) {
+                    test.setTestData(new BasicTestData());
+                }
+
+        		SourcedValue<TestDataSource> sourceValue = new SourcedValue<TestDataSource>();
+                sourceValue.setValue(testdata);
+                SourcedDataItem<String, TestDataSource> item = new SourcedDataItem<String, TestDataSource>(key, sourceValue);
+                test.getTestData().put(key, item);
+            }
+        }else {
+
+        	if(values.length < 3 && values[0] != null) {
+        		 return values[0];
+        	}
+
+        	if (test.getTestData() == null) {
+                test.setTestData(new BasicTestData());
+            }
+
+        	ArrayList<SourcedDataItem<String, TestDataSource> > sourceValue = new ArrayList<>();
+
+        	String type = values[0];
+    		String key = values[1];
+    		String value = values[2];
+    		String[] dataValue = StringUtils.substringsBetween(value, "{{", "}}");
+
+    		if(dataValue != null && dataValue.length > 0) {
+    			for (String source: dataValue){
+					sourceValue.add(test.getTestData().getSourcedValue(source));
+				}
+    		}else {
+    			return cellValue;
+    		}
+    		if(sourceValue != null && sourceValue.size() != 0) {
+    			ArrayList<TestDataSource> source = new ArrayList<>();
+    			for (SourcedDataItem item : sourceValue){
+					if (item != null)
+    					source.add((TestDataSource) item.getValue().getValue());
 				}
 
-				TestDataSource testdata = new RuntimeTestDataSource(accessor);
+            	RequestModifier modifier = null;
 
-				if (test.getTestData() == null) {
-					test.setTestData(new BasicTestData());
-				}
+        		switch(type.trim().toUpperCase()){
+        		case "QUERY":
+        			modifier = new QueryParamsModifier(key,value,source);
+        			break;
+        		case "HEADER":
+        			this.keys.add(key);
+        			this.values.add(value);
+        			modifier = new HeaderModifier(this.keys,this.values, source);
+        			break;
+        		case "PATH":
+        			modifier = new PathModifier(key,value, source);
+        			break;
+        		case "FORM":
+        			modifier = new FormModifier(key,value, source);
+        			break;
+        		case "COOKIE":
+        			modifier = new CookieModifier(key,value, source);
+        			break;
+        		case "BODY":
+        			modifier = new BodyModifier(value, source);
+        			break;
+        		case "BODYTEMPLATE":
+        			modifier = new BodyTemplateModifier(key, source.get(0));
+        		}
 
-				SourcedValue<TestDataSource> sourceValue = new SourcedValue<TestDataSource>();
-				sourceValue.setValue(testdata);
-				SourcedDataItem<String, TestDataSource> item = new SourcedDataItem<String, TestDataSource>(key,
-						sourceValue);
-				test.getTestData().put(key, item);
-			}
-		} else {
-
-			if (values.length < 3 && values[0] != null) {
-				return values[0];
-			}
-
-			if (test.getTestData() == null) {
-				test.setTestData(new BasicTestData());
-			}
-
-			SourcedDataItem<String, TestDataSource> sourceValue = null;
-
-			String type = values[0];
-			String key = values[1];
-			String value = values[2];
-			String[] dataValue = StringUtils.substringsBetween(value, "{{", "}}");
-
-			if (dataValue != null && dataValue.length > 0) {
-				sourceValue = test.getTestData().getSourcedValue(dataValue[0]);
-			} else {
-				return cellValue;
-			}
-			if (sourceValue != null) {
-				TestDataSource source = sourceValue.getValue().getValue();
-
-				RequestModifier modifier = null;
-
-				switch (type.trim().toUpperCase()) {
-				case "QUERY":
-					modifier = new QueryParamsModifier(key, source);
-					break;
-				case "HEADER":
-					modifier = new HeaderModifier(key, value, source);
-					break;
-				case "PATH":
-					modifier = new PathModifier(key, source);
-					break;
-				case "FORM":
-					modifier = new FormModifier(key, source);
-					break;
-				case "COOKIE":
-					modifier = new CookieModifier(key, source);
-					break;
-				case "BODY":
-					modifier = new BodyModifier(source);
-					break;
-				case "BODYTEMPLATE":
-					modifier = new BodyTemplateModifier(key, source);
-				}
-
-				if (request == null && modifier != null) {
-					modifers = new ArrayList<>();
-					modifers.add(modifier);
-				} else if (request != null) {
-					request.getRequestModifiers().add(modifier);
-				}
-			}
-		}
-
-		Pattern p = Pattern.compile("\\{\\{(.*)\\}\\}");
-		String[] parts = cellValue.split("::");
-		for (int i = 0; i < parts.length; i++) {
-			Matcher m = p.matcher(parts[i]);
-			while (m.find()) {
-				String key = m.group(1);
-				String tcds_value = "";
-				if (test.getTcdsData()) {
-					TestDataSource testSource = test.getTestData().get(test.getName());
-					tcds_value = TestDataHelper.fullfill(key, testSource);
-					if (StringUtils.isNotBlank(tcds_value))
-						cellValue = cellValue.replace(parts[i], tcds_value);
-				}
-
-				if (!StringUtils.isNotBlank(tcds_value)) {
-					SourcedDataItem<String, TestDataSource> value = test.getTestData().getSourcedValue(key);
-					if (value != null) {
-						TestDataSource source = value.getValue().getValue();
-
-						if (source instanceof StaticTestDataSource) {
-							String Value = (String) source.fullfill();
-							if (StringUtils.isNotBlank(Value))
-								cellValue = cellValue.replace(parts[i], Value);
-						}
+        		if (request == null && modifier != null) {
+        			modifers = new ArrayList<>();
+        			modifers.add(modifier);
+        		}else if (request !=null ) {
+        			request.getRequestModifiers().add(modifier);
+        		}
+    		}
+        }
+		ArrayList<SourcedDataItem<String, TestDataSource> > sourceValue = new ArrayList<SourcedDataItem<String,TestDataSource>>();
+		String[] dataValue = StringUtils.substringsBetween(cellValue, "{{", "}}");
+		if(dataValue != null && dataValue.length > 0) {
+            String tcds_value = "";
+		    if (test.getTcdsData()) {
+		        for (int i =0;i<dataValue.length;i++) {
+                    TestDataSource testSource = test.getTestData().get(test.getName());
+                    tcds_value = TestDataHelper.fullfill(dataValue[i], testSource);
+                    if (StringUtils.isNotBlank(tcds_value)) {
+                        String replace = "{{" + dataValue[i] + "}}";
+                        cellValue = cellValue.replace(replace, tcds_value);
+                    }
+                }
+            }
+		    dataValue = StringUtils.substringsBetween(cellValue,"{{","}}"); //after replacing from testdata json
+			if (dataValue !=null && dataValue.length > 0) {
+				for (int i = 0; i < dataValue.length; i++) {
+					if (!(test.getTestData().getSourcedValue(dataValue[i]).getValue().getValue() instanceof RuntimeTestDataSource)) {
+						sourceValue.add(test.getTestData().getSourcedValue(dataValue[i]));
 					}
 				}
+			}
+		}else {
+			return cellValue;
+		}
+		if(sourceValue != null && sourceValue.size() != 0) {
+			ArrayList<TestDataSource> source = new ArrayList<>();
 
+			for(int i=0;i<sourceValue.size();i++){
+				if (!(sourceValue.get(i).getValue().getValue() instanceof RuntimeTestDataSource)) {
+					String dataVal = (String) sourceValue.get(i).getValue().getValue().fullfill();
+					if (dataVal != null && !StringUtils.isBlank(dataVal))
+						source.add(sourceValue.get(i).getValue().getValue());
+				}
+			}
+
+			if (source.size() > 0) {
+				GetTestData getTestData = new GetTestData();
+				String newVal = getTestData.replaceValueWithTestData(cellValue, source);
+				if (StringUtils.isNotBlank(newVal))
+					cellValue = newVal;
 			}
 		}
-		return cellValue;
-	}
 
+        return cellValue;
+
+    }
 
 }

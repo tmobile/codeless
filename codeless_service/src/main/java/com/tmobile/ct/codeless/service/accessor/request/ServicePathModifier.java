@@ -34,7 +34,7 @@ public class ServicePathModifier implements RequestModifier<ServicePath, HttpReq
 	/**
 	 * Instantiates a new service path modifier.
 	 *
-	 * @param responseAccessor the response accessor
+	 * @param dataSource the dataSource
 	 */
 	public ServicePathModifier(TestDataSource dataSource){
 		this.dataSource = dataSource;

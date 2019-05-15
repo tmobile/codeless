@@ -75,6 +75,9 @@ public class CsvTestBuilder implements TestBuilder {
 
 	private List<Step> parseRow(CSVRecord row, CSVRecord header) {
 
+		if (row.get(0) == null){
+			return null;
+		}
 		if (row.get(0) != null) {
 			String stepName = row.get(0);
 			if (stepName == null || stepName == "" || stepName.startsWith("#")) {

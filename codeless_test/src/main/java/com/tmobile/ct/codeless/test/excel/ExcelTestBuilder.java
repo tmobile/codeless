@@ -125,6 +125,9 @@ public class ExcelTestBuilder implements TestBuilder{
 	 * @return the step
 	 */
 	private List<Step> parseRow(Row row) {
+		if (row.getCell(0) == null){
+			return null;
+		}
 
 		if (row.getCell(0) != null) {
 

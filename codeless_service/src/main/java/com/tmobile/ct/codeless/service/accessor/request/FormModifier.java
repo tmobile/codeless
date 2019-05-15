@@ -19,7 +19,10 @@ import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.Form;
+import com.tmobile.ct.codeless.testdata.GetTestData;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
+
+import java.util.ArrayList;
 
 /**
  * The Class FormModifier.
@@ -30,19 +33,20 @@ public class FormModifier implements RequestModifier<Form, HttpRequest>{
 
 	/** The key. */
 	private String key;
-
-	/** The response accessor. */
-	private TestDataSource dataSource;
+	private String original;
+	/** The dataSource to override. */
+	private ArrayList<TestDataSource> dataSource;
 
 	/**
-	 * Instantiates a new form modifier.
+	 * Instantiates a new header modifier.
 	 *
 	 * @param key the key
-	 * @param responseAccessor the response accessor
+	 * @param dataSource dataSource
 	 */
-	public FormModifier(String key, TestDataSource dataSource){
+	public FormModifier(String key, String original, ArrayList<TestDataSource> dataSource){
 		this.key = key;
 		this.dataSource = dataSource;
+		this.original = original;
 	}
 
 	/* (non-Javadoc)
@@ -50,7 +54,8 @@ public class FormModifier implements RequestModifier<Form, HttpRequest>{
 	 */
 	@Override
 	public void modify(HttpRequest request,Test test) {
-		request.getForms().put(key, new Form(key, (String)dataSource.fullfill()));
-
+		GetTestData getTestData = new GetTestData();
+		Form newForm = new Form(key,getTestData.replaceValueWithTestData(original,dataSource));
+		request.getForms().put(key, newForm);
 	}
 }
