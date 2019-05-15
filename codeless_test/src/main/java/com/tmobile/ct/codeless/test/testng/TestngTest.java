@@ -100,7 +100,7 @@ public class TestngTest {
 	 *
 	 * @return the object[][]
 	 */
-	@DataProvider(name = "codeless", parallel = false)
+	@DataProvider(name = "codeless")
 	public Object[][] codelessDataProvider() {
 
 		if (suite == null || suite.getTests() == null || suite.getTests().size() == 0) {
@@ -124,7 +124,7 @@ public class TestngTest {
 	 * @param test the test
 	 * @throws Exception the exception
 	 */
-	@org.testng.annotations.Test(dataProvider = "codeless")
+	@org.testng.annotations.Test(dataProvider = "codeless" )
 	public void executeTest(Test test) throws Exception {
 
 		// before test
@@ -173,7 +173,7 @@ public class TestngTest {
 			throw e;
 		} finally {
 
-			WebDriverFactory.teardown();
+			WebDriverFactory.teardown(test.getWebDriver());
 			if (test.getResult() == null ||
 				test.getResult() != Result.FAIL) {
 				test.setResult(Result.PASS);
@@ -190,7 +190,6 @@ public class TestngTest {
 				test.setUiActionLog(UiActionLogger.get());
 			}
 			UiActionLogger.destroy();
-
 
 			// after test
 			execution.getTestHooks().forEach(hook -> {

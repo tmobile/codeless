@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import org.testng.ITestResult;
 import org.testng.TestNG;
-
 import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Status;

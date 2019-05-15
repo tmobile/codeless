@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import com.tmobile.ct.codeless.core.Assertion;
 import com.tmobile.ct.codeless.core.Component;
-import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.core.Test;
@@ -123,13 +122,12 @@ public class UiStepImpl implements UiStep {
 			buildRequestModifier();		
 			
 			if(test.getWebDriver() == null) {
-				WebDriverFactory nwdf = new WebDriverFactory(test.getConfig().asMap(), test.getName());
-				WebDriver driver = nwdf.create();
+				WebDriverFactory webDriverFactory = new WebDriverFactory(test.getConfig().asMap(), test.getName());
+				WebDriver driver = webDriverFactory.create();
 				test.setWebDriver(driver);
 				logger.info("driver info {}",driver.toString());
 			}
 			setWebDriver(test.getWebDriver());
-			
 			this.action.run();
 
 			if (uiStepExportBuilder != null && !uiStepExportBuilder.isEmpty()) {

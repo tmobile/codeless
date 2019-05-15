@@ -46,7 +46,7 @@ public class Config {
 	public static final String TCDS = "tcds";
 	
 	public static final String TEST_RUN_PARALLEL = "test.runparallel";
-	public static final String RUN_PARALLEL_THREADCOUNT = "test.runparallel.threadcount";
+	public static final String TEST_RUN_PARALLEL_THREADCOUNT = "test.runparallel.threadcount";
 	
 	public static final String PLATFORM_TYPE = "platform-type";
 	public static final String WEBDRIVER_RUN_LOCAL = "webdriver.runlocal";
