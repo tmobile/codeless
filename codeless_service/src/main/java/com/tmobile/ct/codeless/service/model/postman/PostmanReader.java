@@ -16,16 +16,22 @@
 package com.tmobile.ct.codeless.service.model.postman;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.tmobile.ct.codeless.service.model.postman.collection.PostmanCollection;
 import com.tmobile.ct.codeless.service.model.postman.collection.PostmanEnvironment;
+import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * The Class PostmanReader.
@@ -92,10 +98,57 @@ public class PostmanReader {
 		if (filePath.startsWith("classpath:")) {
 			return readCollectionFileClasspath(filePath);
 		}
-		InputStream stream = new FileInputStream(new File(filePath));
-		PostmanCollection collection = om.readValue(stream, PostmanCollection.class);
-		stream.close();
-		return collection;
+
+		ObjectNode collectionNode = (ObjectNode) om.readTree(new String(Files.readAllBytes(Paths.get(filePath))));
+		String fullJson = om.writeValueAsString(collectionNode);
+		fullJson = processNode(collectionNode, fullJson);
+
+        return om.readValue(fullJson, PostmanCollection.class);
+	}
+
+	private String processNode(ObjectNode node, String fullJason) {
+		List<JsonNode> items = node.findValues("item");
+		if (items != null) {
+			for (JsonNode itemNode : items) {
+				if (itemNode instanceof ArrayNode) {
+					fullJason =  processArrayNode((ArrayNode)itemNode, fullJason);
+				}
+
+				if (itemNode instanceof ObjectNode) {
+					fullJason = processNode((ObjectNode) itemNode, fullJason);
+				}
+			}
+		}
+
+		return fullJason;
+	}
+
+	private String processArrayNode(ArrayNode arrayNode, String fullJason) {
+		try {
+			List<JsonNode> items = arrayNode.findValues("item");
+			if (items == null || items.size() == 0) {
+				JsonNode url = arrayNode.findValue("url");
+				if (url == null) {
+					return fullJason;
+				}
+
+				if (url.findValue("raw") != null) {
+					String nodeJson = om.writeValueAsString(arrayNode);
+					String urlJson = om.writeValueAsString(url);
+					String newUrlJson = "\"" + url.findValue("raw").textValue() + "\"";
+					String newNodeJson = nodeJson.replace(urlJson, newUrlJson);
+					fullJason = fullJason.replace(nodeJson, newNodeJson);
+				}
+			} else {
+				for (JsonNode item : items) {
+					processNode((ObjectNode) item, fullJason);
+				}
+			}
+		} catch (Exception ex) {
+			// do nothing
+		}
+
+		return fullJason;
 	}
 
 	/**

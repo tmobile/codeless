@@ -41,6 +41,8 @@ import com.tmobile.ct.codeless.data.BasicConfig;
  */
 public class TestImpl implements Test{
 
+	private Long id;
+
 	/** The name. */
 	private String name;
 
@@ -72,6 +74,18 @@ public class TestImpl implements Test{
 	private List<UiActionLog> uiActionLog = new ArrayList<>();
 
 	private boolean isTcdsData = false;
+
+	private Map<String, String> data = new HashMap<>();
+
+	@Override
+	public Long getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	@Override
 	public Result getResult() {
@@ -204,6 +218,26 @@ public class TestImpl implements Test{
 	@Override
 	public boolean getTcdsData() {
 		return isTcdsData;
+	}
+
+	@Override
+	public Map<String, String> getReportingData() {
+		return data;
+	}
+
+	@Override
+	public void addReportingData(String key, String value) {
+		this.data.put(key, value);
+	}
+
+	@Override
+	public void setReportingData(Map<String, String> data) {
+		this.data = data;
+	}
+
+	@Override
+	public void removeReportingData(String key) {
+		this.data.remove(key);
 	}
 
 }
