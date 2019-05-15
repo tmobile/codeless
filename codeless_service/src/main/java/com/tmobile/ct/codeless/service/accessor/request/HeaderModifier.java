@@ -15,13 +15,14 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.service.accessor.request;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.Header;
+import com.tmobile.ct.codeless.testdata.GetTestData;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
+import java.util.ArrayList;
+
 
 /**
  * The Class HeaderModifier.
@@ -31,27 +32,22 @@ import com.tmobile.ct.codeless.testdata.RequestModifier;
 public class HeaderModifier implements RequestModifier<Header, HttpRequest> {
 
 	/** The key. */
-	private String key;
-	private String original;
+	private ArrayList<String> key;
+	private ArrayList<String> originals;
 	/** The dataSource to override. */
-	private TestDataSource dataSource;
+	private ArrayList<TestDataSource> dataSource;
 
 	/**
 	 * Instantiates a new header modifier.
 	 *
-	 * @param key              the key
-	 * @param responseAccessor the response accessor
+	 * @param key the key
+	 * @param dataSource dataSource
 	 */
-	public HeaderModifier(String key, TestDataSource dataSource) {
+	public HeaderModifier(ArrayList key, ArrayList original, ArrayList<TestDataSource> dataSource){
 		this.key = key;
 		this.dataSource = dataSource;
-	}
-
-	public HeaderModifier(String key, String original, TestDataSource dataSource) {
-		this.key = key;
-		this.dataSource = dataSource;
-		this.original = original;
-	}
+		this.originals = original;
+		}
 
 	/*
 	 * (non-Javadoc)
@@ -61,11 +57,11 @@ public class HeaderModifier implements RequestModifier<Header, HttpRequest> {
 	 * tmobile.ct.codeless.service.HttpRequest)
 	 */
 	@Override
-	public void modify(HttpRequest request, Test test) {
-		String[] dataValue = StringUtils.substringsBetween(original, "{{", "}}");
-		String replace = "{{" + dataValue[0] + "}}";
-		String newVal = original.replace(replace, (String) dataSource.fullfill());
-		Header newHeader = new Header(key, newVal);
-		request.getHeaders().put(newHeader.getKey(), newHeader);
+	public void modify(HttpRequest request,Test test) {
+		GetTestData getTestData = new GetTestData();
+		for (int i = 0; i < key.size(); i++) {
+			Header newHeader = new Header(key.get(i), getTestData.replaceValueWithTestData(originals.get(i), dataSource));
+			request.getHeaders().put(key.get(i), newHeader);
+		}
 	}
 }

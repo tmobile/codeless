@@ -19,10 +19,12 @@ import static com.tmobile.ct.codeless.configuration.CodelessConfiguration.getMod
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.tmobile.ct.codeless.data.SourcedDataItem;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -331,6 +333,7 @@ public class UiStepBuilder {
 				RequestModifier modifier = null;
 				TestDataSource testData = null;
 
+
 				if (test.getTestData() != null && dataMap.containsKey(value)) {
 					testData = test.getTestData().get(value);
 				}
@@ -340,17 +343,21 @@ public class UiStepBuilder {
 					testRow.setTarget((String) testData.fullfill());
 					break;
 				case INPUT:
-					String tcds_value = "";
-					if (test.getTcdsData() && dataMap.containsKey(test.getName())) {
-						TestDataSource td = test.getTestData().get(test.getName());
-						tcds_value = TestDataHelper.fullfill(value, td);
-						if (!StringUtils.isEmpty(tcds_value)) {
-							testRow.setInput(tcds_value);
+					String[] dataValue = StringUtils.substringsBetween(testRow.getInput(), "{{", "}}");
+					ArrayList<SourcedDataItem<String, TestDataSource>> sourceValue = new ArrayList<>();
+					if (dataValue != null && dataValue.length > 0){
+						for (String source: dataValue){
+							sourceValue.add(test.getTestData().getSourcedValue(source));
 						}
 					}
-					if (StringUtils.isEmpty(tcds_value) && testData != null) {
-						modifier = new InputModifer(value, testData);
+					ArrayList<TestDataSource> source = new ArrayList<>();
+					if(sourceValue != null && sourceValue.size() != 0) {
+						for (SourcedDataItem item : sourceValue) {
+							if (item != null)
+								source.add((TestDataSource) item.getValue().getValue());
+						}
 					}
+					modifier = new InputModifer(testRow.getInput(),source);
 					break;
 				default:
 					// do nothing
