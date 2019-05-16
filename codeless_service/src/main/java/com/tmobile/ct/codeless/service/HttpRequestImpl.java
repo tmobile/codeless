@@ -43,6 +43,8 @@ import com.tmobile.ct.codeless.testdata.RequestModifier;
  */
 public class HttpRequestImpl<T> implements HttpRequest<T>, Serializable{
 
+    private String requestName;
+
 	/** The headers. */
 	private Headers headers;
 
@@ -94,7 +96,18 @@ public class HttpRequestImpl<T> implements HttpRequest<T>, Serializable{
 	/* (non-Javadoc)
 	 * @see com.tmobile.ct.codeless.service.HttpRequest#setHeaders(com.tmobile.ct.codeless.service.httpclient.Headers)
 	 */
+
 	@Override
+	public String getRequestName(){
+		return this.requestName;
+	}
+
+    @Override
+    public void setRequestName(String requestName) {
+        this.requestName = requestName;
+    }
+
+    @Override
 	public void setHeaders(Headers headers) {
 		this.headers = headers;
 	}

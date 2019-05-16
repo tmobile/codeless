@@ -107,7 +107,7 @@ public class PostmanParser {
 		
 		//req.setOperationPath(new OperationPath(name));
 		//req.setServicePath(new ServicePath(swagger.getBasePath()));
-		
+		req.setRequestName(item.name);
 		req.setEndpoint(new Endpoint(item.request.url.raw));
 		
 		if(CollectionUtils.isNotEmpty(item.request.url.host)){
@@ -129,7 +129,12 @@ public class PostmanParser {
 				
 				URL url = new URL(req.getEndpoint().getValue());
 				req.setProtocal(Optional.ofNullable(url.getProtocol()).map(String::toUpperCase).map(HttpProtocal::valueOf).orElse(HttpProtocal.HTTP));
-				req.setHost(new Host(url.getHost()));
+				if (req.getEndpoint().getValue().toUpperCase().startsWith("HTTP://")) {
+					req.setHost(new Host("http://"+url.getHost()));
+				}
+				else if (req.getEndpoint().getValue().toUpperCase().startsWith("HTTPS://")){
+					req.setHost(new Host("https://"+url.getHost()));
+				}
 				if(url.getPort() > 0){
 					req.setPort(url.getPort());
 				}

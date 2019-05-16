@@ -41,6 +41,9 @@ import com.tmobile.ct.codeless.testdata.RequestModifier;
  */
 public interface HttpRequest<T> {
 
+	void setRequestName(String requestName);
+
+	String getRequestName();
 	/**
 	 * Sets the request modifiers.
 	 *
