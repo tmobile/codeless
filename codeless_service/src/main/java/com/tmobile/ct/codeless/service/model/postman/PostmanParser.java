@@ -68,13 +68,12 @@ public class PostmanParser {
 		try {
 			collection = reader.readCollectionFile(ClassPathUtil.getAbsolutePath(resource));
 			collection.init();
+			parseCollection(collection);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
-		
-		parseCollection(collection);
 		
 		return requests;
 	}

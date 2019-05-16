@@ -249,7 +249,7 @@ public class ServiceStepBuilder {
 //			service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
 
 			if (operation == null) {
-				System.err.println("NO OPERTAION FOUND FOR INPUT[" + testRow.operation + "]");
+				System.err.println("NO OPERATION FOUND FOR INPUT[" + testRow.operation + "]");
 				return null;
 			}
 

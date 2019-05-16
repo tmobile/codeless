@@ -144,7 +144,6 @@ public class UiStepImpl implements UiStep {
 				result = Result.FAIL;
 				fail(e);
 				logFail(e);
-			    throw e;
 			}
 		}finally{
 			markComplete();
