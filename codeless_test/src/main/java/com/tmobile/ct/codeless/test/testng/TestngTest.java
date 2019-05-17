@@ -172,8 +172,7 @@ public class TestngTest {
 		} catch (Exception e) {
 			throw e;
 		} finally {
-
-			WebDriverFactory.teardown(test.getWebDriver());
+			if (test.getWebDriver() != null) WebDriverFactory.teardown(test.getWebDriver());
 			if (test.getResult() == null ||
 				test.getResult() != Result.FAIL) {
 				test.setResult(Result.PASS);
