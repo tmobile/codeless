@@ -35,4 +35,10 @@ public class PostmanItem {
 	
 	/** The response. */
 	public List<String> response;
+
+	/** child items if this is a folder  */
+	public List<PostmanItem> item;
+
+	/** parent folder name */
+	public String folderName;
 }

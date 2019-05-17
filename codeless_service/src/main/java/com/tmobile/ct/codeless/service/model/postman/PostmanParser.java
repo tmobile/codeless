@@ -42,6 +42,7 @@ import com.tmobile.ct.codeless.service.httpclient.QueryParams;
 import com.tmobile.ct.codeless.service.httpclient.ServicePath;
 import com.tmobile.ct.codeless.service.model.postman.collection.PostmanCollection;
 import com.tmobile.ct.codeless.service.model.postman.collection.PostmanItem;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The Class PostmanParser.
@@ -98,21 +99,23 @@ public class PostmanParser {
 	 * @param item the item
 	 */
 	private void parseRequest(PostmanItem item) {
+		if (item.item != null) {
+			for (PostmanItem childItem : item.item){
+				childItem.folderName = item.name;
+				parseRequest(childItem);
+			}
+
+			return;
+		}
+
 		HttpRequest<String> req = new HttpRequestImpl<>();
 		
 		req.setHttpMethod(HttpMethod.valueOf(item.request.method));
 		
-		/* TODO postman tracks whole "urls" not host:port/service/operation -> have to parse */
-		
-		//req.setOperationPath(new OperationPath(name));
-		//req.setServicePath(new ServicePath(swagger.getBasePath()));
-		req.setRequestName(item.name);
+		req.setRequestName(StringUtils.isBlank(item.folderName)
+							? item.name
+							: item.folderName + "/" + item.name);
 		req.setEndpoint(new Endpoint(item.request.url.raw));
-		
-//		if(CollectionUtils.isNotEmpty(item.request.url.host)){
-//			req.setHost(new Host(item.request.url.host.get(0)));
-//		}
-		
 		req.setPort(Optional.ofNullable(item.request.url.port).map(Integer::valueOf).orElse(null));
 		
 		if(CollectionUtils.isNotEmpty(item.request.url.path)){
@@ -143,14 +146,8 @@ public class PostmanParser {
 			}
 		}
 		
-		/* TODO query/path params in the url? Test this */
 		QueryParams queryParams = new QueryParams();
-		//PathParams pathParams = new PathParams();
-		//Forms formParams = new Forms();
 		Headers headerParams = new Headers();
-		
-		/* TODO dont see cookies in postman model.. */
-		//Cookies cookieParams = new Cookies();
 		
 		//query params
 		Optional.ofNullable(item.request.url.query).ifPresent(x -> x.forEach( query -> {
@@ -163,9 +160,7 @@ public class PostmanParser {
 		});
 		
 		req.setQueryParams(queryParams);
-//		req.setPathParams(pathParams);
 		req.setHeaders(headerParams);
-//		req.setCookies(cookieParams);
 		
 		/* TODO test body as string, what about different body types... */
 		req.setBody(new Body<String>(item.request.body.raw, String.class));
