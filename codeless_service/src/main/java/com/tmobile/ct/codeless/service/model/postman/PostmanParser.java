@@ -109,9 +109,9 @@ public class PostmanParser {
 		req.setRequestName(item.name);
 		req.setEndpoint(new Endpoint(item.request.url.raw));
 		
-		if(CollectionUtils.isNotEmpty(item.request.url.host)){
-			req.setHost(new Host(item.request.url.host.get(0)));
-		}
+//		if(CollectionUtils.isNotEmpty(item.request.url.host)){
+//			req.setHost(new Host(item.request.url.host.get(0)));
+//		}
 		
 		req.setPort(Optional.ofNullable(item.request.url.port).map(Integer::valueOf).orElse(null));
 		

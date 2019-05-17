@@ -99,11 +99,15 @@ public class PostmanReader {
 			return readCollectionFileClasspath(filePath);
 		}
 
-		JsonNode collectionNode = om.readTree(new String(Files.readAllBytes(Paths.get(filePath))));
-		String fullJson = om.writeValueAsString(collectionNode);
-		fullJson = processNode(collectionNode, fullJson);
-
-        return om.readValue(fullJson, PostmanCollection.class);
+		InputStream stream = new FileInputStream(new File(filePath));
+		PostmanCollection collection = om.readValue(stream, PostmanCollection.class);
+		stream.close();
+		return collection;
+//		JsonNode collectionNode = om.readTree(new String(Files.readAllBytes(Paths.get(filePath))));
+//		String fullJson = om.writeValueAsString(collectionNode);
+//		fullJson = processNode(collectionNode, fullJson);
+//
+//        return om.readValue(fullJson, PostmanCollection.class);
 	}
 
 	private String processNode(JsonNode node, String fullJson) {
