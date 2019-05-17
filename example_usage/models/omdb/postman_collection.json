@@ -6,7 +6,86 @@
   },
   "item": [
     {
-      "name": "omdb",
+      "name": "othermovies",
+      "item": [
+        {
+          "name": "scarymovies",
+          "item": [
+            {
+              "name": "Shaun of the Dead",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "http://www.omdbapi.com/?apikey=91999f16&i=tt0365748",
+                  "protocol": "http",
+                  "host": [
+                    "www",
+                    "omdbapi",
+                    "com"
+                  ],
+                  "path": [
+                    ""
+                  ],
+                  "query": [
+                    {
+                      "key": "apikey",
+                      "value": "91999f16"
+                    },
+                    {
+                      "key": "i",
+                      "value": "tt0365748"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "_postman_isSubFolder": true
+        },
+        {
+          "name": "The Lion King",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://www.omdbapi.com/?apikey=91999f16&i=tt0110357",
+              "protocol": "http",
+              "host": [
+                "www",
+                "omdbapi",
+                "com"
+              ],
+              "path": [
+                ""
+              ],
+              "query": [
+                {
+                  "key": "apikey",
+                  "value": "91999f16"
+                },
+                {
+                  "key": "i",
+                  "value": "tt0110357"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Wall-E",
       "request": {
         "method": "GET",
         "header": [],

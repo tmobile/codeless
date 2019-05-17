@@ -8,7 +8,7 @@
   <artifactId>codeless_service</artifactId>
   <groupId>com.tmobile.ct.codeless.service</groupId>
   
-  <dependencies>
+  	<dependencies>
 		<dependency>
    			<groupId>com.tmobile.ct.codeless.core</groupId>
    			<artifactId>codeless_core</artifactId>
