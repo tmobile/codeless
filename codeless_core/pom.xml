@@ -16,7 +16,6 @@
 		<selenium.version>3.141.59</selenium.version>
 		<appiumclient.version>7.0.0</appiumclient.version>
 		<sl4j.version>1.7.25</sl4j.version>
-		<extentreport.version>3.0.7</extentreport.version>
 		<restassured.version>3.1.1</restassured.version>
 	</properties>
 
@@ -25,7 +24,7 @@
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.6.2</version>
+			<version>3.11.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -42,40 +41,35 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 			<version>2.23.4</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.7</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>1.10.19</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 			<version>4.2</version>
 		</dependency>
-
+		
 		<!-- http clients -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
 			<version>${restassured.version}</version>
 		</dependency>
-
+		
 		<!-- serilizers -->
-
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
@@ -96,14 +90,28 @@
 			<artifactId>jackson-dataformat-csv</artifactId>
 			<version>2.9.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-yaml</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.8.11</version>
+		</dependency>
+		<dependency>
+       		<groupId>com.fasterxml.jackson.core</groupId>
+          	<artifactId>jackson-annotations</artifactId>
+       		<version>2.9.8</version>
+    	</dependency>
+		
 		<!-- selenium -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>${selenium.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.appium</groupId>
 			<artifactId>java-client</artifactId>
@@ -115,16 +123,27 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+		
 		<!-- swagger -->
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-parser</artifactId>
 			<version>1.0.37</version>
 		</dependency>
-
+		
+		<!-- ons-lang/commons-lang -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.8.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		
 		<!-- excel -->
-
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
@@ -154,7 +173,6 @@
 		</dependency>
 
 	</dependencies>
-
 
 	<build>
 		<plugins>

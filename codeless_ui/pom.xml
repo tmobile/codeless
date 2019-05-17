@@ -10,8 +10,6 @@
 	<artifactId>codeless_ui</artifactId>
 
 	<properties>
-		<selenium.version>3.141.59</selenium.version>
-		<appiumclient.version>7.0.0</appiumclient.version>
 	</properties>
 
 	<dependencies>
@@ -29,22 +27,6 @@
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
 			<version>1.13</version>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>${selenium.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.appium</groupId>
-			<artifactId>java-client</artifactId>
-			<version>${appiumclient.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.seleniumhq.selenium</groupId>
-					<artifactId>selenium-java</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 

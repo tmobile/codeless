@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import org.testng.ITestResult;
 import org.testng.TestNG;
-
 import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Status;
@@ -28,6 +27,11 @@ import com.tmobile.ct.codeless.test.BasicExecution;
 import com.tmobile.ct.codeless.test.plugin.PluginBuilder;
 import com.tmobile.ct.codeless.test.testng.factory.TestngBuilder;
 
+/**
+ * The Class TestngExecution.
+ *
+ * @author Rob Graff
+ */
 public class TestngExecution extends BasicExecution{
 
 	private TestNG testng;
@@ -74,11 +78,9 @@ public class TestngExecution extends BasicExecution{
 
 	public TestNG buildTestngExecutor(){
 		TestngBuilder builder = new TestngBuilder();
-		getSuites().forEach(suite ->{
+		getSuites().forEach(suite -> {
 			parsePlugins(suite.getConfig());
-			builder.addSuite(suite.getName(), "Codeless Test", suite.getId(),
-					"com.tmobile.ct.codeless.test.testng.TestngTest",
-					suite.getConfig().asMap());
+				builder.addSuite(suite, "Codeless Test", "com.tmobile.ct.codeless.test.testng.TestngTest");
 		});
 		return builder.build();
 	}
@@ -88,4 +90,5 @@ public class TestngExecution extends BasicExecution{
 		Optional.ofNullable(builder.getPlugins(config))
 			.ifPresent(x -> x.forEach(plugin -> addPlugin(plugin)));
 	}
+	
 }
