@@ -33,7 +33,7 @@ public class BasicParamMap<V extends MultiValue<String,String>> extends MultiVal
 	 */
 	@Override
 	public V put(String key, V value){
-		return super.put(key.toLowerCase(), value);
+		return super.put(key, value);
 	}
 	
 	
@@ -44,7 +44,7 @@ public class BasicParamMap<V extends MultiValue<String,String>> extends MultiVal
 	 */
 	public Map<String, List<String>> toValuesMap(){
 		Map<String,List<String>> valuesMap = new HashMap<>();
-		super.entrySet().stream().forEach(x -> valuesMap.put(x.getKey(), x.getValue().getValues()));
+		super.entrySet().stream().forEach(x -> valuesMap.put(x.getValue().getKey(), x.getValue().getValues()));
 		return valuesMap;
 	}
 }
