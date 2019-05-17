@@ -17,30 +17,30 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.tmobile.ct.codeless</groupId>
+		<groupId>com.tmobile.ct</groupId>
 		<artifactId>codeless</artifactId>
-		<version>0.0.3-SNAPSHOT</version>
+		<version>0.0.4</version>
 	</parent>
-	<groupId>com.tmobile.ct.codeless.test</groupId>
+	<groupId>com.tmobile.ct.codeless</groupId>
 	<artifactId>codeless_test</artifactId>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.tmobile.ct.codeless.core</groupId>
+			<groupId>com.tmobile.ct.codeless</groupId>
 			<artifactId>codeless_core</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.4</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.tmobile.ct.codeless.service</groupId>
+			<groupId>com.tmobile.ct.codeless</groupId>
 			<artifactId>codeless_service</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.4</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.tmobile.ct.codeless.ui</groupId>
+			<groupId>com.tmobile.ct.codeless</groupId>
 			<artifactId>codeless_ui</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.4</version>
 		</dependency>
 
 		<dependency>
