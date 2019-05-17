@@ -101,7 +101,7 @@ public class PostmanParser {
 	private void parseRequest(PostmanItem item) {
 		if (item.item != null) {
 			for (PostmanItem childItem : item.item){
-				childItem.folderName = item.name;
+				childItem.folderName = StringUtils.isBlank(item.folderName) ? item.name : item.folderName + "/" + item.name;
 				parseRequest(childItem);
 			}
 
@@ -163,7 +163,9 @@ public class PostmanParser {
 		req.setHeaders(headerParams);
 		
 		/* TODO test body as string, what about different body types... */
-		req.setBody(new Body<String>(item.request.body.raw, String.class));
+		if (item.request.body != null) {
+			req.setBody(new Body<>(item.request.body.raw, String.class));
+		}
 		
 		requests.add(req);
 		
