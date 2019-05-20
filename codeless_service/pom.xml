@@ -1,18 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.tmobile.ct.codeless</groupId>
-    <artifactId>codeless</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
-  </parent>
-  <artifactId>codeless_service</artifactId>
-  <groupId>com.tmobile.ct.codeless.service</groupId>
+	<parent>
+		<groupId>com.tmobile.ct</groupId>
+		<artifactId>codeless</artifactId>
+		<version>0.0.4</version>
+	</parent>
+	<groupId>com.tmobile.ct.codeless</groupId>
+	<artifactId>codeless_service</artifactId>
   
-  <dependencies>
+  
+  	<dependencies>
 		<dependency>
-   			<groupId>com.tmobile.ct.codeless.core</groupId>
+   			<groupId>com.tmobile.ct.codeless</groupId>
    			<artifactId>codeless_core</artifactId>
-   			<version>0.0.3-SNAPSHOT</version>
+   			<version>0.0.4</version>
 		</dependency>
 		
 		<!-- Wiremock for Unit Tests -->

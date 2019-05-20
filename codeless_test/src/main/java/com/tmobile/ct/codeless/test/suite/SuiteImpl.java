@@ -58,15 +58,20 @@ public class SuiteImpl implements Suite{
 	 * @param name the name
 	 */
 	public SuiteImpl(String name){
-		this.name = name;
+		this.name = getSuiteName(name);
 		this.config = new BasicConfig();
 		this.tests = new ArrayList<>();
 		this.id = UUID.randomUUID().toString();
 	}
 
+	private String getSuiteName(String name) {
+		String[] parts = name.replace(".xlsx",  "").split("/");
+		return parts[parts.length - 1];
+	}
+	
 	@Override
 	public void setName(String name) {
-		this.name = name;
+		this.name = name ;
 	}
 
 	@Override

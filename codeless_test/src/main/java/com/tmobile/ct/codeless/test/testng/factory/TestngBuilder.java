@@ -16,6 +16,7 @@
 package com.tmobile.ct.codeless.test.testng.factory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.testng.TestNG;
@@ -23,6 +24,15 @@ import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
+import com.google.common.base.Optional;
+import com.tmobile.ct.codeless.core.Suite;
+import com.tmobile.ct.codeless.core.config.Config;
+
+/**
+ * The Class TestngBuilder.
+ *
+ * @author Sai Chandra Korpu
+ */
 public class TestngBuilder {
 
 	TestNG testng = new TestNG();
@@ -36,9 +46,12 @@ public class TestngBuilder {
 		return this;
 	}
 	
-	public TestngBuilder addSuite(String suiteName, String testName, String suiteId, String testClass, Map<String,String> params){
+	public TestngBuilder addSuite(Suite suite, String testName, String testClass){
+		
+		Map<String,String> params = suite.getConfig().asMap();
+		
 		XmlSuite xmlSuite = new XmlSuite();
-		xmlSuite.setName(suiteName);
+		xmlSuite.setName(suite.getName());
 
 		XmlTest xmlTest = new XmlTest();
 		xmlTest.setName(testName);
@@ -51,14 +64,41 @@ public class TestngBuilder {
 		xmlSuite.addTest(xmlTest);
 		//params.put("codeless.suite.id", suiteId);		//this param is always null. suiteId is set later
 		xmlSuite.setParameters(params);
+		setParallelExecution(xmlSuite, params);
 		
 		addSuite(xmlSuite);
-		
+
 		return this;
 	}
 	
 	public TestNG build(){
 		testng.setXmlSuites(suites);
 		return testng;
+	}
+	
+	private void setParallelExecution(XmlSuite xmlSuite, Map<String, String> params) {
+		if (params.containsKey(Config.TEST_RUN_PARALLEL)) {
+
+			boolean runParallel = Optional.fromNullable(Boolean.parseBoolean(params.get(Config.TEST_RUN_PARALLEL)))
+					.or(false);
+			if (runParallel) {
+
+				xmlSuite.setListeners(
+						Arrays.asList("com.tmobile.ct.codeless.test.testng.listeners.AnnotationTransformer"));
+				setThreadCount(xmlSuite, params);
+			}
+		}
+	}
+
+	private void setThreadCount(XmlSuite xmlSuite, Map<String, String> params) {
+
+		if (params.containsKey(Config.TEST_RUN_PARALLEL_THREADCOUNT)) {
+			String threadCount = Optional.fromNullable(params.get(Config.TEST_RUN_PARALLEL_THREADCOUNT))
+					.or(Config.EMPTY);
+
+			if (threadCount != null) {
+				xmlSuite.setDataProviderThreadCount(Integer.parseInt(threadCount));
+			}
+		}
 	}
 }

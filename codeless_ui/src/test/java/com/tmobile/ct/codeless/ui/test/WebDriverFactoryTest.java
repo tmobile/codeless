@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
@@ -32,6 +33,10 @@ import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
 
 public class WebDriverFactoryTest {
+	
+	private WebDriverFactory webDriverFactory;
+	
+	private Config config;
 
 	/*@Test
 	public void LocalwebDriverTest() {
@@ -41,14 +46,18 @@ public class WebDriverFactoryTest {
 		assertNotNull(driver);
 		WebDriverFactory.teardown();
 	}*/
+	
+	@Before
+	public void setUp() {
+		config = mockRemoteRunConfig();
+		webDriverFactory = new WebDriverFactory(config.asMap(),"test");
+	}
 
 	@Test
 	public void RemotewebDriverTest() {
-		Config config = mockRemoteRunConfig();
-		WebDriverFactory.setConfig(config);
-		WebDriver driver = WebDriverFactory.getWebDriver();
+		WebDriver driver = webDriverFactory.create();
 		assertNotNull(driver);
-		WebDriverFactory.teardown();
+		WebDriverFactory.teardown(driver);
 	}
 
 	public Config mockLocalRunConfig() {
@@ -80,7 +89,7 @@ public class WebDriverFactoryTest {
 		excelConfig.put("webdriver.runlocal", "FALSE");
 		excelConfig.put("webdriver.platform.chrome", "Windows");
 		excelConfig.put("webdriver.version.chrome", "61.0");
-		excelConfig.put("webdriver.hub", "https://tmo_get_started:112088af-4aa4-4371-9515-802f05fecb23@ondemand.saucelabs.com/wd/hub");
+		excelConfig.put("webdriver.hub", "https://tmo_get_started:a1e75451-66d4-4f7f-afbe-f0d79db0e141@ondemand.saucelabs.com/wd/hub");
 
 
 		for(Map.Entry<String, String> entry : excelConfig.entrySet()) {

@@ -17,30 +17,30 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.tmobile.ct.codeless</groupId>
+		<groupId>com.tmobile.ct</groupId>
 		<artifactId>codeless</artifactId>
-		<version>0.0.3-SNAPSHOT</version>
+		<version>0.0.4</version>
 	</parent>
-	<groupId>com.tmobile.ct.codeless.test</groupId>
+	<groupId>com.tmobile.ct.codeless</groupId>
 	<artifactId>codeless_test</artifactId>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.tmobile.ct.codeless.core</groupId>
+			<groupId>com.tmobile.ct.codeless</groupId>
 			<artifactId>codeless_core</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.4</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.tmobile.ct.codeless.service</groupId>
+			<groupId>com.tmobile.ct.codeless</groupId>
 			<artifactId>codeless_service</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.4</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.tmobile.ct.codeless.ui</groupId>
+			<groupId>com.tmobile.ct.codeless</groupId>
 			<artifactId>codeless_ui</artifactId>
-			<version>0.0.3-SNAPSHOT</version>
+			<version>0.0.4</version>
 		</dependency>
 
 		<dependency>
@@ -50,17 +50,17 @@
 		</dependency>
 		
 		<!-- Wiremock for Unit Tests -->
-        	<dependency>
-          		<groupId>com.github.tomakehurst</groupId>
-            		<artifactId>wiremock</artifactId>
-            		<version>2.19.0</version>
-            		<scope>test</scope>
-       		</dependency>
+        <dependency>
+          	<groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>2.19.0</version>
+            <scope>test</scope>
+       	</dependency>
 		
-       		<dependency>
+       	<dependency>
    			<groupId>com.google.guava</groupId>
-    			<artifactId>guava</artifactId>
-    			<version>22.0</version>
+    		<artifactId>guava</artifactId>
+    		<version>22.0</version>
 		</dependency>
 	</dependencies>
 	<build>

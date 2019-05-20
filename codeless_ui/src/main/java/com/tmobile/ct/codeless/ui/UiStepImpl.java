@@ -21,10 +21,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.tmobile.ct.codeless.core.Assertion;
 import com.tmobile.ct.codeless.core.Component;
-import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.core.Test;
@@ -95,6 +96,8 @@ public class UiStepImpl implements UiStep {
 	private String description;
 
 	private String screenShotPath;
+	
+	private static final Logger logger = LoggerFactory.getLogger(UiStepImpl.class);
 
 	/**
 	 * Instantiates a new ui step impl.
@@ -116,14 +119,14 @@ public class UiStepImpl implements UiStep {
 	public void run() {
 
 		try {
-			buildRequestModifier();
-			if(test.getWebDriver() == null){
-				Config config = test.getConfig();
-			    WebDriverFactory.setConfig(config);
-				WebDriver driver = WebDriverFactory.getWebDriver();
+			buildRequestModifier();		
+			
+			if(test.getWebDriver() == null) {
+				WebDriverFactory webDriverFactory = new WebDriverFactory(test.getConfig().asMap(), test.getName());
+				WebDriver driver = webDriverFactory.create();
 				test.setWebDriver(driver);
+				logger.info("driver info {}",driver.toString());
 			}
-
 			setWebDriver(test.getWebDriver());
 			this.action.run();
 
