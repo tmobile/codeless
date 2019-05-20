@@ -150,7 +150,8 @@ public class PostmanParser {
 		Headers headerParams = new Headers();
 		
 		//query params
-		Optional.ofNullable(item.request.url.query).ifPresent(x -> x.forEach( query -> {
+		Optional.ofNullable(item.request.url.query).ifPresent(x -> x.forEach(
+				query -> {
 			queryParams.put(query.key, new QueryParam(query.key, query.value));
 		}));
 		
