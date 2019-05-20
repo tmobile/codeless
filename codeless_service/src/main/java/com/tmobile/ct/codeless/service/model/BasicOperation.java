@@ -54,7 +54,7 @@ public class BasicOperation implements Operation{
 	 * @param request the request
 	 */
 	public BasicOperation(HttpMethod method, String servicePath, String operationPath, HttpRequest request){
-		this.name = method.name() +"::"+path;
+		this.name = request.getRequestName();
 		this.method = method;
 		this.path = new StringBuilder().append(Optional.ofNullable(servicePath).orElse("")).append(Optional.ofNullable(operationPath).orElse("")).toString();
 		this.request = request;

@@ -33,7 +33,7 @@ public class BasicParamMap<V extends MultiValue<String,String>> extends MultiVal
 	 */
 	@Override
 	public V put(String key, V value){
-		return super.put(key.toLowerCase(), value);
+		return super.put(key, value);
 	}
 	
 	

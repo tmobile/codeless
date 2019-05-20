@@ -121,21 +121,34 @@ public class ServiceStepBuilder {
 	/** The Constant SOAP_WSDL. */
 	private static final String SOAP_WSDL = "wsdlFile.wsdl";
 
+	/** The Constant POSTMAN_COLLECTION_JSON. */
+	private static final String POSTMAN_COLLECTION_JSON = "postman_collection.json";
+
 	private ArrayList<String> keys = new ArrayList();
 	private ArrayList<String> values = new ArrayList();
-	
-	public void buildServiceStep(String header, String value, ServiceCallInput input, Test test) {
+	private boolean isPostman = false;
 
+	public void buildServiceStep(String header, String value, ServiceCallInput input, Test test) {
 		switch (header.toUpperCase()) {
 		case "TARGET":
 			String[] parts = value.split("\\.");
+			String basePath = getModelDir() + File.separator + parts[0] + File.separator;
+			if (ClassPathUtil.exists(basePath+POSTMAN_COLLECTION_JSON)){
+				isPostman = true;
+			}
 			input.add(SuiteHeaders.SERVICE.name(),
 					new MultiValue<String, String>(SuiteHeaders.SERVICE.name(), parts[0]));
 			String operation = "";
+			String operation2 = "";
 			for (int i = 1; i < parts.length; i++) {
 				operation = operation + parts[i] + "/";
+				operation2 = operation2 + parts[i] + "/";
 			}
 			operation = "/" + operation.substring(0, operation.length() - 1);
+			operation2 = operation2.substring(0, operation.length() - 1);
+			if (isPostman){
+				operation = operation2;		//if postman, it is requestname, not path.
+			}
 			input.add(SuiteHeaders.OPERATION.name(),
 					new MultiValue<String, String>(SuiteHeaders.OPERATION.name(), operation));
 			break;
@@ -225,9 +238,15 @@ public class ServiceStepBuilder {
 
 		} else {
 
-			Service service = ServiceCache.getService(testRow.service);
-			operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
-			service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
+		    Service service = ServiceCache.getService(testRow.service);
+		    if (isPostman)
+		    	operation = service.getOperation2(testRow.operation);
+		    else
+				operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
+
+//			Service service = ServiceCache.getService(testRow.service);
+//			operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
+//			service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
 
 			if (operation == null) {
 				System.err.println("NO OPERATION FOUND FOR INPUT[" + testRow.operation + "]");

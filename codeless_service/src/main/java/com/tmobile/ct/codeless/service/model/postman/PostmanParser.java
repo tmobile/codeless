@@ -42,6 +42,7 @@ import com.tmobile.ct.codeless.service.httpclient.QueryParams;
 import com.tmobile.ct.codeless.service.httpclient.ServicePath;
 import com.tmobile.ct.codeless.service.model.postman.collection.PostmanCollection;
 import com.tmobile.ct.codeless.service.model.postman.collection.PostmanItem;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The Class PostmanParser.
@@ -98,21 +99,23 @@ public class PostmanParser {
 	 * @param item the item
 	 */
 	private void parseRequest(PostmanItem item) {
+		if (item.item != null) {
+			for (PostmanItem childItem : item.item){
+				childItem.folderName = StringUtils.isBlank(item.folderName) ? item.name : item.folderName + "/" + item.name;
+				parseRequest(childItem);
+			}
+
+			return;
+		}
+
 		HttpRequest<String> req = new HttpRequestImpl<>();
 		
 		req.setHttpMethod(HttpMethod.valueOf(item.request.method));
 		
-		/* TODO postman tracks whole "urls" not host:port/service/operation -> have to parse */
-		
-		//req.setOperationPath(new OperationPath(name));
-		//req.setServicePath(new ServicePath(swagger.getBasePath()));
-		
+		req.setRequestName(StringUtils.isBlank(item.folderName)
+							? item.name
+							: item.folderName + "/" + item.name);
 		req.setEndpoint(new Endpoint(item.request.url.raw));
-		
-		if(CollectionUtils.isNotEmpty(item.request.url.host)){
-			req.setHost(new Host(item.request.url.host.get(0)));
-		}
-		
 		req.setPort(Optional.ofNullable(item.request.url.port).map(Integer::valueOf).orElse(null));
 		
 		if(CollectionUtils.isNotEmpty(item.request.url.path)){
@@ -128,7 +131,12 @@ public class PostmanParser {
 				
 				URL url = new URL(req.getEndpoint().getValue());
 				req.setProtocal(Optional.ofNullable(url.getProtocol()).map(String::toUpperCase).map(HttpProtocal::valueOf).orElse(HttpProtocal.HTTP));
-				req.setHost(new Host(url.getHost()));
+				if (req.getEndpoint().getValue().toUpperCase().startsWith("HTTP://")) {
+					req.setHost(new Host("http://"+url.getHost()));
+				}
+				else if (req.getEndpoint().getValue().toUpperCase().startsWith("HTTPS://")){
+					req.setHost(new Host("https://"+url.getHost()));
+				}
 				if(url.getPort() > 0){
 					req.setPort(url.getPort());
 				}
@@ -138,17 +146,12 @@ public class PostmanParser {
 			}
 		}
 		
-		/* TODO query/path params in the url? Test this */
 		QueryParams queryParams = new QueryParams();
-		//PathParams pathParams = new PathParams();
-		//Forms formParams = new Forms();
 		Headers headerParams = new Headers();
 		
-		/* TODO dont see cookies in postman model.. */
-		//Cookies cookieParams = new Cookies();
-		
 		//query params
-		Optional.ofNullable(item.request.url.query).ifPresent(x -> x.forEach( query -> {
+		Optional.ofNullable(item.request.url.query).ifPresent(x -> x.forEach(
+				query -> {
 			queryParams.put(query.key, new QueryParam(query.key, query.value));
 		}));
 		
@@ -158,12 +161,12 @@ public class PostmanParser {
 		});
 		
 		req.setQueryParams(queryParams);
-//		req.setPathParams(pathParams);
 		req.setHeaders(headerParams);
-//		req.setCookies(cookieParams);
 		
 		/* TODO test body as string, what about different body types... */
-		req.setBody(new Body<String>(item.request.body.raw, String.class));
+		if (item.request.body != null) {
+			req.setBody(new Body<>(item.request.body.raw, String.class));
+		}
 		
 		requests.add(req);
 		

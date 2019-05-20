@@ -85,12 +85,14 @@ public class ServiceCache {
 	 * @throws Exception
 	 */
 	private static void buildCache(String name) {
+		boolean isPostman = false;
 		List<HttpRequest> requests = null;
 		String basePath = getModelDir() + File.separator + name + File.separator;
 		if(ClassPathUtil.exists(basePath+SWAGGER_YAML)){
 			requests = new SwaggerReader().parse(basePath+SWAGGER_YAML);
 		}else if(ClassPathUtil.exists(basePath+POSTMAN_COLLECTION_JSON)){
 			System.out.println("postman api path:: "+basePath+POSTMAN_COLLECTION_JSON);
+			isPostman = true;
 			requests = new PostmanParser().parse(basePath+POSTMAN_COLLECTION_JSON);
 		}
 
@@ -105,11 +107,14 @@ public class ServiceCache {
 				if(req.getServicePath() != null && req.getServicePath().getValue() != null){
 				  servicePathVal = req.getServicePath().getValue();
 				}
-
 				Operation operation = new BasicOperation(req.getHttpMethod(),servicePathVal, req.getOperationPath().getValue(), req);
 				operations.add(operation);
 			});
-			service.setOperations(operations);
+			if (isPostman){
+				service.setOperations2(operations);
+			}else {
+				service.setOperations(operations);
+			}
 			cache.put(name, service);
 		}
 

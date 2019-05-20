@@ -99,56 +99,10 @@ public class PostmanReader {
 			return readCollectionFileClasspath(filePath);
 		}
 
-		JsonNode collectionNode = om.readTree(new String(Files.readAllBytes(Paths.get(filePath))));
-		String fullJson = om.writeValueAsString(collectionNode);
-		fullJson = processNode(collectionNode, fullJson);
-
-        return om.readValue(fullJson, PostmanCollection.class);
-	}
-
-	private String processNode(JsonNode node, String fullJson) {
-		List<JsonNode> items = node.findValues("item");
-		if (items != null) {
-			for (JsonNode itemNode : items) {
-				if (itemNode instanceof ArrayNode) {
-					fullJson =  processArrayNode((ArrayNode)itemNode, fullJson);
-				}
-
-				if (itemNode instanceof JsonNode) {
-					fullJson = processNode(itemNode, fullJson);
-				}
-			}
-		}
-
-		return fullJson;
-	}
-
-	private String processArrayNode(ArrayNode arrayNode, String fullJson) {
-		try {
-			List<JsonNode> items = arrayNode.findValues("item");
-			if (items == null || items.size() == 0) {
-				JsonNode url = arrayNode.findValue("url");
-				if (url == null) {
-					return fullJson;
-				}
-
-				if (url.findValue("raw") != null) {
-					String nodeJson = om.writeValueAsString(arrayNode);
-					String urlJson = om.writeValueAsString(url);
-					String newUrlJson = "\"" + url.findValue("raw").textValue() + "\"";
-					String newNodeJson = nodeJson.replace(urlJson, newUrlJson);
-					fullJson = fullJson.replace(nodeJson, newNodeJson);
-				}
-			} else {
-				for (JsonNode item : items) {
-					processNode((ObjectNode) item, fullJson);
-				}
-			}
-		} catch (Exception ex) {
-			// do nothing
-		}
-
-		return fullJson;
+		InputStream stream = new FileInputStream(new File(filePath));
+		PostmanCollection collection = om.readValue(stream, PostmanCollection.class);
+		stream.close();
+		return collection;
 	}
 
 	/**

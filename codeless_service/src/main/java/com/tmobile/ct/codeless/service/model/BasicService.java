@@ -33,7 +33,9 @@ public class BasicService implements Service{
 	
 	/** The name. */
 	private String name;
-	
+
+	/**The requestsNames with operations. */
+	private Map<String,Operation> requestNames = new HashMap<>();
 	/**
 	 * Instantiates a new basic service.
 	 */
@@ -53,7 +55,23 @@ public class BasicService implements Service{
 	@Override
 	public void addOperation(Operation operation) {
 		operations.put(operation.getKey(), operation);
-		
+
+	}
+
+	/* (non-Javadoc)
+	 * @see com.tmobile.ct.codeless.service.model.Service#addOperation(com.tmobile.ct.codeless.service.model.Operation)
+	 */
+	@Override
+	public Operation getOperation2(String requestName){
+		return requestNames.get(requestName);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.tmobile.ct.codeless.service.model.Service#addOperation(com.tmobile.ct.codeless.service.model.Operation)
+	 */
+	@Override
+	public void addOperation2(Operation operation){
+		requestNames.put(operation.getName(),operation);
 	}
 
 	/* (non-Javadoc)
@@ -63,6 +81,15 @@ public class BasicService implements Service{
 	public void setOperations(List<Operation> operations) {
 		this.operations.clear();
 		operations.stream().forEach(this::addOperation);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.tmobile.ct.codeless.service.model.Service#setOperations(java.util.List)
+	 */
+	@Override
+	public void setOperations2(List<Operation> operations){
+		this.requestNames.clear();
+		operations.stream().forEach(this::addOperation2);
 	}
 
 	/* (non-Javadoc)

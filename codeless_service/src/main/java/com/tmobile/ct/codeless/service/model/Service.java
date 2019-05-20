@@ -34,20 +34,40 @@ public interface Service {
 	 * @return the operation
 	 */
 	Operation getOperation(HttpMethod method, String operation);
-	
+
+	/**
+	 * Gets the operation.
+	 *
+	 * @param requestName the requestName
+	 * @return the operation
+	 */
+	Operation getOperation2(String requestName);
 	/**
 	 * Adds the operation.
 	 *
 	 * @param operation the operation
 	 */
 	void addOperation(Operation operation);
-	
+
+	/**
+	 * Adds the operation.
+	 *
+	 * @param operation the operation
+	 */
+	void addOperation2(Operation operation);
 	/**
 	 * Sets the operations.
 	 *
 	 * @param operations the new operations
 	 */
 	void setOperations(List<Operation> operations);
+
+	/**
+	 * Sets the operations.
+	 *
+	 * @param operations the new operations
+	 */
+	void setOperations2(List<Operation> operations);
 	
 	/**
 	 * Gets the name.
