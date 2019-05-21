@@ -96,6 +96,8 @@ public class UiStepImpl implements UiStep {
 	private String description;
 
 	private String screenShotPath;
+
+	private Long order;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UiStepImpl.class);
 
@@ -401,5 +403,15 @@ public class UiStepImpl implements UiStep {
 	@Override
 	public void setScreenShotPath(String screenShotPath) {
 		this.screenShotPath = screenShotPath;
+	}
+
+	@Override
+	public Long getOrder() {
+		return order;
+	}
+
+	@Override
+	public void setOrder(Long order) {
+		this.order = order;
 	}
 }

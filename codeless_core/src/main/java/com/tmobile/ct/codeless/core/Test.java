@@ -196,4 +196,8 @@ public interface Test extends Trackable{
 	void setTcdsData(boolean isTcds);
 
 	boolean getTcdsData();
+
+	String getErrorMessage();
+
+	void setErrorMessage(String errorMessage);
 }

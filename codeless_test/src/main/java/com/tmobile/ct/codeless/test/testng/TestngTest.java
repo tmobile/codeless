@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
@@ -134,12 +135,12 @@ public class TestngTest {
 		});
 
 		try {
-
 			ExtentTestManager.getTest().setDescription(test.getName());
+			Long stepOrder = 1L;
 
 			// execute steps
 			for (Step step : test.getSteps()) {
-
+				step.setOrder(stepOrder++);
 				execution.getStepHooks().forEach(hook -> {
 					hook.beforeStep(step);
 				});
@@ -157,9 +158,13 @@ public class TestngTest {
 						test.setResult(Result.FAIL);
 					}
 				} catch (Exception e) {
-					test.setResult(Result.FAIL);
+					if (StringUtils.isBlank(test.getErrorMessage())) {
+						test.setErrorMessage(e.getMessage());
+					} else {
+						test.setErrorMessage(test.getErrorMessage() + "\r\n" + e.getMessage());
+					}
 
-					throw e;
+					test.setResult(Result.FAIL);
 				} finally {
 
 					TestStepReporter.reporter(step);

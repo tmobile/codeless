@@ -77,6 +77,8 @@ public class TestImpl implements Test{
 
 	private Map<String, String> data = new HashMap<>();
 
+	private String errorMessage;
+
 	@Override
 	public Long getId() {
 		return id;
@@ -240,4 +242,13 @@ public class TestImpl implements Test{
 		this.data.remove(key);
 	}
 
+	@Override
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	@Override
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
 }
