@@ -17,6 +17,7 @@ package com.tmobile.ct.codeless.test.testdata;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.ct.codeless.files.ClassPathUtil;
@@ -47,37 +48,38 @@ public class TestDataReader {
 
 	public static TestData getTestData(Suite suite, TestData testData) {
 
-		if (testData == null)
+		if (testData == null) {
 			testData = new BasicTestData();
+		}
 
-		if (suite.getConfig() != null) {
+		if (suite.getConfig() == null) {
+			return testData;
+		}
+		
+		Map<String, String> configMap = suite.getConfig().asMap();
+		String testDataFileName = configMap.get(Config.TESTDATA_FILENAME);
+		if (StringUtils.isNotBlank(testDataFileName)) {
+			String path = CodelessConfiguration.getTestDataDir() + File.separator + testDataFileName;
+			if (path.contains(Config.EXCEL_EXTENSION)) {
+				new ExcelTestData(suite, testData).parseExcelTestDataFile(path);
 
-			String testDataFileName = Optional
-					.fromNullable((String) suite.getConfig().get(Config.TESTDATA_FILENAME).fullfill()).or(Config.EMPTY);
-			if (StringUtils.isNotBlank(testDataFileName)) {
-				String path = CodelessConfiguration.getTestDataDir() +File.separator + testDataFileName;
-				//String path = ".." + File.separator + "testdata" + File.separator + testDataFileName;
+			} else if (path.contains(Config.CSV_EXTENSION)) {
 				if (path.contains(Config.EXCEL_EXTENSION)) {
 					new ExcelTestData(suite, testData).parseExcelTestDataFile(path);
 
 				} else if (path.contains(Config.CSV_EXTENSION)) {
-					if (path.contains(Config.EXCEL_EXTENSION)) {
-						new ExcelTestData(suite, testData).parseExcelTestDataFile(path);
 
-					} else if (path.contains(Config.CSV_EXTENSION)) {
-
-						try {
-							new CsvTestData(suite, testData).parseCsvTestDataSheet(path);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						try {
-							new CsvTestData(suite, testData).parseCsvTestDataSheet(path);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-
+					try {
+						new CsvTestData(suite, testData).parseCsvTestDataSheet(path);
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
+					try {
+						new CsvTestData(suite, testData).parseCsvTestDataSheet(path);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
 				}
 			}
 		}
