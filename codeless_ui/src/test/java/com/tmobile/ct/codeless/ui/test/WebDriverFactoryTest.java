@@ -24,19 +24,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 
-import com.tmobile.ct.codeless.core.Config;
-import com.tmobile.ct.codeless.core.TestDataSource;
-import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
-import com.tmobile.ct.codeless.data.BasicConfig;
-import com.tmobile.ct.codeless.data.SourcedDataItem;
-import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
 
 public class WebDriverFactoryTest {
 	
 	private WebDriverFactory webDriverFactory;
 	
-	private Config config;
+	private Map<String, String> config;
 
 	/*@Test
 	public void LocalwebDriverTest() {
@@ -50,7 +44,7 @@ public class WebDriverFactoryTest {
 	@Before
 	public void setUp() {
 		config = mockRemoteRunConfig();
-		webDriverFactory = new WebDriverFactory(config.asMap(),"test");
+		webDriverFactory = new WebDriverFactory(config,"test");
 	}
 
 	@Test
@@ -60,8 +54,7 @@ public class WebDriverFactoryTest {
 		WebDriverFactory.teardown(driver);
 	}
 
-	public Config mockLocalRunConfig() {
-		Config config = new BasicConfig();
+	public Map<String, String> mockLocalRunConfig() {
 		Map<String, String> excelConfig = new HashMap<String, String>();
 		excelConfig.put("platform-type", "chrome");
 		excelConfig.put("webdriver.runlocal", "TRUE");
@@ -69,21 +62,10 @@ public class WebDriverFactoryTest {
 		excelConfig.put("webdriver.path.firefox", "web_drivers/windows/geckodriver.exe");
 		excelConfig.put("webdriver.path.ie", "web_drivers/windows/IEDriverServer.exe");
 
-		for(Map.Entry<String, String> entry : excelConfig.entrySet()) {
-			String key = entry.getKey();
-			String keyValue = entry.getValue();
-			StaticTestDataSource staticSource = new StaticTestDataSource(key, keyValue);
-			SourcedValue<TestDataSource> value = new SourcedValue<>();
-			value.setValue(staticSource);
-
-			SourcedDataItem<String,TestDataSource> item = new SourcedDataItem<>(key, value);
-			config.put(key, item);
-		}
-		return config;
+		return excelConfig;
 	}
 
-	public Config mockRemoteRunConfig() {
-		Config config = new BasicConfig();
+	public  Map<String, String> mockRemoteRunConfig() {
 		Map<String, String> excelConfig = new HashMap<String, String>();
 		excelConfig.put("platform-type", "chrome");
 		excelConfig.put("webdriver.runlocal", "FALSE");
@@ -91,18 +73,7 @@ public class WebDriverFactoryTest {
 		excelConfig.put("webdriver.version.chrome", "61.0");
 		excelConfig.put("webdriver.hub", "https://tmo_get_started:a1e75451-66d4-4f7f-afbe-f0d79db0e141@ondemand.saucelabs.com/wd/hub");
 
-
-		for(Map.Entry<String, String> entry : excelConfig.entrySet()) {
-			String key = entry.getKey();
-			String keyValue = entry.getValue();
-			StaticTestDataSource staticSource = new StaticTestDataSource(keyValue,keyValue);
-			SourcedValue<TestDataSource> value = new SourcedValue<>();
-			value.setValue(staticSource);
-
-			SourcedDataItem<String,TestDataSource> item = new SourcedDataItem<>(key, value);
-			config.put(key, item);
-		}
-		return config;
+		return excelConfig;
 	}
 
 }

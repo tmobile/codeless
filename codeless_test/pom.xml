@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>com.tmobile.ct</groupId>
 		<artifactId>codeless</artifactId>
-		<version>0.0.4</version>
+		<version>0.0.5</version>
 	</parent>
 	<groupId>com.tmobile.ct.codeless</groupId>
 	<artifactId>codeless_test</artifactId>
@@ -28,19 +28,25 @@
 		<dependency>
 			<groupId>com.tmobile.ct.codeless</groupId>
 			<artifactId>codeless_core</artifactId>
-			<version>0.0.4</version>
+			<version>0.0.5</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.tmobile.ct.codeless</groupId>
 			<artifactId>codeless_service</artifactId>
-			<version>0.0.4</version>
+			<version>0.0.5</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.tmobile.ct.codeless</groupId>
 			<artifactId>codeless_ui</artifactId>
-			<version>0.0.4</version>
+			<version>0.0.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.7</version>
 		</dependency>
 
 		<dependency>

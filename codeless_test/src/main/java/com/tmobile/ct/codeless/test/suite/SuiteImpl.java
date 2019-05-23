@@ -21,13 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Execution;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
-import com.tmobile.ct.codeless.data.BasicConfig;
 
 /**
  * The Class ExcelSuite.
@@ -40,7 +38,7 @@ public class SuiteImpl implements Suite{
 	private String name;
 
 	/** The config. */
-	private Config config;
+	private Map<String, String> config;
 
 	/** The tests. */
 	private List<Test> tests;
@@ -59,7 +57,7 @@ public class SuiteImpl implements Suite{
 	 */
 	public SuiteImpl(String name){
 		this.name = getSuiteName(name);
-		this.config = new BasicConfig();
+		this.config = new HashMap();
 		this.tests = new ArrayList<>();
 		this.id = UUID.randomUUID().toString();
 	}
@@ -98,12 +96,12 @@ public class SuiteImpl implements Suite{
 	}
 
 	@Override
-	public void setConfig(Config config) {
+	public void setConfig(Map<String, String> config) {
 		this.config = config;
 	}
 
 	@Override
-	public Config getConfig() {
+	public Map<String, String> getConfig() {
 		return config;
 	}
 

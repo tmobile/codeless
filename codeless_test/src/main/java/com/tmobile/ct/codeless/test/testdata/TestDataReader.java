@@ -55,9 +55,8 @@ public class TestDataReader {
 		if (suite.getConfig() == null) {
 			return testData;
 		}
-		
-		Map<String, String> configMap = suite.getConfig().asMap();
-		String testDataFileName = configMap.get(Config.TESTDATA_FILENAME);
+
+		String testDataFileName = suite.getConfig().get(Config.TESTDATA_FILENAME);
 		if (StringUtils.isNotBlank(testDataFileName)) {
 			String path = CodelessConfiguration.getTestDataDir() + File.separator + testDataFileName;
 			if (path.contains(Config.EXCEL_EXTENSION)) {

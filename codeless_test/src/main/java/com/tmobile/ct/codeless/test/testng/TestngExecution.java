@@ -15,11 +15,11 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.test.testng;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.testng.ITestResult;
 import org.testng.TestNG;
-import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.core.plugin.ConfigPluginParser;
@@ -85,7 +85,7 @@ public class TestngExecution extends BasicExecution{
 		return builder.build();
 	}
 	
-	public void parsePlugins(Config config){
+	public void parsePlugins(Map<String, String> config){
 		ConfigPluginParser builder = new PluginBuilder();
 		Optional.ofNullable(builder.getPlugins(config))
 			.ifPresent(x -> x.forEach(plugin -> addPlugin(plugin)));

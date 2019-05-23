@@ -77,9 +77,8 @@ public class TestDataProvider implements TestDataReference<String>{
 					return overrideValue;
 				}
 			}else {
-				if(test.getConfig() != null && test.getConfig().asMap().containsKey(key)) {
-					String configValue = (String) test.getConfig().get(key).fullfill();
-					return configValue;
+				if(test.getConfig() != null && test.getConfig().containsKey(key)) {
+					return test.getConfig().get(key);
 				}
 			}
 		}else if(td != null) {

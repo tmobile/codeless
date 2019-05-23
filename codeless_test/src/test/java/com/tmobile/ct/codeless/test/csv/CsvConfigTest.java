@@ -18,17 +18,16 @@ package com.tmobile.ct.codeless.test.csv;
 
 import static org.junit.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
-import com.tmobile.ct.codeless.core.Config;
-import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
-
 
 public class CsvConfigTest {
 	
@@ -40,12 +39,11 @@ public class CsvConfigTest {
 
 	@Test
 	public void getPropertiesTest() {
-		
-		Config properties = CsvConfig.getCSVProperties();
+		Map<String, String> properties = CsvConfig.getCSVProperties();
 		assertNotNull(properties);
-		StaticTestDataSource ds = (StaticTestDataSource) properties.get("webdriver.runlocal");
+		String ds = properties.get("webdriver.runlocal");
 		assertNotNull(ds);
-		assertEquals(ds.getValue(), "TRUE");
+		assertTrue(ds.equalsIgnoreCase("TRUE"));
 		
 	}
 	

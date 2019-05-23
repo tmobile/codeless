@@ -54,7 +54,7 @@ each test suite executed.
 ..run.sh
 
 /lib
-..codeless_test-0.0.3-SNAPSHOT-jar-with-dependencies.jar
+..codeless_test-0.0.4-SNAPSHOT-jar-with-dependencies.jar
 
 /logs
 ..debug/test_suite
