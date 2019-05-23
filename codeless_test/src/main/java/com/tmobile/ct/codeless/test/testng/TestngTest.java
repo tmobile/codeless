@@ -175,7 +175,26 @@ public class TestngTest {
 			}
 
 		} catch (Exception e) {
-			throw e;
+			// test level exception not handled below
+			if (StringUtils.isBlank(test.getErrorMessage())) {
+				test.setErrorMessage(e.getMessage());
+			} else {
+				test.setErrorMessage(test.getErrorMessage() + "\r\n" + e.getMessage());
+			}
+
+			// make sure any unrun steps are set to skipped result, no run status
+			for (Step step : test.getSteps()) {
+				if (step.getResult() == null) {
+					step.setResult(Result.SKIP);
+				}
+
+				if (step.getStatus() == null) {
+					step.setStatus(Status.NO_RUN);
+				}
+			}
+
+			// then fail the test
+			test.setResult(Result.FAIL);
 		} finally {
 			if (test.getWebDriver() != null) WebDriverFactory.teardown(test.getWebDriver());
 			if (test.getResult() == null ||
@@ -193,6 +212,7 @@ public class TestngTest {
 			if (enableUiActionLog) {
 				test.setUiActionLog(UiActionLogger.get());
 			}
+
 			UiActionLogger.destroy();
 
 			// after test
@@ -201,5 +221,4 @@ public class TestngTest {
 			});
 		}
 	}
-
 }
