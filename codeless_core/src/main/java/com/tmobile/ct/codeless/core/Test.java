@@ -71,13 +71,6 @@ public interface Test extends Trackable{
 	void addSteps(List<Step> steps);
 
 	/**
-	 * Sets the config.
-	 *
-	 * @param config the new config
-	 */
-	void setConfig(Config config);
-
-	/**
 	 * Sets the web driver.
 	 *
 	 * @param driver the new web driver
@@ -118,13 +111,6 @@ public interface Test extends Trackable{
 	 * @return the test data
 	 */
 	TestData getTestData();
-
-	/**
-	 * Gets the config.
-	 *
-	 * @return the config
-	 */
-	Config getConfig();
 
 	/**
 	 * Gets the step by name.
@@ -200,4 +186,8 @@ public interface Test extends Trackable{
 	String getErrorMessage();
 
 	void setErrorMessage(String errorMessage);
+
+	void setConfig(Map<String, String> config);
+
+	Map<String, String> getConfig();
 }

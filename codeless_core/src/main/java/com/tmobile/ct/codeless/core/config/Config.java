@@ -50,4 +50,6 @@ public class Config {
 	
 	public static final String PLATFORM_TYPE = "platform-type";
 	public static final String WEBDRIVER_RUN_LOCAL = "webdriver.runlocal";
+
+	public static final String BUILDMODE = "buildMode";
 }

@@ -184,10 +184,10 @@ public class TestngTest {
 			}
 
 			test.setStatus(Status.COMPLETE);
-			if (test.getConfig().asMap().containsKey(Config.UI_ACTION_LOG_ENABLE)) {
+			if (test.getConfig().containsKey(Config.UI_ACTION_LOG_ENABLE)) {
 				enableUiActionLog = Optional
 						.fromNullable(
-								Boolean.parseBoolean((String)test.getConfig().get(Config.UI_ACTION_LOG_ENABLE).fullfill()))
+								Boolean.parseBoolean((String)test.getConfig().get(Config.UI_ACTION_LOG_ENABLE)))
 						.or(false);
 			}
 			if (enableUiActionLog) {

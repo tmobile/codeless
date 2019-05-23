@@ -64,7 +64,7 @@ public class CsvTestData {
 
 		// check in config for test data sheet name
 		if (StringUtils.isBlank(envTestDataSheet)) {
-			envTestDataSheet = (String)suite.getConfig().get(Config.TESTDATA_SHEETNAME).fullfill();
+			envTestDataSheet = (String)suite.getConfig().get(Config.TESTDATA_SHEETNAME);
 		}
 
 		if (StringUtils.isNotBlank(envTestDataSheet)) {

@@ -16,16 +16,12 @@
 package com.tmobile.ct.codeless.test.csv;
 
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import com.google.common.base.Optional;
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
-import com.tmobile.ct.codeless.core.Config;
-import com.tmobile.ct.codeless.core.TestDataSource;
-import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
-import com.tmobile.ct.codeless.data.BasicConfig;
-import com.tmobile.ct.codeless.data.SourcedDataItem;
-import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 
 /**
  * The Class CsvConfig.
@@ -34,26 +30,19 @@ import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
  */
 public class CsvConfig {
 
-	public static Config getCSVProperties() {
+	public static Map<String, String> getCSVProperties() {
 		
 		Properties properties = CodelessConfiguration.getProperties();
 		Enumeration<Object> keys = properties.keys();
-		Config config = new BasicConfig();
+		Map<String, String> config = new HashMap<>();
 
 		while (keys.hasMoreElements()) {
 			
 			String key = keys.nextElement().toString();
 			String value = Optional.fromNullable(properties.getProperty(key)).or(com.tmobile.ct.codeless.core.config.Config.EMPTY);
-			
-			StaticTestDataSource staticSource = new StaticTestDataSource(key, value);
-			SourcedValue<TestDataSource> dS = new SourcedValue<>();
-			dS.setSource(CsvConfig.class.getName());
-			dS.setSourceClass(CsvConfig.class);
-			dS.setValue(staticSource);
-			SourcedDataItem<String, TestDataSource> item = new SourcedDataItem<>(key, dS);
-			config.put(key, item);
+			config.put(key, value);
 		}
-		return config;
 
+		return config;
 	}
 }

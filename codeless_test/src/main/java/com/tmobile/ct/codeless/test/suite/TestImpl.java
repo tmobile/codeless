@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import org.openqa.selenium.WebDriver;
 
-import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.LogProxy;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Status;
@@ -32,7 +31,6 @@ import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.core.UiActionLog;
-import com.tmobile.ct.codeless.data.BasicConfig;
 
 /**
  * The Class ExcelTest.
@@ -50,10 +48,10 @@ public class TestImpl implements Test{
 	private List<Step> steps = new ArrayList<>();
 
 	/** The step map. */
-	private Map<String,Step> stepMap = new HashMap<>();
+	private Map<String, Step> stepMap = new HashMap<>();
 
 	/** The config. */
-	private Config config = new BasicConfig();
+	private Map<String, String> config = new HashMap<>();
 
 	/** The suite. */
 	private Suite suite;
@@ -148,12 +146,12 @@ public class TestImpl implements Test{
 	}
 
 	@Override
-	public void setConfig(Config config) {
+	public void setConfig(Map<String, String> config) {
 		this.config = config;
 	}
 
 	@Override
-	public Config getConfig() {
+	public Map<String, String> getConfig() {
 		return config;
 	}
 

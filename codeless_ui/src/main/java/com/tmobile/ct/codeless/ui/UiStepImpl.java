@@ -124,7 +124,7 @@ public class UiStepImpl implements UiStep {
 			buildRequestModifier();		
 			
 			if(test.getWebDriver() == null) {
-				WebDriverFactory webDriverFactory = new WebDriverFactory(test.getConfig().asMap(), test.getName());
+				WebDriverFactory webDriverFactory = new WebDriverFactory(test.getConfig(), test.getName());
 				WebDriver driver = webDriverFactory.create();
 				test.setWebDriver(driver);
 				logger.info("driver info {}",driver.toString());
