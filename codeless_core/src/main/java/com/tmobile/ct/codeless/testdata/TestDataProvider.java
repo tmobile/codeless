@@ -78,8 +78,7 @@ public class TestDataProvider implements TestDataReference<String>{
 				}
 			}else {
 				if(test.getConfig() != null && test.getConfig().containsKey(key)) {
-					String configValue = (String) test.getConfig().get(key);
-					return configValue;
+					return test.getConfig().get(key);
 				}
 			}
 		}else if(td != null) {
