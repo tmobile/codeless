@@ -23,14 +23,16 @@ import com.google.common.base.Optional;
 import com.relevantcodes.extentreports.LogStatus;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Step;
-import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.service.Call;
+import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.service.core.ServiceCall;
 import com.tmobile.ct.codeless.test.service.ServiceCallDTO;
 import com.tmobile.ct.codeless.test.service.ServiceLogFilter;
 import com.tmobile.ct.codeless.ui.UiStep;
 import com.tmobile.ct.codeless.ui.UiStepImpl;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
+
+import java.util.Map;
 
 /**
  * The Class TestStepReporter.
@@ -60,11 +62,10 @@ public class TestStepReporter {
 	private static void logServiceStepResult(Step step) {
 
 		LogStatus status = logStepResult(step);
-		if (step.getTest().getConfig().asMap().containsKey(Config.LOGGING_DETAILS_ENABLED)) {
-			loggingEnabled = Optional
-					.fromNullable(Boolean
-							.parseBoolean((String)step.getTest().getConfig().get(Config.LOGGING_DETAILS_ENABLED).fullfill()))
-					.or(false);
+		Map<String, String> testConfig = step.getTest().getConfig();
+		if (testConfig.containsKey(Config.LOGGING_DETAILS_ENABLED)) {
+			loggingEnabled = Boolean
+							.parseBoolean((String)testConfig.get(Config.LOGGING_DETAILS_ENABLED));
 		}
 		if (loggingEnabled) {
 			ServiceCallDTO serviceCall = ServiceLogFilter.filter((ServiceCall) step);
@@ -78,9 +79,9 @@ public class TestStepReporter {
 
 		String screenshotPath = "";
 		LogStatus status = logStepResult(step);
-		if (step.getTest().getConfig().asMap().containsKey(Config.TEST_SCREENSHOT_POLICY)) {
+		if (step.getTest().getConfig().containsKey(Config.TEST_SCREENSHOT_POLICY)) {
 			 String screenShotPolicy = Optional
-					.fromNullable((String)step.getTest().getConfig().get(Config.TEST_SCREENSHOT_POLICY).fullfill())
+					.fromNullable((String)step.getTest().getConfig().get(Config.TEST_SCREENSHOT_POLICY))
 					.or(Config.EMPTY);
 
 			String actionName = step.getAction().getClass().getSimpleName();

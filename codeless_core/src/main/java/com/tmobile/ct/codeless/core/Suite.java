@@ -16,7 +16,7 @@
 package com.tmobile.ct.codeless.core;
 
 import java.util.List;
-
+import java.util.Map;
 
 /**
  * The Interface Suite.
@@ -54,7 +54,7 @@ public interface Suite extends Trackable {
 	 *
 	 * @param config the new config
 	 */
-	void setConfig(Config config);
+	void setConfig(Map<String, String> config);
 	
 	/**
 	 * Gets the name.
@@ -75,7 +75,7 @@ public interface Suite extends Trackable {
 	 *
 	 * @return the config
 	 */
-	Config getConfig();
+	Map<String, String> getConfig();
 	
 	/**
 	 * Gets the test by name.

@@ -15,9 +15,7 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.test.excel;
 
-import java.util.Properties;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -28,13 +26,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
-import com.tmobile.ct.codeless.core.Config;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.SuiteBuilder;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
-import com.tmobile.ct.codeless.data.BasicConfig;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.test.suite.SuiteImpl;
 import com.tmobile.ct.codeless.test.testdata.TestDataReader;
@@ -89,6 +85,13 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 
 		sheets.forEach(this::sortsheets);
 
+		// default to command line, if it's not present from the command line
+		// check to see if it's in the config tab of the test suite XLSX file
+		String tempBuildModeKey = com.tmobile.ct.codeless.core.config.Config.BUILDMODE;
+		String tempBuildModeValue = suite.getConfig().get(tempBuildModeKey);
+		if (StringUtils.isNotEmpty(tempBuildModeValue) && System.getProperty(tempBuildModeKey) == null) {
+			System.setProperty(tempBuildModeKey, tempBuildModeValue);
+		}
 
 		return suite;
 	}
@@ -153,7 +156,7 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 
 		if(!prefix.toUpperCase().equalsIgnoreCase(CONFIG_SHEET_PREFIX)) return;
 
-		Config config = new BasicConfig();
+		Map<String, String> config = new HashMap<>();
 		boolean foundWaitTimeConfig = false;
 		Properties globalproperties = CodelessConfiguration.getProperties();
 		for(Row row: sheet){
@@ -163,17 +166,9 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 				continue; // dont save empty rows
 			}
 
-			StaticTestDataSource staticSource = new StaticTestDataSource(key, formatter.formatCellValue(row.getCell(1)));
+			config.put(key, formatter.formatCellValue(row.getCell(1)));
 
-			SourcedValue<TestDataSource> value = new SourcedValue<>();
-			value.setSource(ExcelConfig.class.getName());
-			value.setSourceClass(ExcelConfig.class);
-			value.setValue(staticSource);
-
-			SourcedDataItem<String,TestDataSource> item = new SourcedDataItem<>(key, value);
-			config.put(key, item);
-
-			if (key.toString().equals(CONFIG_WAIT_TIME)) {
+			if (key.equals(CONFIG_WAIT_TIME)) {
 				globalproperties.put(CONFIG_WAIT_TIME , formatter.formatCellValue(row.getCell(1)));
 				CodelessConfiguration.setProperties(globalproperties);
 				foundWaitTimeConfig=true;

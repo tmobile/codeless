@@ -96,6 +96,8 @@ public class UiStepImpl implements UiStep {
 	private String description;
 
 	private String screenShotPath;
+
+	private Integer order;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UiStepImpl.class);
 
@@ -122,7 +124,7 @@ public class UiStepImpl implements UiStep {
 			buildRequestModifier();		
 			
 			if(test.getWebDriver() == null) {
-				WebDriverFactory webDriverFactory = new WebDriverFactory(test.getConfig().asMap(), test.getName());
+				WebDriverFactory webDriverFactory = new WebDriverFactory(test.getConfig(), test.getName());
 				WebDriver driver = webDriverFactory.create();
 				test.setWebDriver(driver);
 				logger.info("driver info {}",driver.toString());
@@ -401,5 +403,15 @@ public class UiStepImpl implements UiStep {
 	@Override
 	public void setScreenShotPath(String screenShotPath) {
 		this.screenShotPath = screenShotPath;
+	}
+
+	@Override
+	public Integer getOrder() {
+		return order;
+	}
+
+	@Override
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 }

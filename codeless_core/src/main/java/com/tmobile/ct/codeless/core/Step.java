@@ -105,4 +105,18 @@ public interface Step extends Executable, Validatable{
 	 * @param description new description
 	 */
 	void setDescription(String description);
+
+	/**
+	 * Set the step order
+	 *
+	 * @param order
+	 */
+	void setOrder (Integer order);
+
+	/**
+	 * Gets the step order.
+	 *
+	 * @return the order
+	 */
+	Integer getOrder ();
 }

@@ -48,7 +48,7 @@ public class TestngBuilder {
 	
 	public TestngBuilder addSuite(Suite suite, String testName, String testClass){
 		
-		Map<String,String> params = suite.getConfig().asMap();
+		Map<String,String> params = suite.getConfig();
 		
 		XmlSuite xmlSuite = new XmlSuite();
 		xmlSuite.setName(suite.getName());
@@ -94,7 +94,7 @@ public class TestngBuilder {
 
 		if (params.containsKey(Config.TEST_RUN_PARALLEL_THREADCOUNT)) {
 			String threadCount = Optional.fromNullable(params.get(Config.TEST_RUN_PARALLEL_THREADCOUNT))
-					.or(Config.EMPTY);
+					.or("2");
 
 			if (threadCount != null) {
 				xmlSuite.setDataProviderThreadCount(Integer.parseInt(threadCount));

@@ -17,6 +17,7 @@ package com.tmobile.ct.codeless.test.excel;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,6 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
-import com.tmobile.ct.codeless.data.BasicConfig;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
@@ -102,20 +102,14 @@ public class ExcelTestBuilder implements TestBuilder{
 		return steps;
 	}
 
-	private com.tmobile.ct.codeless.core.Config cloneConfig(com.tmobile.ct.codeless.core.Config config) {
-		Map<String, String> configMap = config.asMap();
-		BasicConfig clonedConfig = new BasicConfig();
-		for (String propKey : configMap.keySet()) {
-			String propValue = configMap.get(propKey);
-			StaticTestDataSource staticSource = new StaticTestDataSource(propKey, propValue);
-			SourcedValue<TestDataSource> value = new SourcedValue<>();
-			value.setValue(staticSource);
-			com.tmobile.ct.codeless.data.SourcedDataItem<String,TestDataSource> di = new SourcedDataItem<>(propKey, value);
-			clonedConfig.put(propKey, di);
+	private Map<String, String> cloneConfig(Map<String, String> config) {
+		Map<String, String> clonedConfig = new HashMap<>();
+		for (String propKey : config.keySet()) {
+			String propValue = config.get(propKey);
+			clonedConfig.put(propKey, propValue);
 		}
 
 		return clonedConfig;
-
 	}
 
 	/**
@@ -172,14 +166,7 @@ public class ExcelTestBuilder implements TestBuilder{
 			String cellvalue = getSafeStringFromCell(cell);
 			if(getSafeStringFromCell(cell).contains("::")){
 				String[] parts = cellvalue.split("::");
-				String key = parts[0];
-				String value = parts[1];
-				StaticTestDataSource staticSource = new StaticTestDataSource(key, value);
-				SourcedValue<TestDataSource> sourcedValue = new SourcedValue<TestDataSource>();
-				sourcedValue.setValue(staticSource);
-				sourcedValue.setSource("Test-Specific-Config");
-				SourcedDataItem<String,TestDataSource> item = new SourcedDataItem<>(key, sourcedValue);
-				test.getConfig().put(key, item);
+				test.getConfig().put(parts[0], parts[1]);
 			}
 		}
 	}
