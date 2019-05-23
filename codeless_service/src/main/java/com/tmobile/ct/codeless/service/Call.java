@@ -87,7 +87,7 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 
 	private String description;
 
-	private Long order;
+	private Integer order;
 
 	/**
 	 * Instantiates a new call.
@@ -387,12 +387,12 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	}
 
 	@Override
-	public Long getOrder() {
+	public Integer getOrder() {
 		return order;
 	}
 
 	@Override
-	public void setOrder(Long order) {
+	public void setOrder(Integer order) {
 		this.order = order;
 	}
 }

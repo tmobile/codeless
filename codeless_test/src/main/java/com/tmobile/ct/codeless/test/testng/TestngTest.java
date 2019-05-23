@@ -136,7 +136,7 @@ public class TestngTest {
 
 		try {
 			ExtentTestManager.getTest().setDescription(test.getName());
-			Long stepOrder = 1L;
+			Integer stepOrder = 1;
 
 			// execute steps
 			for (Step step : test.getSteps()) {

@@ -89,7 +89,7 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 		// check to see if it's in the config tab of the test suite XLSX file
 		String tempBuildModeKey = com.tmobile.ct.codeless.core.config.Config.BUILDMODE;
 		String tempBuildModeValue = suite.getConfig().get(tempBuildModeKey);
-		if (StringUtils.isNotEmpty(tempBuildModeValue) && System.getProperty(tempBuildModeKey) != null) {
+		if (StringUtils.isNotEmpty(tempBuildModeValue) && System.getProperty(tempBuildModeKey) == null) {
 			System.setProperty(tempBuildModeKey, tempBuildModeValue);
 		}
 

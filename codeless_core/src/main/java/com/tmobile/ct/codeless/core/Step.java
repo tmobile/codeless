@@ -111,12 +111,12 @@ public interface Step extends Executable, Validatable{
 	 *
 	 * @param order
 	 */
-	void setOrder (Long order);
+	void setOrder (Integer order);
 
 	/**
 	 * Gets the step order.
 	 *
 	 * @return the order
 	 */
-	Long getOrder ();
+	Integer getOrder ();
 }
