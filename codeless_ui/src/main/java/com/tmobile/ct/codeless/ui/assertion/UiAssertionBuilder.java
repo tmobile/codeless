@@ -39,6 +39,9 @@ public class UiAssertionBuilder {
 	/** The selenium method type. */
 	private SeleniumMethodType seleniumMethodType;
 
+	/** The condition to ignore format. */
+	private String numberFormat;
+
 	/**
 	 * Instantiates a new ui assertion builder.
 	 *
@@ -48,13 +51,30 @@ public class UiAssertionBuilder {
 	 * @param type the type
 	 * @param paramaterName the paramater name
 	 */
-	public UiAssertionBuilder(  Method assertMethod, String expectedValue, Method seleniumMethod, SeleniumMethodType type, String parameterName) {
+	public UiAssertionBuilder(  Method assertMethod, String expectedValue, Method seleniumMethod, SeleniumMethodType type, String parameterName, String numberFormat) {
 		super();
 		this.expectedValue = expectedValue;
 		this.assertMethod = assertMethod;
 		this.seleniumMethod = seleniumMethod;
 		this.seleniumMethodType = type;
 		this.parameterName = parameterName;
+		this.numberFormat = numberFormat;
+	}
+
+	/**
+	 * Gets the numberFormat
+	 * @return the numberFormat
+	 */
+	public String getNumberFormat() {
+		return numberFormat;
+	}
+
+	/**
+	 * Sets the numberFormat.
+	 * @param numberFormat the numberFormat to set
+	 */
+	public void setIgnoreFormat(String numberFormat) {
+		this.numberFormat = numberFormat;
 	}
 
 	/**
