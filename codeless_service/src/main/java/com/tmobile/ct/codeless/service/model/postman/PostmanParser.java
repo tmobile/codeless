@@ -101,7 +101,7 @@ public class PostmanParser {
 	private void parseRequest(PostmanItem item) {
 		if (item.item != null) {
 			for (PostmanItem childItem : item.item){
-				childItem.folderName = StringUtils.isBlank(item.folderName) ? item.name : item.folderName + "/" + item.name;
+				childItem.folderName = StringUtils.isBlank(item.folderName) ? item.name : item.folderName + "." + item.name;
 				parseRequest(childItem);
 			}
 
@@ -114,7 +114,7 @@ public class PostmanParser {
 		
 		req.setRequestName(StringUtils.isBlank(item.folderName)
 							? item.name
-							: item.folderName + "/" + item.name);
+							: item.folderName + "." + item.name);
 		req.setEndpoint(new Endpoint(item.request.url.raw));
 		req.setPort(Optional.ofNullable(item.request.url.port).map(Integer::valueOf).orElse(null));
 		
