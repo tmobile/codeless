@@ -12,7 +12,7 @@
           "name": "scarymovies",
           "item": [
             {
-              "name": "Shaun of the Dead",
+              "name": "Shaun.of the Dead",
               "request": {
                 "method": "GET",
                 "header": [],

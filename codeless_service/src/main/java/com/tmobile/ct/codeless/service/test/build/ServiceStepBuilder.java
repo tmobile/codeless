@@ -130,32 +130,21 @@ public class ServiceStepBuilder {
 			if (ClassPathUtil.exists(basePath+POSTMAN_COLLECTION_JSON)){
 				isPostman = true;
 			}
-			input.add(SuiteHeaders.SERVICE.name(),
-					new MultiValue<String, String>(SuiteHeaders.SERVICE.name(), parts[0]));
-			String operation = "";
-			String operation2 = "";
-			for (int i = 1; i < parts.length; i++) {
-				operation = operation + parts[i] + "/";
-				operation2 = operation2 + parts[i] + "/";
-			}
-			operation = "/" + operation.substring(0, operation.length() - 1);
-			operation2 = operation2.substring(0, operation.length() - 1);
-			if (isPostman){
-				operation = operation2;		//if postman, it is requestname, not path.
-			}
+
+			input.add(SuiteHeaders.SERVICE.name(), new MultiValue<>(SuiteHeaders.SERVICE.name(), parts[0]));
 			input.add(SuiteHeaders.OPERATION.name(),
-					new MultiValue<String, String>(SuiteHeaders.OPERATION.name(), operation));
+					new MultiValue<>(SuiteHeaders.OPERATION.name(), buildOperationString(parts)));
 			break;
 		case "INPUT":
-			input.add(SuiteHeaders.METHOD.name(), new MultiValue<String, String>(SuiteHeaders.METHOD.name(), value));
+			input.add(SuiteHeaders.METHOD.name(), new MultiValue<>(SuiteHeaders.METHOD.name(), value));
 			break;
 		case "STEP":
 			input.add(SuiteHeaders.TESTNAME.name(),
-					new MultiValue<String, String>(SuiteHeaders.TESTNAME.name(), value));
+					new MultiValue<>(SuiteHeaders.TESTNAME.name(), value));
 			break;
 		case "DESCRIPTION":
 			input.add(SuiteHeaders.DESCRIPTION.name(),
-					new MultiValue<String, String>(SuiteHeaders.DESCRIPTION.name(), value));
+					new MultiValue<>(SuiteHeaders.DESCRIPTION.name(), value));
 			break;
 		case "ACTION":
 			// do nothing
@@ -164,9 +153,18 @@ public class ServiceStepBuilder {
 			if (StringUtils.isNotBlank(value)) {
 				value = parseExport(value, test, input);
 				input.add(SuiteHeaders.TESTDATA.name(),
-						new MultiValue<String, String>(SuiteHeaders.TESTDATA.name(), value));
+						new MultiValue<>(SuiteHeaders.TESTDATA.name(), value));
 			}
 		}
+	}
+
+	private String buildOperationString(String[] parts) {
+		String operation = isPostman ? "" : "/";
+		for (int i = 1; i < parts.length; i++) {
+			operation += parts[i] + (isPostman ? "." : "/");
+		}
+
+		return operation.substring(0, operation.length() - 1);
 	}
 
 	/**
@@ -233,14 +231,11 @@ public class ServiceStepBuilder {
 		} else {
 
 		    Service service = ServiceCache.getService(testRow.service);
-		    if (isPostman)
-		    	operation = service.getOperation2(testRow.operation);
-		    else
+		    if (isPostman) {
+				operation = service.getOperation2(testRow.operation);
+			} else {
 				operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
-
-//			Service service = ServiceCache.getService(testRow.service);
-//			operation = service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
-//			service.getOperation(HttpMethod.valueOf(testRow.method), testRow.operation);
+			}
 
 			if (operation == null) {
 				System.err.println("NO OPERATION FOUND FOR INPUT[" + testRow.operation + "]");
