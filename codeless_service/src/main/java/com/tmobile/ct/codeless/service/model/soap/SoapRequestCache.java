@@ -71,7 +71,7 @@ public class SoapRequestCache {
 		}
 
 		TestDataSource data = (TestDataSource) test.getTestData().asMap().get(hostKey);
-		String host = (String)data.fullfill();
+		String host = (data != null) ? (String) data.fullfill() : null;
 
 		if (StringUtils.isEmpty(host)) {
 			System.err.println("Please provide host in you test data sheet for host key " + hostKey);
@@ -88,7 +88,7 @@ public class SoapRequestCache {
 		request = new HttpRequestImpl<>();
 		Headers headers = new Headers();
 		Header header = new Header("Content-Type", "text/xml");
-		Header header2 = new Header("SOAPAction", "\"" + soapAction + "\"");
+		Header header2 = new Header("SOAPAction", "/" + soapAction);
 		headers.put("Content-Type", header);
 		headers.put("SOAPAction", header2);
 		request.setHeaders(headers);
