@@ -18,14 +18,15 @@ package com.tmobile.ct.codeless.service.test.build;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.tmobile.ct.codeless.service.accessor.request.*;
 import com.tmobile.ct.codeless.testdata.GetTestData;
+import net.minidev.json.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,13 +47,6 @@ import com.tmobile.ct.codeless.files.ClassPathUtil;
 import com.tmobile.ct.codeless.service.Call;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.HttpRequestImpl;
-import com.tmobile.ct.codeless.service.accessor.request.BodyModifier;
-import com.tmobile.ct.codeless.service.accessor.request.BodyTemplateModifier;
-import com.tmobile.ct.codeless.service.accessor.request.CookieModifier;
-import com.tmobile.ct.codeless.service.accessor.request.FormModifier;
-import com.tmobile.ct.codeless.service.accessor.request.HeaderModifier;
-import com.tmobile.ct.codeless.service.accessor.request.PathModifier;
-import com.tmobile.ct.codeless.service.accessor.request.QueryParamsModifier;
 import com.tmobile.ct.codeless.service.accessor.response.BodyStringAccessor;
 import com.tmobile.ct.codeless.service.accessor.response.HeaderAccessor;
 import com.tmobile.ct.codeless.service.accessor.response.JsonPathAccessor;
@@ -573,8 +567,6 @@ public class ServiceStepBuilder {
 			request.getQueryParams().put(key, new QueryParam(key, value));
 			break;
 		case "HEADER":
-//			keys.add(key);
-//			values.add(value);
 			request.getHeaders().put(key, new Header(key, value));
 			break;
 		case "PATH":
@@ -594,6 +586,9 @@ public class ServiceStepBuilder {
 			break;
 		case "BODYTEMPLATE":
 			parseBodyTemplate(parts, excelData);
+			break;
+		case "BODYFIELD":
+			parseBodyField(parts, excelData);
 			break;
 		case "ENDPOINT":
 			parseEndpoint(parts, excelData);
@@ -620,6 +615,29 @@ public class ServiceStepBuilder {
 		}
 	}
 
+	private void parseBodyField(String[] parts, String excelData){
+		String body = request.getBody().asString();
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> postmanMap;
+		String resultbody = "";
+		try {
+			postmanMap = mapper.readValue(body, Map.class);
+			if (postmanMap == null)
+				postmanMap = new HashMap<>();
+			postmanMap.put(parts[1],parts[2]);
+			resultbody = new JSONObject(postmanMap).toJSONString();
+			Body newbody = new Body();
+			newbody.setBody(resultbody);
+			request.setBody(newbody);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 	/**
 	 * Parses the body.
 	 *
@@ -842,6 +860,9 @@ public class ServiceStepBuilder {
         			break;
         		case "BODYTEMPLATE":
         			modifier = new BodyTemplateModifier(key, source.get(0));
+        			break;
+				case "BODYFIELD":
+					modifier = new BodyFieldModifier(key,value,source);
         		}
 
         		if (request == null && modifier != null) {

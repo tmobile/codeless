@@ -24,6 +24,7 @@ public class Config {
 	public static final int Five = 5;
 	public static final String Export = "export";
 	public static final String Assert = "assert";
+	public static final String Number_Format = "NumFormat(";
 	public static final String OVERRIDE_INPUT_START = "{{";
 	public static final String OVERRIDE_INPUT_END = "}}";
 	public static final String EMPTY = "";

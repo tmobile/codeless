@@ -37,7 +37,7 @@ public class BodyTemplateModifier implements RequestModifier<String, HttpRequest
 	 * Instantiates a new body template modifier.
 	 *
 	 * @param key the key
-	 * @param responseAccessor the response accessor
+	 * @param dataSource the response accessor
 	 */
 	public BodyTemplateModifier(String key, TestDataSource dataSource){
 		this.key = key;
