@@ -81,6 +81,13 @@ public class UiStepOverrides {
 							uiStepExportBuilder.add(uiExport);
 						}
 					} else if (d.contains(Config.Assert)) {
+						String numFormat = null;
+						if (d.contains(Config.Number_Format))
+						{
+							numFormat = StringUtils.substringBetween(d,Config.Number_Format,")");
+							d = d.trim().replace("::" +Config.Number_Format +numFormat +")","");
+
+						}
 						String[] originalParts = d.trim().split("::");
 						String assertionMethodName = originalParts[0];
 						String seleniumMethodName = null;
@@ -109,7 +116,6 @@ public class UiStepOverrides {
 						}
 
 						if (seleniumMethod != null) {
-							System.out.println("expected::" +expected);
 							String dataValue[] = StringUtils.substringsBetween(expected, "{{", "}}");
 							ArrayList<SourcedDataItem<String, TestDataSource>> sourceValue = new ArrayList<>();
 							if (dataValue != null && dataValue.length > 0) {
@@ -134,9 +140,8 @@ public class UiStepOverrides {
 							log.info("UiStepName [" + uiTestStep.getStep() + "] Assertion Type ["
 									+ assertionMethod.toString() + "] selenium method [" + seleniumMethod.toString()
 									+ "]");
-
 							UiAssertionBuilder assertion = new UiAssertionBuilder(assertionMethod, expected,
-									seleniumMethod, type, parameter);
+									seleniumMethod, type, parameter,numFormat);
 							assertions.add(assertion);
 						}
 					}

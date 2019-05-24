@@ -17,7 +17,10 @@ package com.tmobile.ct.codeless.ui.assertion;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.List;
+import java.util.Locale;
 
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
@@ -46,9 +49,7 @@ public class UiAssertion {
 			}
 			try {
 				if (assertionMethod.getParameterCount() == 1) {
-					
 					if (seleniumMethod == null) {
-						
 						assertionMethod.invoke(null, ElementorDriver);
 						log.info("Assertion [ " + assertionMethod + " ] Succesful");
 					} else if (seleniumMethod.getParameterCount() == 0) {
@@ -62,23 +63,25 @@ public class UiAssertion {
 						log.info("Assertion [ " + assertionMethod + " ] Succesful on the [ " + seleniumMethod + " ] with parameterName ");
 					}
 				} else if (assertionMethod.getParameterCount() == 2) {
-					
+					String expected = assertion.getExpectedValue();
+					if (assertion.getNumberFormat() != null){
+						long number = Long.valueOf(expected);
+						expected = String.format(assertion.getNumberFormat(), number);
+					}
 					if (seleniumMethod.getParameterCount() == 0) {
-						
 						assertionMethod.invoke(null, seleniumMethod.invoke(ElementorDriver),
-								assertion.getExpectedValue());
+									expected);
 						log.info("Assertion [ " + assertionMethod + " ] Succesful on the [ " + seleniumMethod + " ]");
 					} else if (seleniumMethod.getParameterCount() == 1) {
 						
 						assertionMethod.invoke(null,
 								seleniumMethod.invoke(ElementorDriver, assertion.getParameterName()),
-								assertion.getExpectedValue());
+								expected);
 						log.info("Assertion [ " + assertionMethod + " ] Succesful on the [ " + seleniumMethod + " ] with parameterName ");
 					}
 				}
 
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-
 				throw new RuntimeException("Assertion Failed " + e.getCause());
 			}
 		});
