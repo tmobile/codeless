@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.tmobile.ct.codeless.data.SourcedDataItem;
+import com.tmobile.ct.codeless.functions.CheckFunction;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -299,6 +300,7 @@ public class UiStepBuilder {
 						testRow.setTarget(value);
 						break;
 					case INPUT:
+						value = new CheckFunction().parse(value);
 						if (value.contains("E+")) {
 							testRow.setInput(new BigDecimal(value).toPlainString());
 						} else {

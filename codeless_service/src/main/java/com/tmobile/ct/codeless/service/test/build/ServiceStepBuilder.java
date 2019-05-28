@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.tmobile.ct.codeless.functions.CheckFunction;
 import com.tmobile.ct.codeless.service.accessor.request.*;
 import com.tmobile.ct.codeless.testdata.GetTestData;
 import net.minidev.json.JSONObject;
@@ -547,7 +548,7 @@ public class ServiceStepBuilder {
 		if (StringUtils.isBlank(excelData)) {
 			return;
 		}
-
+		excelData = new CheckFunction().parse(excelData);
 		String[] parts = excelData.trim().split("::");
 
 		if (parts.length > 9) {

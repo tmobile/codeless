@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.ui.modifiers;
 
+import com.tmobile.ct.codeless.functions.CheckFunction;
 import org.apache.commons.lang3.StringUtils;
 
 import com.tmobile.ct.codeless.core.Test;
@@ -49,6 +50,7 @@ public class AssertionModifer implements RequestModifier<String, UiAssertionBuil
 			return;
 		GetTestData getTestData = new GetTestData();
 		String newVal = getTestData.replaceValueWithTestData(key, dataSources, test);
+		newVal = new CheckFunction().parse(newVal);
 		input.setExpectedValue(newVal);
 	}
 }
