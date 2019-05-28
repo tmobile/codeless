@@ -35,6 +35,7 @@ import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.test.csv.CsvTestData;
 import com.tmobile.ct.codeless.test.excel.ExcelTestData;
+import com.tmobile.ct.codeless.test.postman.PostmanEnvironmentData;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 
 /**
@@ -82,6 +83,21 @@ public class TestDataReader {
 				}
 			}
 		}
+
+		String postmanEnvironmentFileName = suite.getConfig().get(Config.POSTMAN_ENVIRONMENT_FILENAME);
+		if (StringUtils.isBlank(postmanEnvironmentFileName)) {
+			return testData;
+		}
+
+		String path = CodelessConfiguration.getTestDataDir() + File.separator + postmanEnvironmentFileName;
+		if (!new File(path).exists()) {
+			log.error("File does not exist: [{}]", path);
+
+			return testData;
+		}
+
+		PostmanEnvironmentData  pde = new PostmanEnvironmentData(suite, testData);
+		pde.parsePostmanEnvironment(path);
 
 		return testData;
 	}
