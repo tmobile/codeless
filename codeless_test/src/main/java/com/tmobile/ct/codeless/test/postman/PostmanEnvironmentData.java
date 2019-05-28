@@ -1,5 +1,5 @@
 /*******************************************************************************
- * * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ * * Copyright 2019 T Mobile, Inc. or its affiliates. All Rights Reserved.
  *  *
  *  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  *  * use this file except in compliance with the License.  You may obtain a copy
@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Class ExcelTestData.
+ * The Class PostmanEnvironmentData.
  *
  * @author Rob Graff
  */
