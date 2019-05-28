@@ -31,6 +31,8 @@ public class Config {
 
 	public static final String TESTDATA_FILENAME = "testdata.filename";
 	public static final String TESTDATA_SHEETNAME = "testdata.sheetname";
+	public static final String JSON_EXTENSION = ".json";
+	public static final String POSTMAN_ENVIRONMENT_FILENAME = "postman.environment.filename";
 	public static final String EXCEL_EXTENSION = ".xlsx";
 	public static final String CSV_EXTENSION = ".csv";
 	public static final String ENV_TESTDATA_SHEETNAME = "ENV_TESTDATA_SHEET";

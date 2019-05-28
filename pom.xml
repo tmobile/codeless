@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.tmobile.ct</groupId>
   <artifactId>codeless</artifactId>
-  <version>0.0.5</version>
+  <version>0.0.6</version>
   <packaging>pom</packaging>
   <modules>
   	<module>codeless_core</module>
