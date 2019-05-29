@@ -25,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 public class CheckFunction {
 
     public String parse(String value){
-        String[] functions = StringUtils.substringsBetween(value, Config.Function_start,Config.Function_end);
+        String[] functions = StringUtils.substringsBetween(value, Config.FUNCTION_START,Config.FUNCTION_END);
         if (functions != null && functions.length > 0){
             for (String function: functions) {
                 String [] params = function.split("::");
@@ -39,7 +39,7 @@ public class CheckFunction {
                         newVal = numberGenerator.generate(params[1],params[2]).toString();
                     }
                 }
-                else if (function.contains(Config.FUNCTION_RANDOM_TIMESTAMP)){
+                else if (function.contains(Config.FUNCTION_TIMESTAMP)){
                     TimeStamp timeStamp = new TimeStamp();
                     if (params.length == 2)
                         newVal = timeStamp.current(params[1]);
