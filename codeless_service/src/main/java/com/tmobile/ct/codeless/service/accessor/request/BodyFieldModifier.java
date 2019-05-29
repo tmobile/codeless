@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
+import com.tmobile.ct.codeless.functions.CheckFunction;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.Body;
 import com.tmobile.ct.codeless.testdata.GetTestData;
@@ -38,6 +39,7 @@ public class BodyFieldModifier implements RequestModifier<String, HttpRequest> {
         Map<String, Object> postmanMap;
         GetTestData getTestData = new GetTestData();
         String newval = getTestData.replaceValueWithTestData(original,dataSources);
+        newval = new CheckFunction().parse(newval);
         String resultbody = "";
         try {
             postmanMap = mapper.readValue(body, Map.class);

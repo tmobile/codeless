@@ -19,12 +19,16 @@ public class Config {
 
 	public static final int ONE = 1;
 	public static final int TWO = 2;
-	public static final int Three = 3;
-	public static final int Four = 4;
-	public static final int Five = 5;
-	public static final String Export = "export";
-	public static final String Assert = "assert";
-	public static final String Number_Format = "NumFormat(";
+	public static final int THREE = 3;
+	public static final int FOUR = 4;
+	public static final int FIVE = 5;
+	public static final String EXPORT = "export";
+	public static final String ASSERT = "assert";
+	public static final String NUMBER_FORMAT = "NumFormat(";
+	public static final String FUNCTION_START = "(#";
+	public static final String FUNCTION_END = ")";
+	public static final String FUNCTION_RANDOM_NUMBER = "randNum";
+	public static final String FUNCTION_TIMESTAMP = "timeStamp";
 	public static final String OVERRIDE_INPUT_START = "{{";
 	public static final String OVERRIDE_INPUT_END = "}}";
 	public static final String EMPTY = "";

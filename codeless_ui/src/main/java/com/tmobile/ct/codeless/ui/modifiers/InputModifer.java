@@ -17,6 +17,7 @@ package com.tmobile.ct.codeless.ui.modifiers;
 
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
+import com.tmobile.ct.codeless.functions.CheckFunction;
 import com.tmobile.ct.codeless.testdata.GetTestData;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
 import com.tmobile.ct.codeless.ui.action.UiAction;
@@ -44,6 +45,7 @@ public class InputModifer implements RequestModifier<String, UiAction> {
 			return;
 		GetTestData getTestData = new GetTestData();
 		String newInput = getTestData.replaceValueWithTestData(this.original,dataSources, test);
+		newInput = new CheckFunction().parse(newInput);
 		input.setText(newInput);
 	}
 

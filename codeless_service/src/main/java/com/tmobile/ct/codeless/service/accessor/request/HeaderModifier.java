@@ -17,6 +17,7 @@ package com.tmobile.ct.codeless.service.accessor.request;
 
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
+import com.tmobile.ct.codeless.functions.CheckFunction;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.Header;
 import com.tmobile.ct.codeless.testdata.GetTestData;
@@ -60,7 +61,9 @@ public class HeaderModifier implements RequestModifier<Header, HttpRequest> {
 	public void modify(HttpRequest request,Test test) {
 		GetTestData getTestData = new GetTestData();
 		for (int i = 0; i < key.size(); i++) {
-			Header newHeader = new Header(key.get(i), getTestData.replaceValueWithTestData(originals.get(i), dataSource));
+			String value = getTestData.replaceValueWithTestData(originals.get(i), dataSource);
+			value = new CheckFunction().parse(value);
+			Header newHeader = new Header(key.get(i), value);
 			request.getHeaders().put(key.get(i), newHeader);
 		}
 	}
