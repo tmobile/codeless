@@ -56,22 +56,22 @@ public class UiStepOverrides {
 
 			uiTestStep.getTestData().forEach(d -> {
 				try {
-					if (d.contains(Config.Export)) {
+					if (d.contains(Config.EXPORT)) {
 
 						String[] values = d.trim().split("::");
-						if (values.length == Config.Four || values.length == Config.Five) {
+						if (values.length == Config.FOUR || values.length == Config.FIVE) {
 
 							String key = values[Config.ONE];
-							String methodName = values[Config.Three];
+							String methodName = values[Config.THREE];
 							SeleniumMethodType type = SeleniumMethodType.valueOf(values[Config.TWO]);
 
 							String parameter = "";
-							if (values.length == Config.Five)
-								parameter = values[Config.Four];
+							if (values.length == Config.FIVE)
+								parameter = values[Config.FOUR];
 							Method seleniumMethod;
 
 							seleniumMethod = UiSeleniumMethod.getSeleniumMethod(methodName, parameter, type);
-							log.info("UiStepName [" + uiTestStep.getStep() + "] Export Variable [" + key
+							log.info("UiStepName [" + uiTestStep.getStep() + "] EXPORT Variable [" + key
 									+ "] Selenium Method [" + seleniumMethod.toString() + "]");
 
 							SourcedDataItem<String, TestDataSource> dataSource = createStaticTestDataSource(test, key,
@@ -80,12 +80,12 @@ public class UiStepOverrides {
 									dataSource);
 							uiStepExportBuilder.add(uiExport);
 						}
-					} else if (d.contains(Config.Assert)) {
+					} else if (d.contains(Config.ASSERT)) {
 						String numFormat = null;
-						if (d.contains(Config.Number_Format))
+						if (d.contains(Config.NUMBER_FORMAT))
 						{
-							numFormat = StringUtils.substringBetween(d,Config.Number_Format,")");
-							d = d.trim().replace("::" +Config.Number_Format +numFormat +")","");
+							numFormat = StringUtils.substringBetween(d,Config.NUMBER_FORMAT,")");
+							d = d.trim().replace("::" +Config.NUMBER_FORMAT +numFormat +")","");
 
 						}
 						String[] originalParts = d.trim().split("::");
