@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.tmobile.ct</groupId>
 		<artifactId>codeless</artifactId>
-		<version>0.0.5</version>
+		<version>0.0.6</version>
 	</parent>
 	<groupId>com.tmobile.ct.codeless</groupId>
 	<artifactId>selenium_action</artifactId>
@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>com.tmobile.ct.codeless</groupId>
 			<artifactId>codeless_core</artifactId>
-			<version>0.0.5</version>
+			<version>0.0.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.assertj</groupId>

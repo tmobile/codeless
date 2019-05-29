@@ -21,7 +21,7 @@
                   "raw": ""
                 },
                 "url": {
-                  "raw": "http://www.omdbapi.com/?apikey=91999f16&i=tt0365748",
+                  "raw": "http://www.omdbapi.com/?apikey={{apikey}}&i={{shaunId}}",
                   "protocol": "http",
                   "host": [
                     "www",
@@ -34,11 +34,11 @@
                   "query": [
                     {
                       "key": "apikey",
-                      "value": "91999f16"
+                      "value": "{{apikey}}"
                     },
                     {
                       "key": "i",
-                      "value": "tt0365748"
+                      "value": "{{shaunId}}"
                     }
                   ]
                 }
@@ -58,7 +58,7 @@
               "raw": ""
             },
             "url": {
-              "raw": "http://www.omdbapi.com/?apikey=91999f16&i=tt0110357",
+              "raw": "http://www.omdbapi.com/?apikey={{apikey}}={{lionKingId}}",
               "protocol": "http",
               "host": [
                 "www",
@@ -71,11 +71,11 @@
               "query": [
                 {
                   "key": "apikey",
-                  "value": "91999f16"
+                  "value": "{{apikey}}"
                 },
                 {
                   "key": "i",
-                  "value": "tt0110357"
+                  "value": "{{lionKingId}}"
                 }
               ]
             }
@@ -94,7 +94,7 @@
           "raw": ""
         },
         "url": {
-          "raw": "http://www.omdbapi.com/?apikey=91999f16&i=tt0910970",
+          "raw": "http://www.omdbapi.com/?apikey={{apikey}}&i={{wall-eId}}",
           "protocol": "http",
           "host": [
             "www",
@@ -107,11 +107,11 @@
           "query": [
             {
               "key": "apikey",
-              "value": "91999f16"
+              "value": "{{apikey}}"
             },
             {
               "key": "i",
-              "value": "tt0910970"
+              "value": "{{wall-eId}}"
             }
           ]
         }
