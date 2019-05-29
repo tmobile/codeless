@@ -27,7 +27,8 @@ public class Config {
 	public static final String Number_Format = "NumFormat(";
 	public static final String Function_start = "(#";
 	public static final String Function_end = ")";
-	public static final String FUNCTION_RANDNUM = "randNum";
+	public static final String FUNCTION_RANDOM_NUMBER = "randNum";
+	public static final String FUNCTION_RANDOM_TIMESTAMP = "timeStamp";
 	public static final String OVERRIDE_INPUT_START = "{{";
 	public static final String OVERRIDE_INPUT_END = "}}";
 	public static final String EMPTY = "";

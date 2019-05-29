@@ -28,9 +28,9 @@ public class CheckFunction {
         String[] functions = StringUtils.substringsBetween(value, Config.Function_start,Config.Function_end);
         if (functions != null && functions.length > 0){
             for (String function: functions) {
-                String [] params = function.split("\\.");
+                String [] params = function.split("::");
                 String newVal = "";
-                if (function.contains(Config.FUNCTION_RANDNUM)){
+                if (function.contains(Config.FUNCTION_RANDOM_NUMBER)){
                     NumberGenerator numberGenerator = new NumberGenerator();
                     if (params.length == 2){
                         newVal = numberGenerator.generate(Integer.parseInt(params[1])).toString();
@@ -38,6 +38,15 @@ public class CheckFunction {
                     else if (params.length == 3){
                         newVal = numberGenerator.generate(params[1],params[2]).toString();
                     }
+                }
+                else if (function.contains(Config.FUNCTION_RANDOM_TIMESTAMP)){
+                    TimeStamp timeStamp = new TimeStamp();
+                    if (params.length == 2)
+                        newVal = timeStamp.current(params[1]);
+                    else if (params.length == 3)
+                        newVal = timeStamp.generate(params[1],params[2]);
+                    else if (params.length == 4)
+                        newVal = timeStamp.generate(params[1],params[2],params[3]);
                 }
                 String replace = "\\(#" + function + "\\)";
                 value = value.replaceFirst(replace,newVal);
