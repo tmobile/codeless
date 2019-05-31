@@ -97,7 +97,7 @@ public class UiStepBuilder {
 
 		UiAction action = buildAction(testRow, config, step);
 		step.setAction(action);
-		step.setDescription(StringUtil.isNotBlank(testRow.getDescription()) ? testRow.getDescription() : testRow.getStep());
+		step.setDescription(StringUtils.isNotBlank(testRow.getDescription()) ? testRow.getDescription() : testRow.getStep());
 
 		return step;
 	}
