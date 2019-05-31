@@ -46,7 +46,7 @@ public class UiActionLogger {
 		}
 		
 		public static List<UiActionLog> get(){
-			return getBucket().getUiAcitonLogs();
+			return getBucket().getUiActionLogs();
 		}
 		
 		public static void destroy(){

@@ -269,7 +269,11 @@ public class ServiceStepBuilder {
 
 		call.setOperation(operation);
 		call.setName(testRow.testName);
-		call.setDescription(testRow.description);
+		call.setDescription(
+				StringUtils.isNotBlank(
+						testRow.description)
+						? testRow.description
+						: testRow.testName + "-" + operation.getName());
 		call.setAssertions(assertions);
 		return call;
 	}

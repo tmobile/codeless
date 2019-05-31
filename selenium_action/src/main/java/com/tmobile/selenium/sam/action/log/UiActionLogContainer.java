@@ -38,12 +38,12 @@ public class UiActionLogContainer {
 	public UiActionLogContainer(){
 	}
 	
-	public List<UiActionLog> getUiAcitonLogs() {
+	public List<UiActionLog> getUiActionLogs() {
 		return uiActionLogs;
 	}
 
-	public void setUiAcitonLogs(List<UiActionLog> uiAcitonLogs) {
-		this.uiActionLogs = uiAcitonLogs;
+	public void setUiActionLogs(List<UiActionLog> uiActionLogs) {
+		this.uiActionLogs = uiActionLogs;
 	}
 	
 	public void addUiActionLog(UiActionLog uiActionLog){

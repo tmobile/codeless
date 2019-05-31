@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -88,6 +89,10 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	private String description;
 
 	private Integer order;
+
+	private Date startTime;
+
+	private Date endTime;
 
 	/**
 	 * Instantiates a new call.
@@ -193,31 +198,19 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 		this.status = status;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Retryable#setMaxRetries(java.lang.Integer)
-	 */
 	@Override
 	public void setMaxRetries(Integer retries) {
-		// TODO Auto-generated method stub
-
+		this.maxRetries = retries;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Retryable#getMaxRetries()
-	 */
 	@Override
 	public Integer getMaxRetries() {
-		// TODO Auto-generated method stub
-		return null;
+		return maxRetries;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.tmobile.ct.codeless.core.Retryable#getRetries()
-	 */
 	@Override
 	public Integer getRetries() {
-		// TODO Auto-generated method stub
-		return null;
+		return retries;
 	}
 
 	/* (non-Javadoc)
@@ -394,5 +387,25 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	@Override
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+
+	@Override
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	@Override
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	@Override
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	@Override
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 }

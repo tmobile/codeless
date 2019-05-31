@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.core;
 
+import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -179,15 +181,80 @@ public interface Test extends Trackable{
 	 */
 	void removeReportingData(String key);
 
+	/**
+	 * Sets is test case data service supplied data.
+	 * @param isTcds
+	 */
 	void setTcdsData(boolean isTcds);
 
+	/**
+	 * gets is test case data service supplied data.
+	 * @return true or false
+	 */
 	boolean getTcdsData();
 
+	/**
+	 * Gets the set error message.
+	 * @return  errorMessage
+	 */
 	String getErrorMessage();
 
+	/**
+	 * Sets an error message.
+	 * @param errorMessage
+	 */
 	void setErrorMessage(String errorMessage);
 
+	/**
+	 * Sets the configuration data.
+	 * @param config
+	 */
 	void setConfig(Map<String, String> config);
 
+	/**
+	 * Gets the configuration data.
+	 * @return  config data
+	 */
 	Map<String, String> getConfig();
+
+	/**
+	 * Gets the console log file entity.
+	 * @return  consoleLogFile.
+	 */
+	File getConsoleLogFile();
+
+	/**
+	 * Sets the console log file entity.
+	 * @param  file entity
+	 */
+	void setConsoleLogFile(File file);
+
+
+	/**
+	 * Gets the startTime.
+	 *
+	 * @return the startTime
+	 */
+	Date getStartTime();
+
+	/**
+	 * Sets the startTime.
+	 *
+	 * @param startTime the new status
+	 */
+	void setStartTime(Date startTime);
+
+	/**
+	 * Gets the endTime.
+	 *
+	 * @return the endTime
+	 */
+	Date getEndTime();
+
+	/**
+	 * Sets the endTime.
+	 *
+	 * @param endTime the new status
+	 */
+	void setEndTime(Date endTime);
 }

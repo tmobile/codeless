@@ -81,6 +81,8 @@ public class ActionDriver {
 		}catch(Throwable ex){
 			FailedActionException fae = new FailedActionException();
 			fae.initCause(ex);
+			testResult.setStatus(TestStatus.fail);
+			testResult.end();
 			throw fae;
 		}
 	}

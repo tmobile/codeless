@@ -16,6 +16,7 @@
 package com.tmobile.ct.codeless.ui;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -98,6 +99,10 @@ public class UiStepImpl implements UiStep {
 	private String screenShotPath;
 
 	private Integer order;
+
+	private Date startTime;
+
+	private Date endTime;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UiStepImpl.class);
 
@@ -413,5 +418,25 @@ public class UiStepImpl implements UiStep {
 	@Override
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+
+	@Override
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	@Override
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	@Override
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	@Override
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 }
