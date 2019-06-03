@@ -190,6 +190,7 @@ public class UiStepBuilder {
 			Map<String, ControlElement> controls = YamlReader.ReadControl(basePath);
 			if (controls != null && controls.containsKey(targetName)) {
 				ControlElement control = controls.get(targetName);
+				step.setTarget(target + ": by [" + control.getBy() + "] value [" + control.getLocator() + "]" );
 				return new WebElementProxyFactory().fromControlElement(step.getWebDriver(), control);
 			}
 		}

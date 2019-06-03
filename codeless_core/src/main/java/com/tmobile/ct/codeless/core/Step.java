@@ -171,4 +171,18 @@ public interface Step extends Executable, Validatable{
 	 * @return the retries
 	 */
 	Integer getRetries();
+
+	/**
+	 * Gets the step error message information.
+	 *
+	 * @return the error message
+	 */
+	String getErrorMessage();
+
+	/**
+	 * Sets the step error message information.
+	 *
+	 * @param errorMessage
+	 */
+	void setErrorMessage(String errorMessage);
 }

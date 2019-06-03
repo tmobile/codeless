@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.sun.org.apache.bcel.internal.generic.GOTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -50,6 +51,11 @@ import com.tmobile.ct.codeless.test.BasicExecutor;
 import com.tmobile.ct.codeless.test.ExecutionContainer;
 import com.tmobile.ct.codeless.test.extentreport.ExtentTestManager;
 import com.tmobile.ct.codeless.test.extentreport.TestStepReporter;
+import com.tmobile.ct.codeless.ui.action.Click;
+import com.tmobile.ct.codeless.ui.action.Type;
+import com.tmobile.ct.codeless.ui.action.GoTo;
+import com.tmobile.ct.codeless.ui.action.Select;
+import com.tmobile.ct.codeless.ui.action.UiAction;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
 import com.tmobile.ct.codeless.ui.UiStep;
 import com.tmobile.selenium.sam.action.log.UiActionLogger;
@@ -105,6 +111,18 @@ public class TestngTest {
 
 	@AfterSuite
 	public void afterSuite() {
+		log.info("============================Test Suite Complete============================");
+		Boolean success = true;
+		for (Test test : suite.getTests()) {
+			log.info("Test: [{}] - Result [{}]", test.getName(), test.getResult().toString());
+			if (test.getResult() == Result.FAIL) {
+				success = false;
+			}
+		}
+
+		log.info("Test Suite Result: [{}]", success ? "PASS" : "FAIL");
+		log.info("===========================================================================");
+
 		execution.getSuiteHooks().forEach(hook -> {
 			hook.afterSuite(suite);
 		});
@@ -173,14 +191,20 @@ public class TestngTest {
 
 					if (step.getResult().equals(Result.FAIL)) {
 						test.setResult(Result.FAIL);
+						test.setErrorMessage(step.getErrorMessage());
 					}
 				} catch (Exception e) {
-					// step threw an exception, fail the step and the test case
-
+					// step threw an unhandled exception, fail the step and the test case
 					if (StringUtils.isNotBlank(test.getErrorMessage())) {
 						test.setErrorMessage(e.getMessage());
 					} else {
 						test.setErrorMessage(test.getErrorMessage() + "\r\n" + e.getMessage());
+					}
+
+					if (StringUtils.isBlank(step.getErrorMessage())) {
+						step.setErrorMessage(e.getMessage());
+					} else {
+						step.setErrorMessage(step.getErrorMessage() + "\r\n" + e.getMessage());
 					}
 
 					step.setResult(Result.FAIL);
@@ -249,6 +273,8 @@ public class TestngTest {
 				hook.afterTest(test);
 			});
 
+			log.info("Test [{}] complete, result: [{}]", test.getName(), test.getResult().toString());
+
 			String leaveFiles = test.getConfig().get(Config.LEAVE_CONSOLE_FILES);
 			if (StringUtils.isNotBlank(leaveFiles) && Boolean.parseBoolean(leaveFiles) == true) {
 				return;
@@ -285,7 +311,10 @@ public class TestngTest {
 		consoleLog.append("Config data:").append("\r\n");
 		consoleLog.append(test.getConfig().toString()).append("\r\n");;
 		consoleLog.append("Test data:").append("\r\n");;
-		consoleLog.append(flattenTestData(test.getTestData())).append("\r\n");;
+		consoleLog.append(flattenTestData(test.getTestData())).append("\r\n");
+		if (StringUtils.isNotBlank(test.getErrorMessage())) {
+			consoleLog.append("Test Error Information: " + test.getErrorMessage()).append("\r\n");
+		}
 		for (Step step: test.getSteps()) {
 			if (step instanceof Call) {
 				getCallStepInformation(consoleLog, (Call)step);
@@ -316,7 +345,11 @@ public class TestngTest {
 		Map<String, String> flattendMap = new HashMap<>();
 		Set<String> keys = testData.asMap().keySet();
 		for (String key : keys) {
-			flattendMap.put(key, testData.get(key).fullfill().toString());
+			try {
+				flattendMap.put(key, testData.get(key).fullfill().toString());
+			} catch (Exception ex) {
+				flattendMap.put(key, "error getting key value: " + ex.getMessage());
+			}
 		}
 
 		return flattendMap.toString();
@@ -425,16 +458,14 @@ public class TestngTest {
 		try {
 			getBaseStepLogInfo(consoleLog, (Step)step);
 			if (step.getAction() != null) {
-				consoleLog.append("UI Action: " + step.getAction().toString()).append("\r\n");
+				consoleLog.append("UI Action: " + getActionName(step.getAction())).append("\r\n");
 			}
+
+			consoleLog.append("UI Action Target: " + getTarget(step)).append("\r\n");
 
 			consoleLog.append("Webdriver Info: " + step.getTest().getWebDriver().toString()).append("\r\n");
 			if (StringUtils.isNotBlank(step.getScreenShotPath())) {
 				consoleLog.append("Screenshot Path: " + step.getScreenShotPath()).append("\r\n");
-			}
-
-			if (step.getFailureCause() != null) {
-				consoleLog.append("Failure Cause: " + step.getFailureCause().getMessage()).append("\r\n");
 			}
 
 		} catch (Exception ex) {
@@ -442,6 +473,51 @@ public class TestngTest {
 		}
 
 		consoleLog.append("================== End Step ==================").append("\r\n");
+	}
+
+	private String getActionName(UiAction action) {
+		String actionName = action.toString();
+		actionName = actionName.substring(actionName.lastIndexOf(".") + 1);
+
+		return actionName.substring(0, actionName.indexOf("@"));
+	}
+
+	private String getTarget(UiStep step) {
+		if (StringUtils.isNotBlank(step.getTarget())) {
+			return step.getTarget()
+					+ (StringUtils.isNotBlank(step.getAction().getText())
+					? " entry value: " + populatePlaceholders(step)
+					: "");
+		}
+
+		return populatePlaceholders(step);
+	}
+
+	private String populatePlaceholders(UiStep step) {
+		UiAction action = step.getAction();
+		String actionText = action.getText();
+		if (actionText.contains("{{")) {
+			Map<String, String> configData = step.getTest().getConfig();
+			for (String key : configData.keySet()) {
+				String replaceMe = "{{" + key + "}}";
+				if (actionText.contains(replaceMe)) {
+					actionText = actionText.replace(replaceMe, configData.get(key));
+				}
+			}
+
+			if (actionText.contains("{{")) {
+				Map<String, String> testData = step.getTest().getTestData().asMap();
+				for (String key : testData.keySet()) {
+					String replaceMe = "{{" + key + "}}";
+					if (actionText.contains(replaceMe)) {
+						actionText = actionText.replace(replaceMe, testData.get(key));
+					}
+				}
+			}
+
+		}
+
+		return actionText;
 	}
 
 	private void getBaseStepLogInfo(StringBuilder consoleLog, Step step) {
@@ -453,5 +529,8 @@ public class TestngTest {
 		consoleLog.append("Step Start Time: " + step.getStartTime().toString()).append("\r\n");
 		consoleLog.append("Step Duration (in milliseconds): " + (step.getEndTime().getTime() - step.getStartTime().getTime())).append("\r\n");
 		consoleLog.append("Attempts: ").append(step.getRetries() == null ? 1 : (step.getRetries() + 1)).append(" of a max ").append(step.getMaxRetries() == null ?  1 : (step.getMaxRetries() + 1)).append("\r\n");
+		if (StringUtils.isNotBlank(step.getErrorMessage())) {
+			consoleLog.append("Step Error Information: " + step.getErrorMessage()).append("\r\n");
+		}
 	}
 }

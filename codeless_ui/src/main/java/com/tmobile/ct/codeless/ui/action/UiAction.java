@@ -28,6 +28,8 @@ public interface UiAction extends Executable {
 
 	void setText(String input);
 
+	String getText();
+
 	WebElement getElement();
 
 }

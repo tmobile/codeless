@@ -94,6 +94,8 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 
 	private Date endTime;
 
+	private String errorMessage;
+
 	/**
 	 * Instantiates a new call.
 	 *
@@ -139,6 +141,7 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 				if(retries >= maxRetries){
 					status = Status.COMPLETE;
 					result = Result.FAIL;
+					errorMessage = e.getMessage();
 					fail(e);
 				}
 			}finally{
@@ -407,5 +410,15 @@ public class Call implements ServiceCall, Step, Trackable, Retryable{
 	@Override
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	@Override
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	@Override
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 }

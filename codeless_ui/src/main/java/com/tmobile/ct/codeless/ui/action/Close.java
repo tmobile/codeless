@@ -49,4 +49,9 @@ public class Close extends BaseAction implements UiAction {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public String getText() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

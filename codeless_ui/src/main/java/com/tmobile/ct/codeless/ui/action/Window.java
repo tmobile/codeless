@@ -63,4 +63,9 @@ public class Window extends BaseAction implements UiAction {
 	public void setText(String input) {
 		this.input = input;
 	}
+
+	@Override
+	public String getText() {
+		return input;
+	}
 }

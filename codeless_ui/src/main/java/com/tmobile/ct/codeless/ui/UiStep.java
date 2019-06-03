@@ -52,6 +52,10 @@ public interface UiStep extends Step, Trackable, Retryable {
 	
 	UiAction getAction();
 
+	void setTarget(String target);
+
+	String getTarget();
+
 	List<TestDataInput> getTestDataInputs();
 
 	List<RequestModifier> getRequestModifiers();
@@ -67,5 +71,8 @@ public interface UiStep extends Step, Trackable, Retryable {
 	String getScreenShotPath();
 	
 	void setScreenShotPath(String screenShotPath);
-	
+
+	String getErrorMessage();
+
+	void setErrorMessage(String errorMessage);
 }

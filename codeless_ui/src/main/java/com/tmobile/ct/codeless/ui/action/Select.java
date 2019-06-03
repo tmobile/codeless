@@ -64,4 +64,9 @@ public class Select extends BaseAction implements UiAction {
 	public void setText(String input) {
 		this.text = text;
 	}
+
+	@Override
+	public String getText() {
+		return text;
+	}
 }

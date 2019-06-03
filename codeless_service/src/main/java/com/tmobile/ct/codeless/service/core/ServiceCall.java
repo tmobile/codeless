@@ -97,4 +97,18 @@ public interface ServiceCall extends Step {
 	 * Mark complete.
 	 */
 	void markComplete();
+
+	/**
+	 * Gets the step error information.
+	 *
+	 * @return the error information
+	 */
+	String getErrorMessage();
+
+	/**
+	 * Sets the step error informatio.
+	 *
+	 * @param errorMessage
+	 */
+	void setErrorMessage(String errorMessage);
 }

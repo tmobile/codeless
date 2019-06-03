@@ -28,12 +28,17 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The Class RestAssuredHttpClient.
  *
  * @author Rob Graff
  */
 public class RestAssuredHttpClient implements HttpClient{
+
+	private static Logger log = LoggerFactory.getLogger(RestAssuredHttpClient.class);
 
 	/** The req spec builder. */
 	private final RequestSpecBuilder reqSpecBuilder;
@@ -71,7 +76,8 @@ public class RestAssuredHttpClient implements HttpClient{
 	@Override
 	public HttpResponse call(){
 		response = sendRequest();
-		System.err.println("Res Body: "+response.getBody().asString());
+		log.info("Res Body: "+response.getBody().asString());
+
 		return response;
 	}
 
