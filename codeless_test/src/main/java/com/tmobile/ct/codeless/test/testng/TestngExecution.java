@@ -46,11 +46,11 @@ public class TestngExecution extends BasicExecution{
 			status = Status.IN_PROGRESS;
 			beforeExecution();
 			testng.run();
-			parseResult(testng.getStatus());
 		}catch(Throwable e){
 			fail(e);
 			throw e;
 		}finally{
+			parseResult(testng.getStatus());
 			status = Status.COMPLETE;
 			afterExecution();
 		}
