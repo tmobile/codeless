@@ -71,7 +71,7 @@ public class UiStepOverrides {
 							Method seleniumMethod;
 
 							seleniumMethod = UiSeleniumMethod.getSeleniumMethod(methodName, parameter, type);
-							log.info("UiStepName [" + uiTestStep.getStep() + "] EXPORT Variable [" + key
+							log.info("UiStepName [" + uiTestStep.getStep() + "] Export Variable [" + key
 									+ "] Selenium Method [" + seleniumMethod.toString() + "]");
 
 							SourcedDataItem<String, TestDataSource> dataSource = createStaticTestDataSource(test, key,

@@ -57,7 +57,7 @@ public class UiStepExportVariable {
 				}
 			} catch (Exception e) {
 
-				throw new RuntimeException("UI Step EXPORT Variable Failed " + e.getCause());
+				throw new RuntimeException("UI Step Export Variable Failed " + e.getCause());
 			}
 		});
 

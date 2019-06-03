@@ -67,5 +67,8 @@ public class Type extends BaseAction implements UiAction {
 		this.text = input;
 	}
 
-
+	@Override
+	public String getText() {
+		return text;
+	}
 }

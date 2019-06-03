@@ -34,12 +34,17 @@ import com.tmobile.ct.codeless.service.httpclient.Host;
 import com.tmobile.ct.codeless.service.httpclient.HttpMethod;
 import com.tmobile.ct.codeless.service.test.build.ServiceTestStep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The Class ServiceCache.
  *
  * @author Fikreselam Elala
  */
 public class SoapRequestCache {
+
+	private static Logger log = LoggerFactory.getLogger(SoapRequestCache.class);
 
 	/* The cache */
 	private static ConcurrentHashMap<String,ConcurrentHashMap<String,HttpRequest<String>>> cache = new ConcurrentHashMap<>();
@@ -53,6 +58,7 @@ public class SoapRequestCache {
 				return cache.get(testRow.service).get(soapAction);
 			}
 		}
+
 		return buildRequest(testRow,test);
 	}
 
@@ -66,7 +72,7 @@ public class SoapRequestCache {
 		String soapBody = "";
 
 		if (StringUtils.isEmpty(soapAction) || StringUtils.isEmpty(hostKey)) {
-			System.err.println("Host or service request action is empty. CHeck Target column value for you test step");
+			log.error("Host or service request action is empty. CHeck Target column value for you test step");
 			return null;
 		}
 
@@ -74,14 +80,14 @@ public class SoapRequestCache {
 		String host = (data != null) ? (String) data.fullfill() : null;
 
 		if (StringUtils.isEmpty(host)) {
-			System.err.println("Please provide host in you test data sheet for host key " + hostKey);
+			log.error("Please provide host in you test data sheet for host key " + hostKey);
 			return null;
 		}
 
 		// check for request body presence
 		String requestBody = testRow.testData.get(0) + ".txt";
 		if (StringUtils.isEmpty(requestBody)) {
-			System.err.println("Please provide request body for you service call step in Overrides column");
+			log.error("Please provide request body for you service call step in Overrides column");
 			return null;
 		}
 
@@ -104,6 +110,7 @@ public class SoapRequestCache {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		soapBody = requestFile;
 		Body<String> newBody = new Body<String>();
 		newBody.setBody(soapBody);

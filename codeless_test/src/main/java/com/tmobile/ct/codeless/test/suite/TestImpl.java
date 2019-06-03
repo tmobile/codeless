@@ -15,11 +15,8 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.test.suite;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.io.File;
+import java.util.*;
 
 import org.openqa.selenium.WebDriver;
 
@@ -76,6 +73,12 @@ public class TestImpl implements Test{
 	private Map<String, String> data = new HashMap<>();
 
 	private String errorMessage;
+
+	private File consoleLogFile;
+
+	private Date startTime;
+
+	private Date endTime;
 
 	@Override
 	public Long getId() {
@@ -248,5 +251,35 @@ public class TestImpl implements Test{
 	@Override
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
+	}
+
+	@Override
+	public File getConsoleLogFile() {
+		return consoleLogFile;
+	}
+
+	@Override
+	public void setConsoleLogFile(File file) {
+		this.consoleLogFile = file;
+	}
+
+	@Override
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	@Override
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	@Override
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	@Override
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 }

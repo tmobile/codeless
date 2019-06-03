@@ -59,4 +59,7 @@ public class Config {
 	public static final String WEBDRIVER_RUN_LOCAL = "webdriver.runlocal";
 
 	public static final String BUILDMODE = "buildMode";
+
+	public static final String WRITE_TEST_LOG = "write.test.log";
+	public static final String LEAVE_CONSOLE_FILES = "leave.test.log";
 }

@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.core;
 
+import java.util.Date;
+
 /**
  * The Interface Step.
  *
@@ -119,4 +121,68 @@ public interface Step extends Executable, Validatable{
 	 * @return the order
 	 */
 	Integer getOrder ();
+
+
+	/**
+	 * Gets the startTime.
+	 *
+	 * @return the startTime
+	 */
+	Date getStartTime();
+
+	/**
+	 * Sets the startTime.
+	 *
+	 * @param startTime the new status
+	 */
+	void setStartTime(Date startTime);
+
+	/**
+	 * Gets the endTime.
+	 *
+	 * @return the endTime
+	 */
+	Date getEndTime();
+
+	/**
+	 * Sets the endTime.
+	 *
+	 * @param endTime the new status
+	 */
+	void setEndTime(Date endTime);
+
+	/**
+	 * Sets the maxRetries.
+	 *
+	 * @param maxRetries
+	 */
+	void setMaxRetries(Integer maxRetries);
+
+	/**
+	 * Gets the maxRetries.
+	 *
+	 * @return the maxRetries
+	 */
+	Integer getMaxRetries();
+
+	/**
+	 * Gets the retries.
+	 *
+	 * @return the retries
+	 */
+	Integer getRetries();
+
+	/**
+	 * Gets the step error message information.
+	 *
+	 * @return the error message
+	 */
+	String getErrorMessage();
+
+	/**
+	 * Sets the step error message information.
+	 *
+	 * @param errorMessage
+	 */
+	void setErrorMessage(String errorMessage);
 }

@@ -45,4 +45,10 @@ public class Key extends BaseAction implements UiAction {
 	public void setText(String input) {
 		
 	}
+
+	@Override
+	public String getText() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

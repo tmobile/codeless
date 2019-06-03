@@ -59,4 +59,10 @@ public class SwitchDefault extends BaseAction implements UiAction {
 	public void setText(String input) {
 		// TODO Auto-generated method stub
 	}
+
+	@Override
+	public String getText() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

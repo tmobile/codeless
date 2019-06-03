@@ -16,10 +16,12 @@
 package com.tmobile.ct.codeless.ui;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
+import com.tmobile.ct.codeless.ui.action.GoTo;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,6 +100,14 @@ public class UiStepImpl implements UiStep {
 	private String screenShotPath;
 
 	private Integer order;
+
+	private Date startTime;
+
+	private Date endTime;
+
+	private String target;
+
+	private String errorMessage;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UiStepImpl.class);
 
@@ -147,6 +157,7 @@ public class UiStepImpl implements UiStep {
 			if(retries >= maxRetries){
 				status = Status.COMPLETE;
 				result = Result.FAIL;
+				this.errorMessage = e.getMessage();
 				fail(e);
 				logFail(e);
 			}
@@ -161,7 +172,6 @@ public class UiStepImpl implements UiStep {
 				if(modifier instanceof AssertionModifer) {
 					modifier.modify(assertionBuilder.get(0),test);
 				}else {
-
 					modifier.modify(action,test);
 				}
 		}
@@ -413,5 +423,45 @@ public class UiStepImpl implements UiStep {
 	@Override
 	public void setOrder(Integer order) {
 		this.order = order;
+	}
+
+	@Override
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	@Override
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	@Override
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	@Override
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	@Override
+	public void setTarget(String target) {
+		this.target = target;
+	}
+
+	@Override
+	public String getTarget() {
+		return this.target;
+	}
+
+	@Override
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	@Override
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 }

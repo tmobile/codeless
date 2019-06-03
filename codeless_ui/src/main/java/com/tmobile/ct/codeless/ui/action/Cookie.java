@@ -70,4 +70,18 @@ public class Cookie extends BaseAction implements UiAction {
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public String getText() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public String getValue() {
+		return value;
+	}
 }
