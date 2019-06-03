@@ -28,6 +28,9 @@ public class CheckFunction {
         String[] functions = StringUtils.substringsBetween(value, Config.FUNCTION_START,Config.FUNCTION_END);
         if (functions != null && functions.length > 0){
             for (String function: functions) {
+                String checkVariable[] = StringUtils.substringsBetween(function,Config.OVERRIDE_INPUT_START, Config.OVERRIDE_INPUT_END);
+                if (checkVariable != null && checkVariable.length > 0)
+                    continue;   //let modifier class handle the function parse
                 String [] params = function.split("::");
                 String newVal = "";
                 if (function.contains(Config.FUNCTION_RANDOM_NUMBER)){
