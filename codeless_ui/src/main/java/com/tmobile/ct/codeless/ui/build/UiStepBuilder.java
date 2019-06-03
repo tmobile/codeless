@@ -90,6 +90,7 @@ public class UiStepBuilder {
 
 		UiTestStep testRow = buildTestRow(input, test, step);
 		testRow = parseTestData(testRow, step);
+		testRow = parseFunction(testRow);
 		step.setName(testRow.getStep());
 
 		ActionConfig config = buildConfig(testRow.getTestData());
@@ -302,7 +303,6 @@ public class UiStepBuilder {
 						testRow.setTarget(value);
 						break;
 					case INPUT:
-						value = new CheckFunction().parse(value);
 						if (value.contains("E+")) {
 							testRow.setInput(new BigDecimal(value).toPlainString());
 						} else {
@@ -375,6 +375,13 @@ public class UiStepBuilder {
 			});
 		}
 
+		return testRow;
+	}
+
+	private UiTestStep parseFunction(UiTestStep testRow) {
+		String input = testRow.getInput();
+		input = new CheckFunction().parse(input);
+		testRow.setInput(input);
 		return testRow;
 	}
 

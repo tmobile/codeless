@@ -42,7 +42,7 @@ public class TimeStamp {
             case "Y":
                 cal.add(Calendar.YEAR,1);
                 offset = Timestamp.valueOf(Year.now() +"-01-01 00:00:00").getTime();
-                end = Timestamp.valueOf(cal.getWeekYear() +"-01-01 00:00:00").getTime();
+                end = Timestamp.valueOf(cal.get(Calendar.YEAR) +"-01-01 00:00:00").getTime();
                 diff = end - offset +1;
                 break;
             case "M":
@@ -51,6 +51,28 @@ public class TimeStamp {
                 offset = Timestamp.valueOf(Year.now() +"-"+currentMonth +"-01 00:00:00").getTime();
                 end = Timestamp.valueOf(Year.now() +"-"+nextMonth +"-01 00:00:00").getTime();
                 diff = end - offset +1;
+                break;
+            case "W":
+                cal.set(Calendar.DAY_OF_WEEK,cal.getFirstDayOfWeek());
+                cal.set(Calendar.HOUR_OF_DAY,0);
+                cal.clear(Calendar.MINUTE);
+                cal.clear(Calendar.SECOND);
+                cal.clear(Calendar.MILLISECOND);
+                offset = cal.getTimeInMillis();
+                cal.add(Calendar.DAY_OF_YEAR,7);
+                end = cal.getTimeInMillis();
+                diff = end - offset + 1;
+                break;
+            case "D":
+                cal.set(Calendar.HOUR_OF_DAY,0);
+                cal.clear(Calendar.MINUTE);
+                cal.clear(Calendar.SECOND);
+                cal.clear(Calendar.MILLISECOND);
+                offset = cal.getTimeInMillis();
+                cal.add(Calendar.DAY_OF_YEAR,1);
+                end = cal.getTimeInMillis();
+                diff = end - offset +1;
+                break;
         }
         Timestamp rand = new Timestamp(offset + (long)(Math.random() * diff));
         return sdf.format(rand);
@@ -65,4 +87,5 @@ public class TimeStamp {
         return sdf.format(rand);
     }
 
+    
 }

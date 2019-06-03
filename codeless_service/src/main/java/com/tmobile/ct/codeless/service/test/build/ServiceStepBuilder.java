@@ -774,6 +774,48 @@ public class ServiceStepBuilder {
 	}
 
 	public String parseExport(String cellValue, Test test, ServiceCallInput input) {
+		ArrayList<SourcedDataItem<String, TestDataSource> > sourceValue = new ArrayList<SourcedDataItem<String,TestDataSource>>();
+		String[] dataValue = StringUtils.substringsBetween(cellValue, "{{", "}}");
+		if(dataValue != null && dataValue.length > 0) {
+			String tcds_value = "";
+			if (test.getTcdsData()) {
+				for (int i =0;i<dataValue.length;i++) {
+					TestDataSource testSource = test.getTestData().get(test.getName());
+					tcds_value = TestDataHelper.fullfill(dataValue[i], testSource);
+					if (StringUtils.isNotBlank(tcds_value)) {
+						String replace = "{{" + dataValue[i] + "}}";
+						cellValue = cellValue.replace(replace, tcds_value);
+					}
+				}
+			}
+			dataValue = StringUtils.substringsBetween(cellValue,"{{","}}"); //after replacing from testdata json
+			if (dataValue !=null && dataValue.length > 0) {
+				for (int i = 0; i < dataValue.length; i++) {
+					if (!(test.getTestData().getSourcedValue(dataValue[i]).getValue().getValue() instanceof RuntimeTestDataSource)) {
+						sourceValue.add(test.getTestData().getSourcedValue(dataValue[i]));
+					}
+				}
+			}
+		}
+		if(sourceValue != null && sourceValue.size() != 0) {
+			ArrayList<TestDataSource> source = new ArrayList<>();
+
+			for(int i=0;i<sourceValue.size();i++){
+				if (!(sourceValue.get(i).getValue().getValue() instanceof RuntimeTestDataSource)) {
+					String dataVal = (String) sourceValue.get(i).getValue().getValue().fullfill();
+					if (dataVal != null && !StringUtils.isBlank(dataVal))
+						source.add(sourceValue.get(i).getValue().getValue());
+				}
+			}
+
+			if (source.size() > 0) {
+				GetTestData getTestData = new GetTestData();
+				String newVal = getTestData.replaceValueWithTestData(cellValue, source);
+				if (StringUtils.isNotBlank(newVal))
+					cellValue = newVal;
+			}
+		}
+
 		String[] values = cellValue.split("::");
         if (cellValue.contains("export")) {
             List<String> stepName = input.get(SuiteHeaders.TESTNAME.name()).getValues();
@@ -809,9 +851,9 @@ public class ServiceStepBuilder {
                     test.setTestData(new BasicTestData());
                 }
 
-        		SourcedValue<TestDataSource> sourceValue = new SourcedValue<TestDataSource>();
-                sourceValue.setValue(testdata);
-                SourcedDataItem<String, TestDataSource> item = new SourcedDataItem<String, TestDataSource>(key, sourceValue);
+        		SourcedValue<TestDataSource> sourceValueExport = new SourcedValue<TestDataSource>();
+                sourceValueExport.setValue(testdata);
+                SourcedDataItem<String, TestDataSource> item = new SourcedDataItem<String, TestDataSource>(key, sourceValueExport);
                 test.getTestData().put(key, item);
             }
         }else {
@@ -824,23 +866,23 @@ public class ServiceStepBuilder {
                 test.setTestData(new BasicTestData());
             }
 
-        	ArrayList<SourcedDataItem<String, TestDataSource> > sourceValue = new ArrayList<>();
+        	ArrayList<SourcedDataItem<String, TestDataSource> > sourceValueRunTime = new ArrayList<>();
 
         	String type = values[0];
     		String key = values[1];
     		String value = values[2];
-    		String[] dataValue = StringUtils.substringsBetween(value, "{{", "}}");
+    		String[] dataValueRunTime = StringUtils.substringsBetween(cellValue, "{{", "}}");
 
-    		if(dataValue != null && dataValue.length > 0) {
-    			for (String source: dataValue){
-					sourceValue.add(test.getTestData().getSourcedValue(source));
+    		if(dataValueRunTime != null && dataValueRunTime.length > 0) {
+    			for (String source: dataValueRunTime){
+					sourceValueRunTime.add(test.getTestData().getSourcedValue(source));
 				}
     		}else {
     			return cellValue;
     		}
-    		if(sourceValue != null && sourceValue.size() != 0) {
+    		if(sourceValueRunTime != null && sourceValueRunTime.size() != 0) {
     			ArrayList<TestDataSource> source = new ArrayList<>();
-    			for (SourcedDataItem item : sourceValue){
+    			for (SourcedDataItem item : sourceValueRunTime){
 					if (item != null)
     					source.add((TestDataSource) item.getValue().getValue());
 				}
@@ -883,49 +925,6 @@ public class ServiceStepBuilder {
         		}
     		}
         }
-		ArrayList<SourcedDataItem<String, TestDataSource> > sourceValue = new ArrayList<SourcedDataItem<String,TestDataSource>>();
-		String[] dataValue = StringUtils.substringsBetween(cellValue, "{{", "}}");
-		if(dataValue != null && dataValue.length > 0) {
-            String tcds_value = "";
-		    if (test.getTcdsData()) {
-		        for (int i =0;i<dataValue.length;i++) {
-                    TestDataSource testSource = test.getTestData().get(test.getName());
-                    tcds_value = TestDataHelper.fullfill(dataValue[i], testSource);
-                    if (StringUtils.isNotBlank(tcds_value)) {
-                        String replace = "{{" + dataValue[i] + "}}";
-                        cellValue = cellValue.replace(replace, tcds_value);
-                    }
-                }
-            }
-		    dataValue = StringUtils.substringsBetween(cellValue,"{{","}}"); //after replacing from testdata json
-			if (dataValue !=null && dataValue.length > 0) {
-				for (int i = 0; i < dataValue.length; i++) {
-					if (!(test.getTestData().getSourcedValue(dataValue[i]).getValue().getValue() instanceof RuntimeTestDataSource)) {
-						sourceValue.add(test.getTestData().getSourcedValue(dataValue[i]));
-					}
-				}
-			}
-		}else {
-			return cellValue;
-		}
-		if(sourceValue != null && sourceValue.size() != 0) {
-			ArrayList<TestDataSource> source = new ArrayList<>();
-
-			for(int i=0;i<sourceValue.size();i++){
-				if (!(sourceValue.get(i).getValue().getValue() instanceof RuntimeTestDataSource)) {
-					String dataVal = (String) sourceValue.get(i).getValue().getValue().fullfill();
-					if (dataVal != null && !StringUtils.isBlank(dataVal))
-						source.add(sourceValue.get(i).getValue().getValue());
-				}
-			}
-
-			if (source.size() > 0) {
-				GetTestData getTestData = new GetTestData();
-				String newVal = getTestData.replaceValueWithTestData(cellValue, source);
-				if (StringUtils.isNotBlank(newVal))
-					cellValue = newVal;
-			}
-		}
 
         return cellValue;
 
