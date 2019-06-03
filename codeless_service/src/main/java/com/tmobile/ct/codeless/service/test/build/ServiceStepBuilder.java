@@ -79,12 +79,17 @@ import com.tmobile.ct.codeless.testdata.RuntimeTestDataSource;
 import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 import com.tmobile.ct.codeless.testdata.TestDataHelper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The Class ExcelServiceCallBuilder.
  *
  * @author Rob Graff
  */
 public class ServiceStepBuilder {
+
+	private static Logger log = LoggerFactory.getLogger(ServiceStepBuilder.class);
 
 	/** The mapper. */
 	private ObjectMapper mapper = new ObjectMapper();
@@ -239,7 +244,7 @@ public class ServiceStepBuilder {
 			}
 
 			if (operation == null) {
-				System.err.println("NO OPERATION FOUND FOR INPUT[" + testRow.operation + "]");
+				log.error("NO OPERATION FOUND FOR INPUT[" + testRow.operation + "]");
 				return null;
 			}
 
@@ -551,7 +556,7 @@ public class ServiceStepBuilder {
 		String[] parts = excelData.trim().split("::");
 
 		if (parts.length > 9) {
-			System.err.println("ExcelParser: Test Data cell has parts > 9, " + parts);
+			log.error("ExcelParser: Test Data cell has parts > 9, " + parts);
 			return;
 		}
 		if (parts.length < 2)
