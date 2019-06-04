@@ -15,13 +15,13 @@
  ******************************************************************************/
 package com.tmobile.ct.codeless.ui;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-import com.tmobile.ct.codeless.ui.action.GoTo;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

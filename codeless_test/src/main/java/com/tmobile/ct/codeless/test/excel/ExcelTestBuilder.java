@@ -32,18 +32,14 @@ import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestBuilder;
 import com.tmobile.ct.codeless.core.TestData;
-import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
-import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
 import com.tmobile.ct.codeless.data.BasicTestData;
-import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
 import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
 import com.tmobile.ct.codeless.test.component.ComponentCache;
 import com.tmobile.ct.codeless.test.suite.TestImpl;
 import com.tmobile.ct.codeless.test.tcds.BuildTcdsDataSource;
-import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 import com.tmobile.ct.codeless.ui.build.UiStepBuilder;
 import com.tmobile.ct.codeless.ui.build.UiStepInput;
 
@@ -102,7 +98,7 @@ public class ExcelTestBuilder implements TestBuilder{
 		return steps;
 	}
 
-	private Map<String, String> cloneConfig(Map<String, String> config) {
+	public Map<String, String> cloneConfig(Map<String, String> config) {
 		Map<String, String> clonedConfig = new HashMap<>();
 		for (String propKey : config.keySet()) {
 			String propValue = config.get(propKey);
@@ -161,22 +157,26 @@ public class ExcelTestBuilder implements TestBuilder{
 	 *
 	 * @param row the row
 	 */
-	private void parseConfigStep(Row row){
-		for(Cell cell : row){
+	private void parseConfigStep(Row row) {
+		for (Cell cell : row) {
 			String cellvalue = getSafeStringFromCell(cell);
-			if(getSafeStringFromCell(cell).contains("::")){
+			if (getSafeStringFromCell(cell).contains("::")) {
 				String[] parts = cellvalue.split("::");
-				test.getConfig().put(parts[0], parts[1]);
+				if (!cellvalue.contains("webdriver") && parts.length == 2) {
+					test.getConfig().put(parts[0], parts[1]);
+				}
 			}
 		}
 	}
+	
 
 	private void parseTcdsData(Row row) {
-		for(Cell cell : row){
+		for (Cell cell : row) {
 			String cellvalue = getSafeStringFromCell(cell);
-			if(cellvalue.equalsIgnoreCase(Config.TESTDATA+"::"+Config.TCDS) || cellvalue.equalsIgnoreCase(Config.TCDS)) {
+			if (cellvalue.equalsIgnoreCase(Config.TESTDATA + "::" + Config.TCDS)
+					|| cellvalue.equalsIgnoreCase(Config.TCDS)) {
 				String testFileName = test.getName();
-				if(!StringUtils.isEmpty(testFileName)) {
+				if (!StringUtils.isEmpty(testFileName)) {
 					test.setTcdsData(true);
 					try {
 						new BuildTcdsDataSource(test.getTestData()).parseTcdsTestData(testFileName);
@@ -186,7 +186,6 @@ public class ExcelTestBuilder implements TestBuilder{
 				}
 			}
 		}
-
 	}
 
 	/**
