@@ -147,7 +147,7 @@ public class SuiteImpl implements Suite{
 
 	@Override
 	public String getId() {
-		return id;
+		return null;
 	}
 
 	@Override
