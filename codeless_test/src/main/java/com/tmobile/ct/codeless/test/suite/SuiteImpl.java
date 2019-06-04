@@ -50,6 +50,10 @@ public class SuiteImpl implements Suite{
 
 	private String id;
 
+	private Status status;
+
+	private Result result;
+
 	/**
 	 * Instantiates a new excel suite.
 	 *
@@ -92,6 +96,7 @@ public class SuiteImpl implements Suite{
 	public Suite addTest(Test test) {
 		tests.add(test);
 		testMap.put(test.getName().trim().toUpperCase(), test);
+
 		return this;
 	}
 
@@ -112,22 +117,22 @@ public class SuiteImpl implements Suite{
 
 	@Override
 	public Result getResult() {
-		return null;
+		return result;
 	}
 
 	@Override
 	public Status getStatus() {
-		return null;
+		return status;
 	}
 
 	@Override
 	public void setResult(Result result) {
-
+		this.result = result;
 	}
 
 	@Override
 	public void setStatus(Status status) {
-
+		this.status = status;
 	}
 
 	@Override
@@ -142,7 +147,11 @@ public class SuiteImpl implements Suite{
 
 	@Override
 	public String getId() {
-		return null;
+		return id;
 	}
 
+	@Override
+	public void setId(String id) {
+		this.id = id;
+	}
 }

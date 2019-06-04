@@ -68,7 +68,6 @@ public class MainTest {
 		// run execution
 		execution.addSuite(suite);
 		execution.run();
-
 	}
 
 	private static void configSetup(String[] args) {

@@ -26,6 +26,8 @@ import java.util.Map;
 public interface Suite extends Trackable {
 
 	String getId();
+
+	void setId(String id);
 	
 	/**
 	 * Sets the name.
