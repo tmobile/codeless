@@ -62,4 +62,6 @@ public class Config {
 
 	public static final String WRITE_TEST_LOG = "write.test.log";
 	public static final String LEAVE_CONSOLE_FILES = "leave.test.log";
+
+	public static final String CODELESS_SUITE_ID = "codeless.suite.id";
 }
