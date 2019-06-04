@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -28,13 +29,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import com.tmobile.ct.codeless.configuration.CodelessConfiguration;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.SuiteBuilder;
+import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestData;
-import com.tmobile.ct.codeless.core.TestDataSource;
-import com.tmobile.ct.codeless.core.datastructure.SourcedValue;
-import com.tmobile.ct.codeless.data.SourcedDataItem;
 import com.tmobile.ct.codeless.test.suite.SuiteImpl;
 import com.tmobile.ct.codeless.test.testdata.TestDataReader;
-import com.tmobile.ct.codeless.testdata.StaticTestDataSource;
 
 /**
  * The Class ExcelSuiteBuilder.
@@ -106,20 +104,94 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 	 *
 	 * @param sheet the sheet
 	 */
-	private void sortsheets(Sheet sheet){
+	private void sortsheets(Sheet sheet) {
 		String fullname = sheet.getSheetName();
 		String name = fullname.substring(2, fullname.length());
 		String prefix = fullname.substring(0, 2);
 
-		if(!sheetIsValid(prefix)){
+		if (!sheetIsValid(prefix)) {
 			return;
 		}
 
-		if(prefix.toUpperCase().equalsIgnoreCase(TEST_SHEET_PREFIX)){
-			suite.addTest(new ExcelTestBuilder().build(suite, sheet, name,testData)); // pass Test data to be added to test
-		}else{
-			//unknown sheet type, ignoring
+		if (prefix.toUpperCase().equalsIgnoreCase(TEST_SHEET_PREFIX)) {
+			Iterator<Row> rows = sheet.iterator();
+			List<Map<String, String>> values = null;
+			while (rows.hasNext()) {
+				Row row = rows.next();
+				if (getSafeStringFromCell(row.getCell(1)).equalsIgnoreCase("CONFIG")) {
+					values = parseConfigStep(row);
+				}
+			}
+			if (values.isEmpty()) {
+				ExcelTestBuilder builder = new ExcelTestBuilder();
+				Test test = builder.build(suite, sheet, name, testData);
+				suite.addTest(test);
+			} else {
+				for (Map<String, String> config : values) {
+					ExcelTestBuilder builder = new ExcelTestBuilder();
+					Test test = builder.build(suite, sheet, name, testData);
+					String platformType = config.get("platform-type");
+					String webDriverVersion = config.get("webdriver.version.".concat(platformType));
+					String osType = config.get("webdriver.platform.".concat(platformType));
+					if (StringUtils.isNotBlank(platformType)) {
+						test.getConfig().put("platform-type", platformType);
+					} else {
+						platformType = test.getConfig().get("platform-type");
+					}
+					if (StringUtils.isNotBlank(webDriverVersion)) {
+						test.getConfig().put("webdriver.version.".concat(platformType), webDriverVersion);
+					} else {
+						webDriverVersion = test.getConfig().get("webdriver.version.".concat(platformType));
+					}
+					if (StringUtils.isNotBlank(osType)) {
+						test.getConfig().put("webdriver.platform.".concat(platformType), osType);
+					} else {
+						osType = test.getConfig().get("webdriver.platform.".concat(platformType));
+					}
+					test.setName(test.getName() + " " + platformType + " " + webDriverVersion + " " + osType);
+					suite.addTest(test);
+				}
+			}
+		} else {
+			// unknown sheet type, ignoring
 		}
+	}
+	
+	private String getSafeStringFromCell(Cell cell){
+		return formatter.formatCellValue(cell).trim().replace(" ", "");
+	}
+		 
+	private List<Map<String, String>> parseConfigStep(Row row) {
+		List<Map<String, String>> values = new ArrayList<>();
+		for (Cell cell : row) {
+			String cellvalue = getSafeStringFromCell(cell);
+			if (getSafeStringFromCell(cell).contains("::")) {
+				if (cellvalue.contains("webdriver")) {
+					for (String driverConfig : cellvalue.split(",")) {
+						values.add(parseCrossBrowserConfig(driverConfig.split("::")));
+					}
+				}
+			}
+		}
+		return values;
+	}
+	
+	private Map<String, String> parseCrossBrowserConfig(String[] parts) {
+		Map<String, String> values = new HashMap<String, String>();
+		if (parts.length >= 2 && parts[0].equalsIgnoreCase("webdriver")) {
+			String webDriver = parts[1];
+			values.put("platform-type", webDriver);
+			// check if version exists
+			if (parts.length >= 4 && parts[2].equalsIgnoreCase("version") && StringUtils.isNotBlank(parts[3])) {
+				String webDriverVersion = parts[3];
+				values.put("webdriver.version." + webDriver, webDriverVersion);
+				if (parts.length >= 6 && parts[4].equalsIgnoreCase("platform") && StringUtils.isNotBlank(parts[5])) {
+					String osType = parts[5];
+					values.put("webdriver.platform.".concat(webDriver), osType);
+				}
+			}
+		}
+		return values;
 	}
 
 	/**
