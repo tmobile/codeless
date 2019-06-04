@@ -138,7 +138,7 @@ public class TestngTest {
 	public Object[][] codelessDataProvider() {
 
 		if (suite == null || suite.getTests() == null || suite.getTests().size() == 0) {
-			throw new RuntimeException("Invliad Test Suite, No Tests Found");
+			throw new RuntimeException("Invalid Test Suite, No Tests Found");
 		}
 
 		Object[][] data = new Object[suite.getTests().size()][1];
@@ -280,7 +280,9 @@ public class TestngTest {
 				return;
 			}
 
-			test.getConsoleLogFile().delete();
+			if (test.getConsoleLogFile() != null) {
+				test.getConsoleLogFile().delete();
+			}
 		}
 	}
 
