@@ -24,6 +24,11 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
+import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import com.tmobile.ct.codeless.functions.CheckFunction;
 import com.tmobile.ct.codeless.service.accessor.request.*;
 import com.tmobile.ct.codeless.testdata.GetTestData;
@@ -107,7 +112,7 @@ public class ServiceStepBuilder {
 	HttpRequest<String> request;
 
 	/** Request modifers holder befor building service object. */
-	List<RequestModifier> modifers;
+	List<RequestModifier> modifers = new ArrayList<>();
 
 	/** The assertions. */
 	private List<Assertion> assertions = new ArrayList<>();
@@ -124,8 +129,6 @@ public class ServiceStepBuilder {
 	/** The Constant POSTMAN_COLLECTION_JSON. */
 	private static final String POSTMAN_COLLECTION_JSON = "postman_collection.json";
 
-	private ArrayList<String> keys = new ArrayList();
-	private ArrayList<String> values = new ArrayList();
 	private boolean isPostman = false;
 
 	public void buildServiceStep(String header, String value, ServiceCallInput input, Test test) {
@@ -626,26 +629,16 @@ public class ServiceStepBuilder {
 	}
 
 	private void parseBodyField(String[] parts, String excelData){
+		Configuration configuration = Configuration.builder()
+				.jsonProvider(new JacksonJsonNodeJsonProvider())
+				.mappingProvider(new JacksonMappingProvider())
+				.build();
 		String body = request.getBody().asString();
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> postmanMap;
-		String resultbody = "";
-		try {
-			postmanMap = mapper.readValue(body, Map.class);
-			if (postmanMap == null)
-				postmanMap = new HashMap<>();
-			postmanMap.put(parts[1],parts[2]);
-			resultbody = new JSONObject(postmanMap).toJSONString();
-			Body newbody = new Body();
-			newbody.setBody(resultbody);
-			request.setBody(newbody);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		JsonNode updatedJson = JsonPath.using(configuration).parse(body).set("$."+parts[1],parts[2]).json();
+		String resultbody = updatedJson.toString();
+		Body newbody = new Body();
+		newbody.setBody(resultbody);
+		request.setBody(newbody);
 
 	}
 	/**
@@ -819,6 +812,7 @@ public class ServiceStepBuilder {
 		String[] values = cellValue.split("::");
         if (cellValue.contains("export")) {
             List<String> stepName = input.get(SuiteHeaders.TESTNAME.name()).getValues();
+
             if (values.length >= 2) {
 
             	ServiceCallReference callRef;
@@ -833,12 +827,17 @@ public class ServiceStepBuilder {
         		case "HEADER":
         			accessor = new HeaderAccessor(callRef, key);
         			break;
+				case "HEADER_REQUEST":
+					accessor = new HeaderRequestAccessor(callRef, key);
         		case "BODYSTRING":
         			accessor = new BodyStringAccessor(callRef);
         			break;
         		case "JSONPATH":
         			accessor = new JsonPathAccessor(callRef, accessorValue, String.class);
         			break;
+				case "JSONPATH_REQUEST":
+					accessor = new JsonPathRequestAccessor(callRef, accessorValue, String.class);
+					break;
         		case "XMLPATH":
         			accessor = new XmlPathAccessor(callRef, key, String.class);
         			break;
@@ -894,9 +893,7 @@ public class ServiceStepBuilder {
         			modifier = new QueryParamsModifier(key,value,source);
         			break;
         		case "HEADER":
-        			this.keys.add(key);
-        			this.values.add(value);
-        			modifier = new HeaderModifier(this.keys,this.values, source);
+        			modifier = new HeaderModifier(key,value, source);
         			break;
         		case "PATH":
         			modifier = new PathModifier(key,value, source);
@@ -918,7 +915,6 @@ public class ServiceStepBuilder {
         		}
 
         		if (request == null && modifier != null) {
-        			modifers = new ArrayList<>();
         			modifers.add(modifier);
         		}else if (request !=null ) {
         			request.getRequestModifiers().add(modifier);

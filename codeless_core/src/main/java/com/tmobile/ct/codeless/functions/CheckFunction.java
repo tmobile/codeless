@@ -31,8 +31,15 @@ public class CheckFunction {
                 String checkVariable[] = StringUtils.substringsBetween(function,Config.OVERRIDE_INPUT_START, Config.OVERRIDE_INPUT_END);
                 if (checkVariable != null && checkVariable.length > 0)
                     continue;   //let modifier class handle the function parse
-                String [] params = function.split("::");
+                String [] params = function.split("\\|\\|");
                 String newVal = "";
+                String replaceFunction = "";
+                if (params != null || params.length > 0){
+                    for (int i=0;i<params.length;i++){
+                        replaceFunction += params[i] + "\\|\\|";
+                    }
+                }
+                replaceFunction = replaceFunction.substring(0,replaceFunction.length()-4);
                 if (function.contains(Config.FUNCTION_RANDOM_NUMBER)){
                     NumberGenerator numberGenerator = new NumberGenerator();
                     if (params.length == 2){
@@ -51,7 +58,7 @@ public class CheckFunction {
                     else if (params.length == 4)
                         newVal = timeStamp.generate(params[1],params[2],params[3]);
                 }
-                String replace = "\\(#" + function + "\\)";
+                String replace = "\\(#" + replaceFunction + "\\)";
                 value = value.replaceFirst(replace,newVal);
             }
         }
