@@ -44,12 +44,10 @@ public class BodyFieldModifier implements RequestModifier<String, HttpRequest> {
                 .mappingProvider(new JacksonMappingProvider())
                 .build();
         String body = request.getBody().asString();
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> postmanMap;
         GetTestData getTestData = new GetTestData();
         String newval = getTestData.replaceValueWithTestData(original,dataSources);
         newval = new CheckFunction().parse(newval);
-        JsonNode updatedJson = JsonPath.parse(body).set("$."+key,newval).json();
+        JsonNode updatedJson = JsonPath.using(configuration).parse(body).set("$."+key,newval).json();
         String resultbody = updatedJson.toString();
         Body newbody = new Body();
         newbody.setBody(resultbody);

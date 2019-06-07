@@ -829,6 +829,7 @@ public class ServiceStepBuilder {
         			break;
 				case "HEADER_REQUEST":
 					accessor = new HeaderRequestAccessor(callRef, key);
+					break;
         		case "BODYSTRING":
         			accessor = new BodyStringAccessor(callRef);
         			break;
