@@ -15,7 +15,6 @@
  *****************************************************************************/
 package com.tmobile.ct.codeless.functions;
 
-import com.tmobile.ct.codeless.core.config.Config;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -24,13 +23,18 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class CheckFunction {
 
+    public static final String FUNCTION_START = "(#";
+    public static final String FUNCTION_END = ")";
+    public static final String FUNCTION_RANDOM_NUMBER = "randNum";
+    public static final String FUNCTION_TIMESTAMP = "timeStamp";
+    public static final String FUNCTION_RANDOM_ALPHANUMERIC = "randAlphaNum";
+    public static final String FUNCTION_RANDOM_NAME = "randName";
+    public static final String FUNCTION_RANDOM_DOB = "randDOB";
+
     public String parse(String value){
-        String[] functions = StringUtils.substringsBetween(value, Config.FUNCTION_START,Config.FUNCTION_END);
+        String[] functions = StringUtils.substringsBetween(value, FUNCTION_START,FUNCTION_END);
         if (functions != null && functions.length > 0){
             for (String function: functions) {
-                String checkVariable[] = StringUtils.substringsBetween(function,Config.OVERRIDE_INPUT_START, Config.OVERRIDE_INPUT_END);
-                if (checkVariable != null && checkVariable.length > 0)
-                    continue;   //let modifier class handle the function parse
                 String [] params = function.split("\\|\\|");
                 String newVal = "";
                 String replaceFunction = "";
@@ -40,7 +44,7 @@ public class CheckFunction {
                     }
                 }
                 replaceFunction = replaceFunction.substring(0,replaceFunction.length()-4);
-                if (function.contains(Config.FUNCTION_RANDOM_NUMBER)){
+                if (function.contains(FUNCTION_RANDOM_NUMBER)){
                     NumberGenerator numberGenerator = new NumberGenerator();
                     if (params.length == 2){
                         newVal = numberGenerator.generate(Integer.parseInt(params[1])).toString();
@@ -49,7 +53,7 @@ public class CheckFunction {
                         newVal = numberGenerator.generate(params[1],params[2]).toString();
                     }
                 }
-                else if (function.contains(Config.FUNCTION_TIMESTAMP)){
+                else if (function.contains(FUNCTION_TIMESTAMP)){
                     TimeStamp timeStamp = new TimeStamp();
                     if (params.length == 2)
                         newVal = timeStamp.current(params[1]);
@@ -58,6 +62,61 @@ public class CheckFunction {
                     else if (params.length == 4)
                         newVal = timeStamp.generate(params[1],params[2],params[3]);
                 }
+                else if (function.contains(FUNCTION_RANDOM_ALPHANUMERIC)){
+                    AlphaNumericGenerator alphaNumericGenerator;
+                    if (params.length == 2){
+                        try {           //if parameter is size
+                            int size = Integer.parseInt(params[1]);
+                            alphaNumericGenerator = new AlphaNumericGenerator(size);
+                            newVal = alphaNumericGenerator.generate();
+                        }catch (NumberFormatException e){       //if parameter is format
+                            alphaNumericGenerator = new AlphaNumericGenerator(params[1]);
+                            newVal = alphaNumericGenerator.generate();
+                        }
+                    }
+                }
+                else if (function.contains(FUNCTION_RANDOM_NAME)){
+                    NameGenerator nameGenerator = new NameGenerator();
+                    if (params.length == 1)
+                        newVal = nameGenerator.randomFullName();
+                    else if (params.length == 2){
+                        newVal = nameGenerator.generate(params[1]);
+                    }
+                }
+                else if (function.contains(FUNCTION_RANDOM_DOB)){
+                    DOBGenerator dobGenerator = new DOBGenerator();
+                    switch (params.length){
+                        case 1:
+                            newVal = dobGenerator.generate();
+                            break;
+                        case 2:
+                            try {
+                                int age = Integer.parseInt(params[1]);
+                                newVal = dobGenerator.generate(age);
+                            }catch (NumberFormatException e){
+                                newVal = dobGenerator.generate(params[1]);
+                            }
+                            break;
+                        case 3:
+                            try {
+                                int min = Integer.parseInt(params[1]);
+                                int max = Integer.parseInt(params[2]);
+                                newVal = dobGenerator.generate(min,max);
+                            }catch (NumberFormatException e){
+                                int age = Integer.parseInt(params[2]);
+                                newVal = dobGenerator.generate(params[1],age);
+                            }
+                            break;
+                        case 4:
+                            int min = Integer.parseInt(params[2]);
+                            int max = Integer.parseInt(params[3]);
+                            newVal = dobGenerator.generate(params[1],min,max);
+                            break;
+                        default:
+                            throw new RuntimeException("Invalid number of function parameters");
+                    }
+                }
+
                 String replace = "\\(#" + replaceFunction + "\\)";
                 value = value.replaceFirst(replace,newVal);
             }

@@ -26,12 +26,23 @@ import java.util.Calendar;
  */
 public class TimeStamp {
 
+    /**
+     * Returns the current time in a given format
+     * @param format the format
+     * @return the current time
+     */
     public String current(String format){
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         Calendar cal = Calendar.getInstance();
         return sdf.format(cal.getTime());
     }
 
+    /**
+     * Generates a random timestamp in a given interval. Year, Month, Week, or Day
+     * @param format the format
+     * @param interval the interval
+     * @return the timestamp
+     */
     public String generate(String format, String interval){
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         Calendar cal = Calendar.getInstance();
@@ -73,11 +84,20 @@ public class TimeStamp {
                 end = cal.getTimeInMillis();
                 diff = end - offset +1;
                 break;
+            default:
+                return sdf.format(modifyTime(interval).getTime());
         }
         Timestamp rand = new Timestamp(offset + (long)(Math.random() * diff));
         return sdf.format(rand);
     }
 
+    /**
+     * Generates a random timestamp between a start and end time
+     * @param format the format
+     * @param startBound the start time
+     * @param endBound the end time
+     * @return the timestamp
+     */
     public String generate(String format,String startBound, String endBound){
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         long offset = Timestamp.valueOf(startBound).getTime();
@@ -85,6 +105,40 @@ public class TimeStamp {
         long diff = end - offset +1;
         Timestamp rand = new Timestamp(offset + (long)(Math.random() * diff));
         return sdf.format(rand);
+    }
+
+    /**
+     * Returns the current timestamp modified to the past or future by a set amount, with +/- , the integer value, and the interval.
+     * ie. -2W would give the timestamp of 2 weeks ago
+     * @param interval the interval
+     * @return the timestamp
+     */
+    private Calendar modifyTime(String interval){
+        String value = interval.replaceAll("\\D+","");
+        Calendar cal = Calendar.getInstance();
+        int diff;
+        if (interval.contains("-"))
+            diff = -Integer.parseInt(value);
+        else
+            diff = Integer.parseInt(value);
+
+        if (interval.contains("Y") || interval.contains("y"))
+            cal.add(Calendar.YEAR,diff);
+        else if (interval.contains("M"))
+            cal.add(Calendar.MONTH,diff);
+        else if (interval.contains("W") || interval.contains("w"))
+            cal.add(Calendar.WEEK_OF_YEAR,diff);
+        else if (interval.contains("d"))
+            cal.add(Calendar.DAY_OF_YEAR,diff);
+        else if (interval.contains("H") || interval.contains("h"))
+            cal.add(Calendar.HOUR_OF_DAY,diff);
+        else if (interval.contains("m"))
+            cal.add(Calendar.MINUTE,diff);
+        else if (interval.contains("s"))
+            cal.add(Calendar.SECOND,diff);
+        else if (interval.contains("S"))
+            cal.add(Calendar.MILLISECOND,diff);
+        return cal;
     }
 
     

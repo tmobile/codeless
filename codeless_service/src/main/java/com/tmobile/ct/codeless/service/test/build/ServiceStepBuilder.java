@@ -29,6 +29,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
+import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.functions.CheckFunction;
 import com.tmobile.ct.codeless.service.accessor.request.*;
 import com.tmobile.ct.codeless.testdata.GetTestData;
@@ -555,7 +556,9 @@ public class ServiceStepBuilder {
 		if (StringUtils.isBlank(excelData)) {
 			return;
 		}
-		excelData = new CheckFunction().parse(excelData);
+		String checkVariable[] = StringUtils.substringsBetween(excelData, Config.OVERRIDE_INPUT_START, Config.OVERRIDE_INPUT_END);
+		if (checkVariable == null)		//if it has variable, let modifiers parse function
+			excelData = new CheckFunction().parse(excelData);
 		String[] parts = excelData.trim().split("::");
 
 		if (parts.length > 9) {

@@ -62,7 +62,6 @@ public class UiStepOverrides {
 						if (values.length == Config.THREE){				//exporting a static value
 							SourcedDataItem<String, TestDataSource> dataSource = createStaticTestDataSource(test, values[Config.ONE],
 									values[Config.TWO]);
-							step.getTest().getTestData().put(values[Config.ONE],dataSource);
 						}
 						else if (values.length == Config.FOUR || values.length == Config.FIVE) {
 
