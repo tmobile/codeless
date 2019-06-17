@@ -33,8 +33,8 @@ import java.util.ArrayList;
 public class HeaderModifier implements RequestModifier<Header, HttpRequest> {
 
 	/** The key. */
-	private ArrayList<String> key;
-	private ArrayList<String> originals;
+	private String key;
+	private String original;
 	/** The dataSource to override. */
 	private ArrayList<TestDataSource> dataSource;
 
@@ -44,10 +44,10 @@ public class HeaderModifier implements RequestModifier<Header, HttpRequest> {
 	 * @param key the key
 	 * @param dataSource dataSource
 	 */
-	public HeaderModifier(ArrayList key, ArrayList original, ArrayList<TestDataSource> dataSource){
+	public HeaderModifier(String key, String original, ArrayList<TestDataSource> dataSource){
 		this.key = key;
 		this.dataSource = dataSource;
-		this.originals = original;
+		this.original = original;
 		}
 
 	/*
@@ -60,11 +60,9 @@ public class HeaderModifier implements RequestModifier<Header, HttpRequest> {
 	@Override
 	public void modify(HttpRequest request,Test test) {
 		GetTestData getTestData = new GetTestData();
-		for (int i = 0; i < key.size(); i++) {
-			String value = getTestData.replaceValueWithTestData(originals.get(i), dataSource);
+			String value = getTestData.replaceValueWithTestData(original, dataSource);
 			value = new CheckFunction().parse(value);
-			Header newHeader = new Header(key.get(i), value);
-			request.getHeaders().put(key.get(i), newHeader);
-		}
+			Header newHeader = new Header(key, value);
+			request.getHeaders().put(key, newHeader);
 	}
 }

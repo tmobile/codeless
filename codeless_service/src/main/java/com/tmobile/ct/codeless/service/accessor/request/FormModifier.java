@@ -17,6 +17,7 @@ package com.tmobile.ct.codeless.service.accessor.request;
 
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
+import com.tmobile.ct.codeless.functions.CheckFunction;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.Form;
 import com.tmobile.ct.codeless.testdata.GetTestData;
@@ -55,7 +56,8 @@ public class FormModifier implements RequestModifier<Form, HttpRequest>{
 	@Override
 	public void modify(HttpRequest request,Test test) {
 		GetTestData getTestData = new GetTestData();
-		Form newForm = new Form(key,getTestData.replaceValueWithTestData(original,dataSource));
+		String value = new CheckFunction().parse(getTestData.replaceValueWithTestData(original,dataSource));
+		Form newForm = new Form(key,value);
 		request.getForms().put(key, newForm);
 	}
 }

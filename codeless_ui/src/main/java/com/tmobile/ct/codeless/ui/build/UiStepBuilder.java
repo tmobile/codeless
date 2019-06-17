@@ -380,6 +380,9 @@ public class UiStepBuilder {
 
 	private UiTestStep parseFunction(UiTestStep testRow) {
 		String input = testRow.getInput();
+		String checkVariable[] = StringUtils.substringsBetween(input,Config.OVERRIDE_INPUT_START, Config.OVERRIDE_INPUT_END);
+		if (checkVariable != null && checkVariable.length > 0)
+			return testRow;		//let modifier class handle the function parse
 		input = new CheckFunction().parse(input);
 		testRow.setInput(input);
 		return testRow;

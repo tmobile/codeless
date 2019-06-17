@@ -25,10 +25,6 @@ public class Config {
 	public static final String EXPORT = "export";
 	public static final String ASSERT = "assert";
 	public static final String NUMBER_FORMAT = "NumFormat(";
-	public static final String FUNCTION_START = "(#";
-	public static final String FUNCTION_END = ")";
-	public static final String FUNCTION_RANDOM_NUMBER = "randNum";
-	public static final String FUNCTION_TIMESTAMP = "timeStamp";
 	public static final String OVERRIDE_INPUT_START = "{{";
 	public static final String OVERRIDE_INPUT_END = "}}";
 	public static final String EMPTY = "";

@@ -23,7 +23,7 @@ public class CheckFunctionTest {
 
     @Test
     public void testParse() {
-        String original = "(#randNum.6)";
+        String original = "(#randDOB||MMM dd,yyyy||0||18)";
         String output = new CheckFunction().parse(original);
         Assert.assertNotEquals(original,output);
     }

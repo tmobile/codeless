@@ -17,6 +17,7 @@ package com.tmobile.ct.codeless.service.accessor.request;
 
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
+import com.tmobile.ct.codeless.functions.CheckFunction;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.service.httpclient.Body;
 import com.tmobile.ct.codeless.testdata.GetTestData;
@@ -53,7 +54,8 @@ public class BodyModifier implements RequestModifier<Body, HttpRequest>{
 	@Override
 	public void modify(HttpRequest request, Test test) {
 		GetTestData getTestData = new GetTestData();
-		Body newBody = new Body(getTestData.replaceValueWithTestData(original, dataSource), String.class);
+		String body = new CheckFunction().parse(getTestData.replaceValueWithTestData(original, dataSource));
+		Body newBody = new Body(body, String.class);
 		request.setBody(newBody);
 	}
 }
