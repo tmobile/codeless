@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.sun.org.apache.bcel.internal.generic.GOTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,17 +43,12 @@ import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.core.config.Config;
-import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.service.Call;
 import com.tmobile.ct.codeless.service.HttpRequest;
 import com.tmobile.ct.codeless.test.BasicExecutor;
 import com.tmobile.ct.codeless.test.ExecutionContainer;
 import com.tmobile.ct.codeless.test.extentreport.ExtentTestManager;
 import com.tmobile.ct.codeless.test.extentreport.TestStepReporter;
-import com.tmobile.ct.codeless.ui.action.Click;
-import com.tmobile.ct.codeless.ui.action.Type;
-import com.tmobile.ct.codeless.ui.action.GoTo;
-import com.tmobile.ct.codeless.ui.action.Select;
 import com.tmobile.ct.codeless.ui.action.UiAction;
 import com.tmobile.ct.codeless.ui.driver.WebDriverFactory;
 import com.tmobile.ct.codeless.ui.UiStep;

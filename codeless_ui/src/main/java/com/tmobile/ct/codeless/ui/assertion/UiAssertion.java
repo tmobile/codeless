@@ -64,7 +64,7 @@ public class UiAssertion {
 					}
 				} else if (assertionMethod.getParameterCount() == 2) {
 					String expected = assertion.getExpectedValue();
-					if (assertion.getNumberFormat() != null){
+					if (assertion.getNumberFormat() != null && !assertion.getNumberFormat().isEmpty()){
 						long number = Long.valueOf(expected);
 						expected = String.format(assertion.getNumberFormat(), number);
 					}

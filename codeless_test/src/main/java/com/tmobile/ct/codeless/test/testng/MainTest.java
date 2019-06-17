@@ -28,6 +28,7 @@ import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.test.ExecutionContainer;
 import com.tmobile.ct.codeless.test.csv.CsvSuiteBuilder;
 import com.tmobile.ct.codeless.test.excel.ExcelSuiteBuilder;
+import com.tmobile.ct.codeless.test.side.SIDESuiteBuilder;
 
 /**
  * The Class MainTest.
@@ -54,7 +55,11 @@ public class MainTest {
 		String suitePath = Optional.ofNullable(System.getProperty("SUITE.FILE")).orElse("suites/sampletest.xlsx");
 		
 		if (System.getProperty("SUITE.FILE") != null) {
-			suite = new ExcelSuiteBuilder().build(suitePath);
+			if (suitePath.contains(Config.EXCEL_EXTENSION)) {
+				suite = new ExcelSuiteBuilder().build(suitePath);
+			} else if (suitePath.contains(Config.SIDE_EXTENSION)) {
+				suite = new SIDESuiteBuilder().build(suitePath);
+			}
 		} else {
 			suitePath = Optional.ofNullable(System.getProperty("SUITE.DIR")).orElse("suites/testard");
 			suite = new CsvSuiteBuilder().build(suitePath);
@@ -93,7 +98,8 @@ public class MainTest {
 			}
 
 			if (parts[0].equalsIgnoreCase("-SUITE")) {
-				if (fileName.contains(Config.EXCEL_EXTENSION)) { // .xlsx
+				 // .xlsx or .json suite file
+				if (fileName.contains(Config.EXCEL_EXTENSION) || fileName.contains(Config.SIDE_EXTENSION)) {
 					System.setProperty("SUITE.FILE", CodelessConfiguration.getSuiteDir() + "/" + fileName);
 				} else {
 					System.setProperty("SUITE.DIR", CodelessConfiguration.getSuiteDir() + "/" + fileName);

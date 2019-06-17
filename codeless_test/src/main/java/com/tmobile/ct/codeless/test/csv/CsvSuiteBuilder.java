@@ -28,6 +28,7 @@ import com.tmobile.ct.codeless.core.SuiteBuilder;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.files.ClassPathUtil;
+import com.tmobile.ct.codeless.test.config.ConfigProperties;
 import com.tmobile.ct.codeless.test.suite.SuiteImpl;
 import com.tmobile.ct.codeless.test.testdata.TestDataReader;
 
@@ -46,7 +47,7 @@ public class CsvSuiteBuilder implements SuiteBuilder {
 
 		File folder = new File(ClassPathUtil.getAbsolutePath(path));
 		suite = new SuiteImpl(folder.getPath());
-		suite.setConfig(CsvConfig.getCSVProperties());
+		suite.setConfig(ConfigProperties.getProperties());
 		testData = TestDataReader.getTestData(suite, testData);
 		
 		Arrays.asList(folder.list()).stream().map(x -> folder.getPath() + '/' + x).forEach(resource -> {
