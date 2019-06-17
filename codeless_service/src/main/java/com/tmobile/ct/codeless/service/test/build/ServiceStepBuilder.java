@@ -226,6 +226,7 @@ public class ServiceStepBuilder {
 			return null;
 		}
 		Operation operation = null;
+		String operation_name = "";
 		request = null;
 
 		if (ClassPathUtil.exists(
@@ -275,14 +276,15 @@ public class ServiceStepBuilder {
 			setBodyFromEnv(operation);
 		}
 		setDefaultEndpoint();
+		
+		operation_name = operation  != null ?  operation.getName() : "";
 
 		call.setOperation(operation);
 		call.setName(testRow.testName);
 		call.setDescription(
-				StringUtils.isNotBlank(
-						testRow.description)
+				StringUtils.isNotBlank(	testRow.description)
 						? testRow.description
-						: testRow.testName + "-" + operation.getName());
+						: testRow.testName + "-" + operation_name);
 		call.setAssertions(assertions);
 		return call;
 	}
