@@ -74,7 +74,7 @@ public class AlphaNumericGenerator {
                     case 'U':
                         buf[i] = upper.charAt(random.nextInt(upper.length()));
                         break;
-                    case '?':
+                    case 'A':
                         buf[i] = alphanum.charAt((random.nextInt(alphanum.length())));
                         break;
                     default:
