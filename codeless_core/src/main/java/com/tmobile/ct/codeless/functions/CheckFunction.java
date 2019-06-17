@@ -30,6 +30,7 @@ public class CheckFunction {
     public static final String FUNCTION_RANDOM_ALPHANUMERIC = "randAlphaNum";
     public static final String FUNCTION_RANDOM_NAME = "randName";
     public static final String FUNCTION_RANDOM_DOB = "randDOB";
+    public static final String FUNCTION_RANDOM_CREDITCARDNUMBER = "randCCNum";
 
     public String parse(String value){
         String[] functions = StringUtils.substringsBetween(value, FUNCTION_START,FUNCTION_END);
@@ -65,11 +66,11 @@ public class CheckFunction {
                 else if (function.contains(FUNCTION_RANDOM_ALPHANUMERIC)){
                     AlphaNumericGenerator alphaNumericGenerator;
                     if (params.length == 2){
-                        try {           //if parameter is size
+                        try {           //if the parameter is size
                             int size = Integer.parseInt(params[1]);
                             alphaNumericGenerator = new AlphaNumericGenerator(size);
                             newVal = alphaNumericGenerator.generate();
-                        }catch (NumberFormatException e){       //if parameter is format
+                        }catch (NumberFormatException e){       //if the parameter is format
                             alphaNumericGenerator = new AlphaNumericGenerator(params[1]);
                             newVal = alphaNumericGenerator.generate();
                         }
@@ -116,7 +117,20 @@ public class CheckFunction {
                             throw new RuntimeException("Invalid number of function parameters");
                     }
                 }
-
+                else if (function.contains(FUNCTION_RANDOM_CREDITCARDNUMBER)){
+                    CreditCardGenerator creditCardGenerator = new CreditCardGenerator();
+                    switch (params.length){
+                        case 1:
+                            newVal = creditCardGenerator.generate();
+                            break;
+                        case 2:
+                            creditCardGenerator.setType(params[1]);
+                            newVal = creditCardGenerator.generate();
+                            break;
+                        default:
+                            throw new RuntimeException("Invalid number of function parameters");
+                    }
+                }
                 String replace = "\\(#" + replaceFunction + "\\)";
                 value = value.replaceFirst(replace,newVal);
             }

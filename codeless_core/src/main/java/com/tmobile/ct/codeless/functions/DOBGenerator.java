@@ -10,7 +10,6 @@ public class DOBGenerator {
 
     /**
      * Generates a DOB with a format, with a specific age.
-     * '-' specifies maximum random age, exclusive.
      * @param format the format
      * @param age the age
      * @return the DOB
@@ -44,16 +43,16 @@ public class DOBGenerator {
 
     /**
      * Generates a DOB between min(inclusive) and max(exclusive) age.
-     * @param min
-     * @param max
-     * @return
+     * @param min the minimum age
+     * @param max the maximum age
+     * @return the DOB
      */
     public String generate(int min, int max){
         return generate("MM/dd/YYYY",min,max);
     }
 
     /**
-     * Generates a DOB, with a specific age, or age range.
+     * Generates a DOB, with a specific age.
      * @param age the age
      * @return the DOB
      */
@@ -71,7 +70,7 @@ public class DOBGenerator {
 
     /**
      * GEnerates a random DOB with given format, and between 0-100 age.
-     * @param format
+     * @param format the format
      * @return the DOB
      */
     public String generate(String format){

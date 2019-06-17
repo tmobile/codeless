@@ -16,6 +16,7 @@
 package com.tmobile.ct.codeless.functions;
 
 import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Random;
 
 /**
@@ -29,7 +30,7 @@ public class NumberGenerator {
             throw new IllegalArgumentException("Max must be greater than min");
         }
         BigInteger range = max.subtract(min);
-        BigInteger num = new BigInteger(range.bitLength(), new Random());
+        BigInteger num = new BigInteger(range.bitLength(), new SecureRandom());
         if (num.compareTo(range) == 1)      //if outside range
         {
             num = num.mod(range);
@@ -64,13 +65,6 @@ public class NumberGenerator {
         }
         bigmin = new BigInteger(min);
         bigmax = new BigInteger(max);
-        BigInteger range = bigmax.subtract(bigmin);
-        BigInteger num = new BigInteger(range.bitLength(), new Random());
-        if (num.compareTo(range) == 1)      //if outside range
-        {
-            num = num.mod(range);
-        }
-        num = num.add(bigmin);
-        return num;
+        return generate(bigmin,bigmax);
     }
 }
