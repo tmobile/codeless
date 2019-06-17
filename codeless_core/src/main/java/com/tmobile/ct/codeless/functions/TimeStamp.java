@@ -22,7 +22,7 @@ import java.util.Calendar;
 
 /**
  * The TimeStamp class
- *
+ * @author Julio Zevallos
  */
 public class TimeStamp {
 

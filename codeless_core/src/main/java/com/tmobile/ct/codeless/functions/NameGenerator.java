@@ -1,8 +1,27 @@
+/*******************************************************************************
+ * * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ *  * use this file except in compliance with the License.  You may obtain a copy
+ *  * of the License at
+ *  *
+ *  *   http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ *  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ *  * License for the specific language governing permissions and limitations under
+ *  * the License.
+ ******************************************************************************/
 package com.tmobile.ct.codeless.functions;
 
 import java.security.SecureRandom;
 import java.util.Random;
 
+/**
+ * Class that generates a Name
+ * @author Julio Zevallos
+ */
 public class NameGenerator {
 
     private static final String firstNames[] = {"Christy","Thebault","Zackariah","Tildi","Iris","Oralle","Alexei","Lani","Alina","Tamqrah","Abramo","Fredrika","Devlen","Ara","Gawen","Donal","Babara","Annissa","Laurel","Marijn","Brooks","Mala","Matias","Winslow","Kath","Guenna","Orly","Pepito","Dolly","Lindsay","Tobey","Kim","Lynett","Gabey","Elmira","Torie","Nanice","Sherrie","Libbi","Amity","Frasquito","Salome","Lula","Wolfgang","Edna","Cosimo","Dominique","Llywellyn","Johan","Umeko","Gwenny","Bianca","Tamas","Morrie","Jody","Vincenty","Brittney","Kym","Thomas","Laughton","Marv","Naoma","Flinn","Sigismund","Constantina","Ambrosius","Marty","Leontine","Constantina","Marna","Ollie","Shannon","Renault","Patrick","Gardener","Debby","Weidar","Ansel","Niccolo","Vittorio","Evangeline","Laurens","Carlin","Anderea","Jacqueline","Miranda","Titus","Alli","Faber","Lyssa","Clemente","Hetti","Ervin","Norton","Emyle","Marcille","Minetta","Fanchette","Brennen","Bartel"};

@@ -19,6 +19,10 @@ import org.junit.Test;
 
 import java.security.SecureRandom;
 
+/**
+ * Class that generates a random Credit Card Number
+ * @author Julio Zevallos
+ */
 public class CreditCardGenerator {
 
     private String type = null;
