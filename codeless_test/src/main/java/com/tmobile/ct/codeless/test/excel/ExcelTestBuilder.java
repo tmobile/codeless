@@ -17,10 +17,7 @@ package com.tmobile.ct.codeless.test.excel;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -38,6 +35,7 @@ import com.tmobile.ct.codeless.data.BasicTestData;
 import com.tmobile.ct.codeless.service.test.build.ServiceCallInput;
 import com.tmobile.ct.codeless.service.test.build.ServiceStepBuilder;
 import com.tmobile.ct.codeless.test.component.ComponentCache;
+import com.tmobile.ct.codeless.test.config.CloneConfig;
 import com.tmobile.ct.codeless.test.suite.TestImpl;
 import com.tmobile.ct.codeless.test.tcds.BuildTcdsDataSource;
 import com.tmobile.ct.codeless.ui.build.UiStepBuilder;
@@ -70,7 +68,7 @@ public class ExcelTestBuilder implements TestBuilder{
 	public Test build(Suite suite, Sheet sheet, String name, TestData testData){
 		test.setSuite(suite);
 		test.setName(name);
-		test.setConfig(cloneConfig(suite.getConfig()));
+		test.setConfig(CloneConfig.getConfig(suite.getConfig()));
 		test.setTestData(testData);
 
 		int count = -1;
@@ -96,16 +94,6 @@ public class ExcelTestBuilder implements TestBuilder{
 			}
 		}
 		return steps;
-	}
-
-	public Map<String, String> cloneConfig(Map<String, String> config) {
-		Map<String, String> clonedConfig = new HashMap<>();
-		for (String propKey : config.keySet()) {
-			String propValue = config.get(propKey);
-			clonedConfig.put(propKey, propValue);
-		}
-
-		return clonedConfig;
 	}
 
 	/**

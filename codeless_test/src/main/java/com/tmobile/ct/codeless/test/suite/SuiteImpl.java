@@ -26,6 +26,7 @@ import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Status;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.Test;
+import com.tmobile.ct.codeless.core.config.Config;
 
 /**
  * The Class ExcelSuite.
@@ -67,9 +68,13 @@ public class SuiteImpl implements Suite{
 	}
 
 	private String getSuiteName(String name) {
-		String[] parts = name.replace(".xlsx",  "").split("/");
-		return parts[parts.length - 1];
+		if (name.contains(Config.EXCEL_EXTENSION)) {
+			String[] parts = name.replace(Config.EXCEL_EXTENSION, "").split("/");
+			return parts[parts.length - 1];
+		}
+		return name;
 	}
+		
 	
 	@Override
 	public void setName(String name) {

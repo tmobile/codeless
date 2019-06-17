@@ -35,7 +35,6 @@ import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.core.datastructure.MultiValue;
 import com.tmobile.ct.codeless.testdata.RequestModifier;
-import com.tmobile.ct.codeless.testdata.TestDataHelper;
 import com.tmobile.ct.codeless.testdata.TestDataInput;
 import com.tmobile.ct.codeless.testdata.TestDataProvider;
 import com.tmobile.ct.codeless.ui.UiStep;
@@ -92,7 +91,6 @@ public class UiStepBuilder {
 		testRow = parseTestData(testRow, step);
 		testRow = parseFunction(testRow);
 		step.setName(testRow.getStep());
-
 		ActionConfig config = buildConfig(testRow.getTestData());
 		config.message = step.getName();
 
@@ -111,7 +109,7 @@ public class UiStepBuilder {
 	 * @param step    the step
 	 * @return the ui action
 	 */
-	private UiAction buildAction(UiTestStep testRow, ActionConfig config, UiStep step) {
+	public UiAction buildAction(UiTestStep testRow, ActionConfig config, UiStep step) {
 		String actionType = testRow.getAction();
 		if (StringUtils.isBlank(actionType)) {
 			return null;
@@ -177,26 +175,36 @@ public class UiStepBuilder {
 	 * @return the web element
 	 */
 	private WebElement buildTargetElement(String target, UiStep step) {
-
-		if (StringUtils.isBlank(target)) {
-			return null;
-		}
-
-		String[] parts = target.trim().split("[.]");
-		if (parts.length == 3) {
-			String appName = parts[0];
-			String modelName = parts[1];
-			String targetName = parts[2];
-			String basePath = getModelDir() + File.separator + appName + File.separator + modelName + ".yaml";
-			Map<String, ControlElement> controls = YamlReader.ReadControl(basePath);
-			if (controls != null && controls.containsKey(targetName)) {
-				ControlElement control = controls.get(targetName);
-				step.setTarget(target + ": by [" + control.getBy() + "] value [" + control.getLocator() + "]" );
-				return new WebElementProxyFactory().fromControlElement(step.getWebDriver(), control);
+		WebElement webElement = null;
+		if (!StringUtils.isBlank(target)) {
+			String fileName = System.getProperty("SUITE.FILE");
+			if (StringUtils.isNotBlank(fileName) && fileName.contains(Config.SIDE_EXTENSION)
+					&& target.contains("side::")) {
+				target = target.replace("side::", "");
+				if (target.contains("=")) {
+					String[] parts = target.trim().split("=");
+					ControlElement ctrlElement = new ControlElement();
+					ctrlElement.setBy(parts[0]);
+					ctrlElement.setLocator(parts[1]);
+					webElement = new WebElementProxyFactory().fromControlElement(step.getWebDriver(), ctrlElement);
+				}
+			} else {
+				String[] parts = target.trim().split("[.]");
+				if (parts.length == 3) {
+					String appName = parts[0];
+					String modelName = parts[1];
+					String targetName = parts[2];
+					String basePath = getModelDir() + File.separator + appName + File.separator + modelName + ".yaml";
+					Map<String, ControlElement> controls = YamlReader.ReadControl(basePath);
+					if (controls != null && controls.containsKey(targetName)) {
+						ControlElement control = controls.get(targetName);
+						step.setTarget(target + ": by [" + control.getBy() + "] value [" + control.getLocator() + "]");
+						webElement = new WebElementProxyFactory().fromControlElement(step.getWebDriver(), control);
+					}
+				}
 			}
 		}
-
-		return null;
+		return webElement;
 	}
 
 	/**

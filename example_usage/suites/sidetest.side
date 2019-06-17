@@ -1,0 +1,122 @@
+{
+  "id": "5ecf4721-1715-438e-9518-690dabd772a9",
+  "version": "2.0",
+  "name": "test",
+  "url": "https://www.google.com/",
+  "tests": [{
+    "id": "4867a00c-bdc3-4695-8bc0-0d361018e284",
+    "name": "testbing",
+    "commands": [{
+      "id": "0c48ba39-54f9-4195-a88d-befc18cde26b",
+      "comment": "navigate to bing",
+      "command": "open",
+      "target": "https://www.bing.com/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "9ecd59c3-aefc-4663-b3d6-7c5fdc5506b6",
+      "comment": "assert title of the bing page",
+      "command": "assertTitle",
+      "target": "Bing",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2c3d02d1-a5d3-4242-a94d-edf29ce4eb36",
+      "comment": "assert text of the element",
+      "command": "assertText",
+      "target": "id=scpl0",
+      "targets": [
+        ["id=scpl0", "id"],
+        ["linkText=Images", "linkText"],
+        ["css=#scpl0", "css:finder"],
+        ["xpath=//a[contains(text(),'Images')]", "xpath:link"],
+        ["xpath=//a[@id='scpl0']", "xpath:attributes"],
+        ["xpath=//li[@id='scpt0']/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/images?FORM=Z9LH')]", "xpath:href"],
+        ["xpath=//li/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Images')]", "xpath:innerText"]
+      ],
+      "value": "Images"
+    }, {
+      "id": "999d570d-87de-468c-a64b-030662ba9b80",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
+  }, {
+    "id": "1383c1d4-b739-454a-961f-8043fc4b42d8",
+    "name": "testgoogle",
+    "commands": [{
+      "id": "715710f0-613a-49c3-af98-b172f49c925b",
+      "comment": "open google",
+      "command": "open",
+      "target": "https://www.google.com/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "54d7b014-bdaf-4b01-9cba-c0f2c2c1d848",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1110x824",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "0c40ed5d-8feb-4e7a-a69d-c0fb45d95256",
+      "comment": "enter tmobile in search bar",
+      "command": "type",
+      "target": "name=q",
+      "targets": [
+        ["name=q", "name"],
+        ["css=.gLFyf", "css:finder"],
+        ["xpath=//input[@name='q']", "xpath:attributes"],
+        ["xpath=//form[@id='tsf']/div[2]/div/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/div/input", "xpath:position"]
+      ],
+      "value": "tmobile codeless"
+    }, {
+      "id": "98b30900-cb8e-4d9f-9f79-867af9281f72",
+      "comment": "click search",
+      "command": "click",
+      "target": "name=btnK",
+      "targets": [
+        ["name=btnK", "name"],
+        ["css=center:nth-child(2) > .gNO89b", "css:finder"],
+        ["xpath=//input[@name='btnK']", "xpath:attributes"],
+        ["xpath=//form[@id='tsf']/div[2]/div/div[2]/div[2]/div[2]/center/input", "xpath:idRelative"],
+        ["xpath=//center/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b682f2e2-cd7f-4c16-9ec8-8981c079f3ef",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.g:nth-child(4) .LC20lb",
+      "targets": [
+        ["css=.g:nth-child(4) .LC20lb", "css:finder"],
+        ["xpath=//div[@id='rso']/div/div/div[4]/div/div/div/a/h3", "xpath:idRelative"],
+        ["xpath=//div[4]/div/div/div/a/h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'tmobile/codeless: ETP codeless project allows you to quickly ... - GitHub')]", "xpath:innerText"]
+      ],
+      "value": "30"
+    }, {
+      "id": "83e36c68-2763-4313-9c3a-0dd02ab5af73",
+      "comment": "close browser",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "270b0b94-b4c2-4a3e-9547-79a367d10407",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": []
+  }],
+  "urls": ["https://www.google.com/", "https://www.bing.com/"],
+  "plugins": []
+}

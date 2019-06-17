@@ -21,13 +21,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.tmobile.ct.codeless.core.Suite;
+import com.tmobile.ct.codeless.test.config.ConfigPropertiesTest;
 
 public class CsvSuiteBuilderTest {
 	
 	@Before
 	public void setUp() {
         
-		CsvConfigTest.setCsvProperties(); 
+		ConfigPropertiesTest.setProperties(); 
 	}
 	
 	@Test
