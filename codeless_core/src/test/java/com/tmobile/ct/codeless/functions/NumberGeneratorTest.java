@@ -31,7 +31,7 @@ public class NumberGeneratorTest {
             int comp = number.compareTo(new BigInteger("999999999"));   //lower bound
             int comp2 = number.compareTo(new BigInteger("10000000001"));    //upper obund
             Assert.assertTrue(comp == 1);       //assert greater than min range
-            Assert.assertTrue(comp2 == -1);     //assert smaller than min range
+            Assert.assertTrue(comp2 == -1);     //assert smaller than max range
         }
     }
 

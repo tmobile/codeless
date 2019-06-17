@@ -2,7 +2,12 @@ package com.tmobile.ct.codeless.service.accessor.request;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
+import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import com.tmobile.ct.codeless.core.Test;
 import com.tmobile.ct.codeless.core.TestDataSource;
 import com.tmobile.ct.codeless.functions.CheckFunction;
@@ -34,29 +39,18 @@ public class BodyFieldModifier implements RequestModifier<String, HttpRequest> {
     }
     @Override
     public void modify(HttpRequest request, Test test) {
+        Configuration configuration = Configuration.builder()
+                .jsonProvider(new JacksonJsonNodeJsonProvider())
+                .mappingProvider(new JacksonMappingProvider())
+                .build();
         String body = request.getBody().asString();
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> postmanMap;
         GetTestData getTestData = new GetTestData();
         String newval = getTestData.replaceValueWithTestData(original,dataSources);
         newval = new CheckFunction().parse(newval);
-        String resultbody = "";
-        try {
-            postmanMap = mapper.readValue(body, Map.class);
-            if (postmanMap == null)
-                postmanMap = new HashMap<>();
-
-            postmanMap.put(key,newval);
-            resultbody = new JSONObject(postmanMap).toJSONString();
-            Body newbody = new Body();
-            newbody.setBody(resultbody);
-            request.setBody(newbody);
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        JsonNode updatedJson = JsonPath.using(configuration).parse(body).set("$."+key,newval).json();
+        String resultbody = updatedJson.toString();
+        Body newbody = new Body();
+        newbody.setBody(resultbody);
+        request.setBody(newbody);
     }
 }

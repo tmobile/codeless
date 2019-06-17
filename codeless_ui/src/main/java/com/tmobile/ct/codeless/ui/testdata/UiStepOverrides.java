@@ -59,7 +59,11 @@ public class UiStepOverrides {
 					if (d.contains(Config.EXPORT)) {
 
 						String[] values = d.trim().split("::");
-						if (values.length == Config.FOUR || values.length == Config.FIVE) {
+						if (values.length == Config.THREE){				//exporting a static value
+							SourcedDataItem<String, TestDataSource> dataSource = createStaticTestDataSource(test, values[Config.ONE],
+									values[Config.TWO]);
+						}
+						else if (values.length == Config.FOUR || values.length == Config.FIVE) {
 
 							String key = values[Config.ONE];
 							String methodName = values[Config.THREE];

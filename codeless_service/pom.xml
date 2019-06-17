@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.tmobile.ct</groupId>
 		<artifactId>codeless</artifactId>
-		<version>0.0.7</version>
+		<version>0.0.8</version>
 	</parent>
 	<groupId>com.tmobile.ct.codeless</groupId>
 	<artifactId>codeless_service</artifactId>
@@ -13,7 +13,7 @@
 		<dependency>
    			<groupId>com.tmobile.ct.codeless</groupId>
    			<artifactId>codeless_core</artifactId>
-   			<version>0.0.7</version>
+   			<version>0.0.8</version>
 		</dependency>
 		
 		<!-- Wiremock for Unit Tests -->
