@@ -40,7 +40,6 @@ public class SIDEFileTest {
 	public static SIDEFile createSideFile() {
 		
 		List<SIDESuite> sideSuites = Arrays.asList(SIDESuiteTest.createSideSuite());
-
 		sideFile.setId("id");
 		sideFile.setName("suite");
 		sideFile.setTests(SIDETestTest.createListOfSideTests());

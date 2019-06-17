@@ -69,11 +69,7 @@ public class SIDETestBuilder implements TestBuilder {
 	private Step buildUiStep(Test test, SIDEStep sideStep) {
 
 		SIDEStepBuilder seleniumIDEStepBuilder = new SIDEStepBuilder();
-		String uiAction = seleniumIDEStepBuilder.getActionType(sideStep.getCommand(), sideStep);
-		if (uiAction != null) {
-			return seleniumIDEStepBuilder.build(test, sideStep);
-		}
-		return null;
+		return seleniumIDEStepBuilder.build(test, sideStep);
 	}
 
 	@Override
