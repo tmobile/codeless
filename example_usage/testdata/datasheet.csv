@@ -10,3 +10,4 @@ imdb2,https://www.imdb.com/title/tt1049413/
 imdbhome,https://www.imdb.com
 search,t-mobile best network
 element1,Google.googlepage.googletranslate
+host1,https://bw.apix.plab.internal.t-mobile.com:443/service/soap/v2/CustomerManagement/ProvisionService

@@ -39,7 +39,7 @@
       "value": "Images"
     }, {
       "id": "999d570d-87de-468c-a64b-030662ba9b80",
-      "comment": "",
+      "comment": "close browser",
       "command": "close",
       "target": "",
       "targets": [],
@@ -90,7 +90,7 @@
       "value": ""
     }, {
       "id": "b682f2e2-cd7f-4c16-9ec8-8981c079f3ef",
-      "comment": "",
+      "comment": "wait for element to be visible",
       "command": "waitForElementVisible",
       "target": "css=.g:nth-child(4) .LC20lb",
       "targets": [
