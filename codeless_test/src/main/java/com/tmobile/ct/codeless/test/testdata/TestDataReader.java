@@ -90,7 +90,7 @@ public class TestDataReader {
 		}
 
 		String path = CodelessConfiguration.getTestDataDir() + File.separator + postmanEnvironmentFileName;
-		if (!new File(path).exists()) {
+		if (!new File(ClassPathUtil.getAbsolutePath(path)).exists()) {
 			log.error("File does not exist: [{}]", path);
 
 			return testData;
