@@ -318,7 +318,10 @@ public class UiStepBuilder {
 						}
 						break;
 					case TESTDATA:
-						testRow.getTestData().add(value);
+						String[] multiLine = value.trim().split("\\n");
+						for (String line: multiLine) {
+							testRow.getTestData().add(line);
+						}
 						break;
 					case DESCRIPTION:
 						testRow.setDescription(value);
