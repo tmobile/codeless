@@ -35,11 +35,8 @@ public class CheckFunction {
     public static final String FUNCTION_RANDOM_NAME = "randName";
     public static final String FUNCTION_RANDOM_DOB = "randDOB";
     public static final String FUNCTION_RANDOM_CREDITCARDNUMBER = "randCCNum";
-//    public static final String[] FUNCTIONS_NUMBERS = {"add","subtract","multiply","divide","mod","roundUp","roundDown","roundClosest"};
     public static final String FUNCTION_MATH = "Math";
     public static final String FUNCTION_STRING = "String";
-  //  public static final String[] FUNCTIONS_STRINGS = {"lowerCase","upperCase","charAt","contains","compare","substring","toUpperCase"};
-
     public String parse(String value) {
         String[] functions = StringUtils.substringsBetween(value, FUNCTION_START,FUNCTION_END);
         if (functions != null && functions.length > 0){
