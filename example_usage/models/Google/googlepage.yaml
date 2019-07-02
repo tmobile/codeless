@@ -6,4 +6,4 @@ searchbutton:
   locator: "//*[@id='tsf']/div[2]/div/div[3]/center/input[1]"
 googletranslate:
   by: "xpath"
-  locator: "//*[@id='rso']/div[4]/div/div[3]/div/div/div[1]/a/h3"
+  locator: "//*[@id='rso']/div[3]/div/div[5]/div/div/div[1]/a/h3"
