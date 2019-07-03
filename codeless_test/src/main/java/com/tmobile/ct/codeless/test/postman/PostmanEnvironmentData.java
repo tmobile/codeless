@@ -18,6 +18,7 @@ package com.tmobile.ct.codeless.test.postman;
 import com.tmobile.ct.codeless.core.Suite;
 import com.tmobile.ct.codeless.core.TestData;
 import com.tmobile.ct.codeless.core.config.Config;
+import com.tmobile.ct.codeless.files.ClassPathUtil;
 import com.tmobile.ct.codeless.test.testdata.TestDataReader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -57,7 +58,7 @@ public class PostmanEnvironmentData {
 
 	public void parsePostmanEnvironment(String path) {
 		// read in json, turn it into a json object and pass it to "create"
-		File environmentCollection = new File(path);
+		File environmentCollection = new File(ClassPathUtil.getAbsolutePath(path));
 		try {
 			Environment environmentData = om.readValue(environmentCollection, Environment.class);
 			createTestData(environmentData, path);

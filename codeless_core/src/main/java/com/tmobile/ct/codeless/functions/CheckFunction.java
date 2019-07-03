@@ -17,6 +17,10 @@ package com.tmobile.ct.codeless.functions;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashSet;
+
 /**
  * The Class that checks for functions
  * @author Julio Zevallos
@@ -31,8 +35,9 @@ public class CheckFunction {
     public static final String FUNCTION_RANDOM_NAME = "randName";
     public static final String FUNCTION_RANDOM_DOB = "randDOB";
     public static final String FUNCTION_RANDOM_CREDITCARDNUMBER = "randCCNum";
-
-    public String parse(String value){
+    public static final String FUNCTION_MATH = "Math";
+    public static final String FUNCTION_STRING = "String";
+    public String parse(String value) {
         String[] functions = StringUtils.substringsBetween(value, FUNCTION_START,FUNCTION_END);
         if (functions != null && functions.length > 0){
             for (String function: functions) {
@@ -45,7 +50,7 @@ public class CheckFunction {
                     }
                 }
                 replaceFunction = replaceFunction.substring(0,replaceFunction.length()-4);
-                if (function.contains(FUNCTION_RANDOM_NUMBER)){
+                if (params[0].contains(FUNCTION_RANDOM_NUMBER)){
                     NumberGenerator numberGenerator = new NumberGenerator();
                     if (params.length == 2){
                         newVal = numberGenerator.generate(Integer.parseInt(params[1])).toString();
@@ -54,7 +59,7 @@ public class CheckFunction {
                         newVal = numberGenerator.generate(params[1],params[2]).toString();
                     }
                 }
-                else if (function.contains(FUNCTION_TIMESTAMP)){
+                else if (params[0].contains(FUNCTION_TIMESTAMP)){
                     TimeStamp timeStamp = new TimeStamp();
                     if (params.length == 2)
                         newVal = timeStamp.current(params[1]);
@@ -63,7 +68,7 @@ public class CheckFunction {
                     else if (params.length == 4)
                         newVal = timeStamp.generate(params[1],params[2],params[3]);
                 }
-                else if (function.contains(FUNCTION_RANDOM_ALPHANUMERIC)){
+                else if (params[0].contains(FUNCTION_RANDOM_ALPHANUMERIC)){
                     AlphaNumericGenerator alphaNumericGenerator;
                     if (params.length == 2){
                         try {           //if the parameter is size
@@ -76,7 +81,7 @@ public class CheckFunction {
                         }
                     }
                 }
-                else if (function.contains(FUNCTION_RANDOM_NAME)){
+                else if (params[0].contains(FUNCTION_RANDOM_NAME)){
                     NameGenerator nameGenerator = new NameGenerator();
                     if (params.length == 1)
                         newVal = nameGenerator.randomFullName();
@@ -84,7 +89,7 @@ public class CheckFunction {
                         newVal = nameGenerator.generate(params[1]);
                     }
                 }
-                else if (function.contains(FUNCTION_RANDOM_DOB)){
+                else if (params[0].contains(FUNCTION_RANDOM_DOB)){
                     DOBGenerator dobGenerator = new DOBGenerator();
                     switch (params.length){
                         case 1:
@@ -117,7 +122,7 @@ public class CheckFunction {
                             throw new RuntimeException("Invalid number of function parameters");
                     }
                 }
-                else if (function.contains(FUNCTION_RANDOM_CREDITCARDNUMBER)){
+                else if (params[0].contains(FUNCTION_RANDOM_CREDITCARDNUMBER)){
                     CreditCardGenerator creditCardGenerator = new CreditCardGenerator();
                     switch (params.length){
                         case 1:
@@ -129,6 +134,40 @@ public class CheckFunction {
                             break;
                         default:
                             throw new RuntimeException("Invalid number of function parameters");
+                    }
+                }
+                else if (params[0].contains(FUNCTION_MATH)){
+                    if (params.length != 3 && params.length != 4 && params.length != 5)
+                        throw new RuntimeException("Invalid number of parameters.");
+                    NumberFunctions numberFunctions;
+                    if (params.length == 3)
+                        numberFunctions = new NumberFunctions(params[2]);
+                    else if (params.length == 4)
+                        numberFunctions = new NumberFunctions(params[2],params[3]);
+                    else
+                        numberFunctions = new NumberFunctions(params[2],params[3],params[4]);
+
+                    try {
+                        //invokes the number method
+                        newVal = numberFunctions.getNumberMethod(params[1]).invoke(numberFunctions).toString();
+                    }catch (Exception e){
+                        throw new RuntimeException("Math function failed " +e.getCause());
+                    }
+                }
+                else if (params[0].contains(FUNCTION_STRING)){
+                    if (params.length > 5)
+                        throw new RuntimeException("Invalid number of parameters.");
+                    StringFunctions stringFunctions;
+                    stringFunctions = new StringFunctions(params[2]);
+                    try {
+                        if (params.length == 3)
+                            newVal = stringFunctions.getMethod(params[1]).invoke(stringFunctions).toString();
+                        else if (params.length == 4)
+                            newVal = stringFunctions.getMethod(params[1], String.class).invoke(stringFunctions, params[3]).toString();
+                        else if (params.length == 5)
+                            newVal = stringFunctions.getMethod(params[1], String.class, String.class).invoke(stringFunctions, params[3], params[4]).toString();
+                    }catch (Exception e){
+                        throw new RuntimeException("String function failed " +e.getCause());
                     }
                 }
                 String replace = "\\(#" + replaceFunction + "\\)";
