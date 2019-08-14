@@ -96,16 +96,14 @@ Give an example
 
 ##### Installation and build process
 
-If you already have the project cloned locally follow below steps, Otherwise go to Getting Started section to get the project
-on you local box.
+If you already have the project cloned locally follow below steps, otherwise go to Getting Started section to get the project on you local box.
 
 After getting the project on you local, next step will be to build the project locally. One thing is
 this project comes with is a pre build jar file under <INSTALL_ROOT>/example_usage/bin path. Using that you can run
 a sample spread sheet tests provided located under <INSTALL_ROOT>/example_usage/suites.
 
 ##### build
-This section is for a user who would like to change source file to contribute to the ETP codeless community or who like to extend
-the base features of the framework.
+This section is for a user who would like to change source file to contribute to the ETP codeless community or who like to extend the base features of the framework.
 ETP Codeless framework comes with five different components and example_usage folder that has sample test cases and model files.
 
 * To build the project
