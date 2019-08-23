@@ -32,7 +32,7 @@ Steps to run a codeless test .. <br/>
   Windows >> ./run.bat sampletest.xlsx <br/>
   Mac/Linux >> ./run.sh sampletest.xlsx <br/>
   
-  * refer wiki for all combinations and permitations of test execution.
+* refer wiki for all combinations and permitations of test execution.
 
 ### Project Structure
 
