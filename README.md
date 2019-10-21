@@ -25,11 +25,14 @@ git clone https://github.com/tmobile/codeless.git
 
 There are example tests included in example_usage/suites/. This tests use PageObject models defined in yaml format and a swagger definations used by service tests located under <INSTALL_ROOT>/model folder respective of the test step.
 
-From the command line change to <INSTALL_ROOT>/example_usage/bin
-Use the appropriate run command for your OS. I.E. run.cmd for Windows, run.sh for Mac/Linux
-Type run.<os> sampletest.xlsx I.E. run.cmd sampletest.xlsx for Windows and ./run.sh sampletest.xlsx for Mac/Linux
+Steps to run a codeless test .. <br/>
+* First, from the command line change to <PROJECT_ROOT>/example_usage/bin 
+* Second, Use the appropriate run command for your OS. i.e. run.bat for Windows, run.sh for Mac/Linux <br/>
+  Test to be run is "sampletest.xlsx", see below sample for each type of OS <br/>
+  Windows >> ./run.bat sampletest.xlsx <br/>
+  Mac/Linux >> ./run.sh sampletest.xlsx <br/>
   
-  * refer wiki for all combinations and permitations of test execution.
+Refer wiki for all combinations and permitations of test execution.
 
 ### Project Structure
 
