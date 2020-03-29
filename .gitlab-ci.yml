@@ -10,5 +10,4 @@ variables:
   ARTIFACT_ID: "codeless"
   GROUP_ID: "com/tmobile/ct"
   BUILD_TYPE: jar
-  CF_PUSH_OPTIONS: "-d ${DOMAIN} -f ${PCF_MANIFEST_PATH} -p target/${ARTIFACT_ID}-${APP_VERSION}.${BUILD_TYPE}"
-  MAVEN_BUILD_ARGS: "clean install -DappVersion=${APP_VERSION} -Dartifactory.publish.artifacts=true -Dartifactory.publish.buildInfo=true -DctVersion=${CT_VERSION} -DcodelessVersion=0.0.10"
+  MAVEN_BUILD_ARGS: "install -DappVersion=${APP_VERSION} -Dartifactory.publish.artifacts=true -Dartifactory.publish.buildInfo=true -DctVersion=${CT_VERSION} -DcodelessVersion=0.0.10"

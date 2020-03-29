@@ -1,0 +1,46 @@
+#Comma-separated paths to directories containing source files.
+#Compatible with Maven. If not set, the source code is retrieved from the default Maven source code location.
+sonar.sources=codeless_core/src/main/java
+
+#Comma-separated paths to directories containing tests. Ant?
+#Not compatible with Maven, which retrieves test from the default location for Java Maven projects.
+sonar.tests=codeless_core/src/test/java,codeless_service/src/test/java,codeless_test/src/test/java,codeless_ui/src/test/java
+
+#Set the language of the source code to analyze. Browse the Plugin Library page to get the list of all available languages. If not set, a multi-language analysis will be triggered.
+sonar.language=java
+
+#Tells SonarQube that the code coverage tool by unit tests is JaCoCo in Ant
+#sonar.java.coveragePlugin=jacoco
+
+#Tells SonarQube where the unit tests execution reports are
+sonar.junit.reportsPaths=codeless_core/target/surefire-reports,codeless_service/target/surefire-reports,codeless_test/target/surefire-reports,codeless_ui/target/surefire-reports
+
+#Tells SonarQube where the unit tests code coverage report is
+sonar.jacoco.reportPaths=codeless_core/target/coverage-reports/jacoco-ut.exec,codeless_service/target/coverage-reports/jacoco-ut.exec,codeless_test/target/coverage-reports/jacoco-ut.exec,codeless_ui/target/coverage-reports/jacoco-ut.exec
+
+#Comma-separated paths to directories containing the compiled bytecode files corresponding to your source files
+sonar.java.binaries=codeless_core/target/classes,codeless_service/target/classes,codeless_test/target/classes,codeless_ui/target/classes
+
+# include all codes in the "src/test/java" directory and its sub-directories
+sonar.test.inclusions=codeless_core/src/test/java/**/*,codeless_service/src/test/java/**/*,codeless_test/src/test/java/**/*,codeless_ui/src/test/java/**/*
+
+#Comma-delimited list of file path patterns to be excluded from coverage calculations
+# Exclude all codes in the "src/test/java" directory and its sub-directories
+sonar.coverage.exclusions=codeless_core/src/test/java/**/*,codeless_service/src/test/java/**/*,codeless_test/src/test/java/**/*,codeless_ui/src/test/java/**/*
+
+#  just refer it
+#
+# - Prepare jacoco agent to allow coverage report generation, build the project, and execute the unit tests:
+#
+#  mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install
+# - To get coverage per tests information, you will need to activate the profile when running the instrumented tests:
+#
+#  mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Pcoverage-per-test
+#
+# - Analyze the project with SonarQube using Maven:
+#
+#  mvn sonar:sonar
+
+#sonar.exclusions=src/main/java/com/tmobile/eqm/testfrwk/ui/core/mobile/**/*.*,src/main/java/com/tmobile/eqm/testfrwk/ui/core/web/**/*.*,src/main/java/com/tmobile/eqm/testfrwk/ui/core/httpclient/exceptions/*.*
+
+sonar.projectKey=CTA-{{ CI_PROJECT_NAME }}-{{ SONAR_BUILD_MODE }}
