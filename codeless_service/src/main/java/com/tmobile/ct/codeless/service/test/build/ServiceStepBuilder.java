@@ -251,14 +251,13 @@ public class ServiceStepBuilder {
 
 			try {
 				request = mapper.readValue(mapper.writeValueAsBytes(operation.getRequest()), HttpRequestImpl.class);
-
 				// Here to replace all {{}} with value configured in TestData
 				if (request.getBody() != null) {
 					String bodyString = request.getBody().asString();
 					String bodyStringReplaced = replaceVariablesWithTestDataValue(bodyString, test, input);
 					request.setBody(new Body<String>().setBody(bodyStringReplaced));
 				}
-				
+
 				if (modifers != null) {
 					request.setRequestModifiers(modifers);
 				}

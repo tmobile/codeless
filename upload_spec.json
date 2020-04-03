@@ -1,12 +1,7 @@
 {
   "files":[
     {
-      "pattern": "target/*.${BUILD_TYPE}",
-      "target": "${ARTIFACT_REPO}/${GROUP_ID}/${ARTIFACT_ID}/${APP_VERSION}-${ARTIFACT_STAGE}/",
-      "recursive": "true"
-    },
-    {
-      "pattern": "target/*.pom",
+      "pattern": "target/codeless-${APP_VERSION}-${ARTIFACT_STAGE}.${BUILD_TYPE}",
       "target": "${ARTIFACT_REPO}/${GROUP_ID}/${ARTIFACT_ID}/${APP_VERSION}-${ARTIFACT_STAGE}/",
       "recursive": "true"
     }
