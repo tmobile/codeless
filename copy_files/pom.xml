@@ -75,7 +75,7 @@
                         </goals>
                         <configuration>
                             <sourceFile>./../example_usage/lib/codeless-jar-with-dependencies.jar</sourceFile>
-                            <destinationFile>./../target/codeless-0.0.10.jar</destinationFile>
+                            <destinationFile>./../target/codeless-${appVersion}.jar</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
