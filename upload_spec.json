@@ -1,7 +1,7 @@
 {
   "files":[
     {
-      "pattern": "target/codeless-${APP_VERSION}-${ARTIFACT_STAGE}*.${BUILD_TYPE}",
+      "pattern": "target/codeless-${APP_VERSION}*.${BUILD_TYPE}",
       "target": "${ARTIFACT_REPO}/${GROUP_ID}/${ARTIFACT_ID}/${APP_VERSION}-${ARTIFACT_STAGE}/",
       "recursive": "true"
     }
