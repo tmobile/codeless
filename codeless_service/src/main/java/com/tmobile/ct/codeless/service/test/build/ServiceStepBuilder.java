@@ -19,11 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
@@ -33,7 +29,6 @@ import com.tmobile.ct.codeless.core.config.Config;
 import com.tmobile.ct.codeless.functions.CheckFunction;
 import com.tmobile.ct.codeless.service.accessor.request.*;
 import com.tmobile.ct.codeless.testdata.GetTestData;
-import net.minidev.json.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -256,6 +251,14 @@ public class ServiceStepBuilder {
 
 			try {
 				request = mapper.readValue(mapper.writeValueAsBytes(operation.getRequest()), HttpRequestImpl.class);
+
+				// Here to replace all {{}} with value configured in TestData
+				if (request.getBody() != null) {
+					String bodyString = request.getBody().asString();
+					String bodyStringReplaced = replaceVariablesWithTestDataValue(bodyString, test, input);
+					request.setBody(new Body<String>().setBody(bodyStringReplaced));
+				}
+				
 				if (modifers != null) {
 					request.setRequestModifiers(modifers);
 				}
@@ -780,18 +783,15 @@ public class ServiceStepBuilder {
 	}
 
 	public String parseExport(String cellValue, Test test, ServiceCallInput input) {
-
-
 		String[] multiLine = cellValue.trim().split("\\n");
 
 		for (String line: multiLine) {
-
 			ArrayList<SourcedDataItem<String, TestDataSource> > sourceValue = new ArrayList<SourcedDataItem<String,TestDataSource>>();
 			String[] dataValue = StringUtils.substringsBetween(line, "{{", "}}");
 			if(dataValue != null && dataValue.length > 0) {
 				String tcds_value = "";
 				if (test.getTcdsData()) {
-					for (int i =0;i<dataValue.length;i++) {
+					for (int i = 0; i < dataValue.length; i++) {
 						TestDataSource testSource = test.getTestData().get(test.getName());
 						tcds_value = TestDataHelper.fullfill(dataValue[i], testSource);
 						if (StringUtils.isNotBlank(tcds_value)) {
@@ -801,7 +801,7 @@ public class ServiceStepBuilder {
 					}
 				}
 				dataValue = StringUtils.substringsBetween(line,"{{","}}"); //after replacing from testdata json
-				if (dataValue !=null && dataValue.length > 0) {
+				if (dataValue != null && dataValue.length > 0) {
 					for (int i = 0; i < dataValue.length; i++) {
 						if (!(test.getTestData().getSourcedValue(dataValue[i]).getValue().getValue() instanceof RuntimeTestDataSource)) {
 							sourceValue.add(test.getTestData().getSourcedValue(dataValue[i]));
@@ -812,7 +812,7 @@ public class ServiceStepBuilder {
 			if(sourceValue != null && sourceValue.size() != 0) {
 				ArrayList<TestDataSource> source = new ArrayList<>();
 
-				for(int i=0;i<sourceValue.size();i++){
+				for(int i = 0; i < sourceValue.size(); i++){
 					if (!(sourceValue.get(i).getValue().getValue() instanceof RuntimeTestDataSource)) {
 						String dataVal = (String) sourceValue.get(i).getValue().getValue().fullfill();
 						if (dataVal != null && !StringUtils.isBlank(dataVal))
@@ -827,7 +827,6 @@ public class ServiceStepBuilder {
 						cellValue = cellValue.replace(line,newVal);
 						line = newVal;
 					}
-
 				}
 			}
 			String[] values = line.split("::");
@@ -949,7 +948,57 @@ public class ServiceStepBuilder {
 		}
 
         return cellValue;
-
     }
 
+	public String replaceVariablesWithTestDataValue(String cellValue, Test test, ServiceCallInput input) {
+		String[] multiLine = cellValue.trim().split("\\n");
+
+		for (String line: multiLine) {
+			ArrayList<SourcedDataItem<String, TestDataSource> > sourceValue = new ArrayList<SourcedDataItem<String,TestDataSource>>();
+			String[] dataValue = StringUtils.substringsBetween(line, "{{", "}}");
+			if(dataValue != null && dataValue.length > 0) {
+				String tcds_value = "";
+				if (test.getTcdsData()) {
+					for (int i = 0; i < dataValue.length; i++) {
+						TestDataSource testSource = test.getTestData().get(test.getName());
+						tcds_value = TestDataHelper.fullfill(dataValue[i], testSource);
+						if (StringUtils.isNotBlank(tcds_value)) {
+							String replace = "{{" + dataValue[i] + "}}";
+							line = line.replace(replace, tcds_value);
+						}
+					}
+				}
+				dataValue = StringUtils.substringsBetween(line,"{{","}}"); //after replacing from testdata json
+				if (dataValue != null && dataValue.length > 0) {
+					for (int i = 0; i < dataValue.length; i++) {
+						if (!(test.getTestData().getSourcedValue(dataValue[i]).getValue().getValue() instanceof RuntimeTestDataSource)) {
+							sourceValue.add(test.getTestData().getSourcedValue(dataValue[i]));
+						}
+					}
+				}
+			}
+			if(sourceValue != null && sourceValue.size() != 0) {
+				ArrayList<TestDataSource> source = new ArrayList<>();
+
+				for(int i = 0; i < sourceValue.size(); i++){
+					if (!(sourceValue.get(i).getValue().getValue() instanceof RuntimeTestDataSource)) {
+						String dataVal = (String) sourceValue.get(i).getValue().getValue().fullfill();
+						if (dataVal != null && !StringUtils.isBlank(dataVal))
+							source.add(sourceValue.get(i).getValue().getValue());
+					}
+				}
+
+				if (source.size() > 0) {
+					GetTestData getTestData = new GetTestData();
+					String newVal = getTestData.replaceValueWithTestData(line, source);
+					if (StringUtils.isNotBlank(newVal)){
+						cellValue = cellValue.replace(line,newVal);
+						line = newVal;
+					}
+				}
+			}
+		}
+
+		return cellValue;
+	}
 }
