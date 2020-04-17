@@ -57,6 +57,13 @@
                                     </includes>
                                     <targetPath>codeless_test</targetPath>
                                 </resource>
+                                <resource>
+                                    <directory>./..</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>pom.xml</include>
+                                    </includes>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>
