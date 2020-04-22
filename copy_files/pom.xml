@@ -57,6 +57,13 @@
                                     </includes>
                                     <targetPath>codeless_test</targetPath>
                                 </resource>
+                                <resource>
+                                    <directory>./..</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>pom.xml</include>
+                                    </includes>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>
@@ -76,6 +83,25 @@
                         <configuration>
                             <sourceFile>./../example_usage/lib/codeless-jar-with-dependencies.jar</sourceFile>
                             <destinationFile>./../target/codeless-${appVersion}.jar</destinationFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-and-rename-pom-file</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy</goal>
+                            <goal>rename</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>./../pom.xml</sourceFile>
+                            <destinationFile>./../target/codeless-${appVersion}.pom</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
