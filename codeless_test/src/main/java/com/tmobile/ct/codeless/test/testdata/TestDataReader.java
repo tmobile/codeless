@@ -84,9 +84,12 @@ public class TestDataReader {
 			}
 		}
 
-		String postmanEnvironmentFileName = suite.getConfig().get(Config.POSTMAN_ENVIRONMENT_FILENAME);
+		String postmanEnvironmentFileName = System.getProperty(Config.POSTMAN_ENVIRONMENT_FILENAME);
 		if (StringUtils.isBlank(postmanEnvironmentFileName)) {
-			return testData;
+			postmanEnvironmentFileName = suite.getConfig().get(Config.POSTMAN_ENVIRONMENT_FILENAME);
+			if (StringUtils.isBlank(postmanEnvironmentFileName)) {
+				return testData;
+			}
 		}
 
 		String path = CodelessConfiguration.getTestDataDir() + File.separator + postmanEnvironmentFileName;
