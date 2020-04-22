@@ -6,7 +6,7 @@ include:
 
 
 variables:
-  APP_VERSION: "0.0.10"
+  APP_VERSION: "0.0.11"
   ARTIFACT_ID: "codeless"
   GROUP_ID: "com/tmobile/ct"
   BUILD_TYPE: jar
