@@ -17,8 +17,10 @@ package com.tmobile.ct.codeless.service.assertion;
 
 import java.lang.reflect.Method;
 
+import com.sun.org.apache.bcel.internal.generic.ARETURN;
 import com.tmobile.ct.codeless.assertion.AssertionBuilder;
 import com.tmobile.ct.codeless.core.Assertion;
+import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.service.core.ServiceCall;
 
 /**
@@ -138,7 +140,7 @@ public class BaseServiceCallAssertion<T> implements ServiceCallAssertion<T>{
 	@Override
 	public void setMethod(Method method) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -147,7 +149,7 @@ public class BaseServiceCallAssertion<T> implements ServiceCallAssertion<T>{
 	@Override
 	public String getMethodName() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.method;
 	}
 
 	/* (non-Javadoc)
@@ -165,7 +167,7 @@ public class BaseServiceCallAssertion<T> implements ServiceCallAssertion<T>{
 	@Override
 	public T getExpected() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.expected;
 	}
 
 	/* (non-Javadoc)
@@ -174,7 +176,7 @@ public class BaseServiceCallAssertion<T> implements ServiceCallAssertion<T>{
 	@Override
 	public String getExpectedName() {
 		// TODO Auto-generated method stub
-		return null;
+		return assertion.getExpectedName();
 	}
 
 	/* (non-Javadoc)
@@ -183,7 +185,7 @@ public class BaseServiceCallAssertion<T> implements ServiceCallAssertion<T>{
 	@Override
 	public String getActualName() {
 		// TODO Auto-generated method stub
-		return null;
+		return assertion.getActualName();
 	}
 
 	/* (non-Javadoc)
@@ -237,7 +239,7 @@ public class BaseServiceCallAssertion<T> implements ServiceCallAssertion<T>{
 	@Override
 	public Throwable getFailureCause() {
 		// TODO Auto-generated method stub
-		return null;
+		return assertion.getFailureCause();
 	}
 
 	/* (non-Javadoc)
