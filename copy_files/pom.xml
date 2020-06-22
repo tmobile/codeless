@@ -97,7 +97,7 @@
                         <phase>compile</phase>
                         <goals>
                             <goal>copy</goal>
-                            <goal>rename</goal>
+                            <!--goal>rename</goal-->
                         </goals>
                         <configuration>
                             <sourceFile>./../pom.xml</sourceFile>
