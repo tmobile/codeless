@@ -4,11 +4,10 @@ include:
     ref: tmo/master
     file: '.tmo.job.ctp.gitlab_ci.yml'
 
-
 variables:
   APP_VERSION: "0.0.11"
   ARTIFACT_ID: "codeless"
   GROUP_ID: "com/tmobile/ct"
   BUILD_TYPE: jar
+  MAVEN_MULTI_MODULE_ARGS: "true"
   MAVEN_BUILD_ARGS: "install -DappVersion=${APP_VERSION} -Dartifactory.publish.artifacts=true -Dartifactory.publish.buildInfo=true"
-  CF_PUSH_OPTIONS: "-d ${DOMAIN} -f ${PCF_MANIFEST_PATH} -p target/${ARTIFACT_ID}-${APP_VERSION}.${BUILD_TYPE}"
