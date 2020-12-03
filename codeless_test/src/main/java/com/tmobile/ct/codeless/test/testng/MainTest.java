@@ -77,8 +77,7 @@ public class MainTest {
 
 	private static void configSetup(String[] args) {
 		System.setProperty("EXEC.JAR", "true");
-		System.setProperty("EXEC.ABSOLUTE.DIR",
-				new File(MainTest.class.getProtectionDomain().getCodeSource().getLocation().getFile()).getParent());
+		System.setProperty("EXEC.ABSOLUTE.DIR", new File(MainTest.class.getProtectionDomain().getCodeSource().getLocation().getFile()).getParent());
 
 		CodelessConfiguration.load();
 		parseArgs(args);

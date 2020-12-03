@@ -9,5 +9,4 @@ variables:
   ARTIFACT_ID: "codeless"
   GROUP_ID: "com/tmobile/ct"
   BUILD_TYPE: jar
-  MAVEN_MULTI_MODULE_ARGS: "true"
   MAVEN_BUILD_ARGS: "install -DappVersion=${APP_VERSION} -Dartifactory.publish.artifacts=true -Dartifactory.publish.buildInfo=true"

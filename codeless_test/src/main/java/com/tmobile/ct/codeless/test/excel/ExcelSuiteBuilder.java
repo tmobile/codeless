@@ -73,8 +73,7 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 
 		suite = new SuiteImpl(resource);
 
-		Stream<Sheet> sheets = StreamSupport
-				.stream(Spliterators.spliteratorUnknownSize(workbook.sheetIterator(), Spliterator.ORDERED), false);
+		Stream<Sheet> sheets = StreamSupport.stream(Spliterators.spliteratorUnknownSize(workbook.sheetIterator(), Spliterator.ORDERED), false);
 		sheets.forEach(this::parseConfigSheet);
 
 		// read test data sheet before sorting / building tests

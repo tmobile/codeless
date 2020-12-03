@@ -88,8 +88,6 @@ public class DataSourceTest extends BaseWiremockTest{
 		String input_value = new ServiceStepBuilder().parseExport(export_step, test, input);
 
 		input.add(SuiteHeaders.TESTNAME.name(),  new MultiValue<String,String>(SuiteHeaders.TESTNAME.name(), input_value));
-
-
 	}
 
 }
