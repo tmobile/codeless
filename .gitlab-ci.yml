@@ -1,7 +1,7 @@
 include:
   # Injects TMO Global Shared (handles certs, lists blacklisted files etc)
   - project: 'tmobile/automation-engineering/build'
-    ref: tmo/master
+    ref: tmo/sprint-20S25_TEQAE-3910
     file: '.tmo.job.ctp.gitlab_ci.yml'
 
 variables:
