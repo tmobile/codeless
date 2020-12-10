@@ -15,6 +15,5 @@
         <module>codeless_test</module>
         <module>selenium_action</module>
         <module>copy_files</module>
-        <module>codeless_oss</module>
     </modules>
 </project>
