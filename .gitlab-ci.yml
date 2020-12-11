@@ -9,5 +9,5 @@ variables:
   ARTIFACT_ID: "codeless"
   GROUP_ID: "com/tmobile/ct"
   BUILD_TYPE: jar
-  ETP_FRAMEWORK: codeless
   MAVEN_BUILD_ARGS: "install -DappVersion=${APP_VERSION} -Dartifactory.publish.artifacts=true -Dartifactory.publish.buildInfo=true"
+  MAVEN_PUBLISH_ARGS: " deploy:deploy-file -Dfile=target/${ARTIFACT_ID}-${APP_VERSION}-${ARTIFACT_STAGE}.${BUILD_TYPE} -DpomFile=pom.xml -Dpackaging=jar -DgroupId=com.tmobile.ct -DartifactId=codeless -Dversion=${APP_VERSION}-${ARTIFACT_STAGE} -DskipTests=true"
