@@ -1,9 +1,8 @@
 include:
   # Injects TMO Global Shared (handles certs, lists blacklisted files etc)
   - project: 'tmobile/automation-engineering/build'
-    ref: tmo/master
+    ref: tmo/sprint-20S25_TEQAE-3910
     file: '.tmo.job.ctp.gitlab_ci.yml'
-
 
 variables:
   APP_VERSION: "0.0.11"
@@ -11,4 +10,4 @@ variables:
   GROUP_ID: "com/tmobile/ct"
   BUILD_TYPE: jar
   MAVEN_BUILD_ARGS: "install -DappVersion=${APP_VERSION} -Dartifactory.publish.artifacts=true -Dartifactory.publish.buildInfo=true"
-  CF_PUSH_OPTIONS: "-d ${DOMAIN} -f ${PCF_MANIFEST_PATH} -p target/${ARTIFACT_ID}-${APP_VERSION}.${BUILD_TYPE}"
+  MAVEN_PUBLISH_ARGS: " deploy:deploy-file -Dfile=target/${ARTIFACT_ID}-${APP_VERSION}-${ARTIFACT_STAGE}.${BUILD_TYPE} -DpomFile=pom.xml -Dpackaging=jar -DgroupId=com.tmobile.ct -DartifactId=codeless -Dversion=${APP_VERSION}-${ARTIFACT_STAGE} -DskipTests=true"

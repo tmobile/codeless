@@ -90,10 +90,10 @@ public class ServiceCache {
 		String basePath = getModelDir() + File.separator + name + File.separator;
 		if(ClassPathUtil.exists(basePath+SWAGGER_YAML)){
 			requests = new SwaggerReader().parse(basePath+SWAGGER_YAML);
-		}else if(ClassPathUtil.exists(basePath+POSTMAN_COLLECTION_JSON)){
-			System.out.println("postman api path:: "+basePath+POSTMAN_COLLECTION_JSON);
+		} else if (ClassPathUtil.exists(basePath + POSTMAN_COLLECTION_JSON)){
+			System.out.println("postman api path:: " + basePath + POSTMAN_COLLECTION_JSON);
 			isPostman = true;
-			requests = new PostmanParser().parse(basePath+POSTMAN_COLLECTION_JSON);
+			requests = new PostmanParser().parse(basePath + POSTMAN_COLLECTION_JSON);
 		}
 
 		if(null != requests){
@@ -102,7 +102,6 @@ public class ServiceCache {
 			List<Operation> operations = new ArrayList<>();
 
 			requests.forEach(req -> {
-
 				String servicePathVal  = "";
 				if(req.getServicePath() != null && req.getServicePath().getValue() != null){
 				  servicePathVal = req.getServicePath().getValue();
@@ -117,7 +116,6 @@ public class ServiceCache {
 			}
 			cache.put(name, service);
 		}
-
 	}
 
 	/**
