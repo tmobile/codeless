@@ -71,7 +71,7 @@ public class WebDriverFactoryTest {
 		excelConfig.put("webdriver.runlocal", "FALSE");
 		excelConfig.put("webdriver.platformName.chrome", "Windows");
 		excelConfig.put("webdriver.browserVersion.chrome", "90.0");
-		excelConfig.put("webdriver.hub", "https://tmo_get_started:a1e75451-66d4-4f7f-afbe-f0d79db0e141@ondemand.saucelabs.com/wd/hub");
+		excelConfig.put("webdriver.hub", "https://127.0.0.1");
 
 		return excelConfig;
 	}
