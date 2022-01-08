@@ -130,22 +130,22 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 					ExcelTestBuilder builder = new ExcelTestBuilder();
 					Test test = builder.build(suite, sheet, name, testData);
 					String platformType = config.get("platform-type");
-					String webDriverVersion = config.get("webdriver.version.".concat(platformType));
-					String osType = config.get("webdriver.platform.".concat(platformType));
+					String webDriverVersion = config.get("webdriver.browserVersion.".concat(platformType));
+					String osType = config.get("webdriver.platformName.".concat(platformType));
 					if (StringUtils.isNotBlank(platformType)) {
 						test.getConfig().put("platform-type", platformType);
 					} else {
 						platformType = test.getConfig().get("platform-type");
 					}
 					if (StringUtils.isNotBlank(webDriverVersion)) {
-						test.getConfig().put("webdriver.version.".concat(platformType), webDriverVersion);
+						test.getConfig().put("webdriver.browserVersion.".concat(platformType), webDriverVersion);
 					} else {
-						webDriverVersion = test.getConfig().get("webdriver.version.".concat(platformType));
+						webDriverVersion = test.getConfig().get("webdriver.browserVersion.".concat(platformType));
 					}
 					if (StringUtils.isNotBlank(osType)) {
-						test.getConfig().put("webdriver.platform.".concat(platformType), osType);
+						test.getConfig().put("webdriver.platformName.".concat(platformType), osType);
 					} else {
-						osType = test.getConfig().get("webdriver.platform.".concat(platformType));
+						osType = test.getConfig().get("webdriver.platformName.".concat(platformType));
 					}
 					test.setName(test.getName() + " " + platformType + " " + webDriverVersion + " " + osType);
 					suite.addTest(test);
@@ -181,12 +181,12 @@ public class ExcelSuiteBuilder implements SuiteBuilder{
 			String webDriver = parts[1];
 			values.put("platform-type", webDriver);
 			// check if version exists
-			if (parts.length >= 4 && parts[2].equalsIgnoreCase("version") && StringUtils.isNotBlank(parts[3])) {
+			if (parts.length >= 4 && parts[2].equalsIgnoreCase("browserVersion") && StringUtils.isNotBlank(parts[3])) {
 				String webDriverVersion = parts[3];
-				values.put("webdriver.version." + webDriver, webDriverVersion);
-				if (parts.length >= 6 && parts[4].equalsIgnoreCase("platform") && StringUtils.isNotBlank(parts[5])) {
+				values.put("webdriver.browserVersion." + webDriver, webDriverVersion);
+				if (parts.length >= 6 && parts[4].equalsIgnoreCase("platformName") && StringUtils.isNotBlank(parts[5])) {
 					String osType = parts[5];
-					values.put("webdriver.platform.".concat(webDriver), osType);
+					values.put("webdriver.platformName.".concat(webDriver), osType);
 				}
 			}
 		}

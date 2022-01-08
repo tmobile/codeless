@@ -33,9 +33,12 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.safari.SafariDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.base.Optional;
@@ -63,9 +66,9 @@ public class WebDriverFactory {
 	
 	private final static String userDir = System.getProperty("user.dir");
 
-	private static final String WEBDRIVER_CONFIG = "webdriver.platform";
+	private static final String WEBDRIVER_CONFIG = "webdriver.platformName";
 
-	private static final String WEBDRIVER_VERSION = "webdriver.version";
+	private static final String WEBDRIVER_VERSION = "webdriver.browserVersion";
 
 	/**
 	 * Creates a instance of driver factory and configures with relevant data.
@@ -98,8 +101,11 @@ public class WebDriverFactory {
 					case "emulator":
 						driverName = "chrome";
 						break;
-					case "microsoftedge":
+					case "edge":
 						driverName = "edge";
+						break;
+					case "opera":
+						driverName = "opera";
 						break;
 					default:
 						driverName = platformType;
@@ -137,8 +143,14 @@ public class WebDriverFactory {
 		case "firefox":
 			driver = new FirefoxDriver();
 			break;
-		case "microsoftedge":
-			driver = new InternetExplorerDriver();
+		case "edge":
+			driver = new EdgeDriver();
+			break;
+		case "opera":
+			driver = new OperaDriver();
+			break;
+		case "safari":
+			driver = new SafariDriver();
 			break;
 		default:
 			driver = new ChromeDriver();
@@ -151,7 +163,7 @@ public class WebDriverFactory {
 
 		String hubOS = Optional.fromNullable(testConfig.get(WEBDRIVER_CONFIG.concat("." + platformType.toLowerCase())))
 				.or(EMPTY);
-		String plateformVersion = Optional
+		String browserVersion = Optional
 				.fromNullable(testConfig.get(WEBDRIVER_VERSION.concat("." + platformType.toLowerCase()))).or(EMPTY);
 
 		SupportedPlatform platform = SupportedPlatform.findFor(platformType);
@@ -166,8 +178,8 @@ public class WebDriverFactory {
 		String testTimeout = Optional.fromNullable(testConfig.get("webdriver.e34:per_test_timeout_ms")).or(EMPTY);
 
 		Map<String, String> additionalProperties = new HashMap<String, String>();
-		additionalProperties.put("platform", hubOS);
-		additionalProperties.put("version", plateformVersion);
+		additionalProperties.put("platformName", hubOS);
+		additionalProperties.put("browserVersion", browserVersion);
 		additionalProperties.put("parentTunnel", parentTunnel);
 		additionalProperties.put("tunnelIdentifier", tunnelIdentifier);
 
