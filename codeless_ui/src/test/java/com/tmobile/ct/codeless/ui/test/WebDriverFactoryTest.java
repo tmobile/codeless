@@ -60,7 +60,7 @@ public class WebDriverFactoryTest {
 		excelConfig.put("webdriver.runlocal", "TRUE");
 		excelConfig.put("webdriver.path.chrome", "web_drivers/windows/chromedriver.exe");
 		excelConfig.put("webdriver.path.firefox", "web_drivers/windows/geckodriver.exe");
-		excelConfig.put("webdriver.path.ie", "web_drivers/windows/IEDriverServer.exe");
+		excelConfig.put("webdriver.path.edge", "web_drivers/windows/msedgedriver.exe");
 
 		return excelConfig;
 	}
@@ -69,9 +69,9 @@ public class WebDriverFactoryTest {
 		Map<String, String> excelConfig = new HashMap<String, String>();
 		excelConfig.put("platform-type", "chrome");
 		excelConfig.put("webdriver.runlocal", "FALSE");
-		excelConfig.put("webdriver.platform.chrome", "Windows");
-		excelConfig.put("webdriver.version.chrome", "61.0");
-		excelConfig.put("webdriver.hub", "https://tmo_get_started:a1e75451-66d4-4f7f-afbe-f0d79db0e141@ondemand.saucelabs.com/wd/hub");
+		excelConfig.put("webdriver.platformName.chrome", "Windows");
+		excelConfig.put("webdriver.browserVersion.chrome", "90.0");
+		excelConfig.put("webdriver.hub", "https://127.0.0.1");
 
 		return excelConfig;
 	}

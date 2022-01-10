@@ -3,11 +3,14 @@
     <parent>
         <groupId>com.tmobile.ct</groupId>
         <artifactId>codeless</artifactId>
-        <version>0.0.11</version>
+    	<version>${revision}</version>
     </parent>
     <groupId>com.tmobile.ct.codeless</groupId>
     <artifactId>copy_sources</artifactId>
-
+    
+	<properties>
+  	</properties>
+  	
     <build>
         <plugins>
             <plugin>
@@ -82,7 +85,7 @@
                         </goals>
                         <configuration>
                             <sourceFile>./../example_usage/lib/codeless-jar-with-dependencies.jar</sourceFile>
-                            <destinationFile>./../target/codeless-${appVersion}.jar</destinationFile>
+                            <destinationFile>./../target/codeless-${revision}.jar</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
@@ -101,7 +104,7 @@
                         </goals>
                         <configuration>
                             <sourceFile>./../pom.xml</sourceFile>
-                            <destinationFile>./../target/codeless-${appVersion}.pom</destinationFile>
+                            <destinationFile>./../target/codeless-${revision}.pom</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
