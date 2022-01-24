@@ -2,26 +2,12 @@
 # Project Specific
 ######################
 /target/www/**
-/src/test/javascript/coverage/
-/src/test/javascript/PhantomJS*/
 /test-output/
 
 example_usage/lib/test-output/
 example_usage/lib/ExtentReport.html
-example_usage/lib/codeless_test-0.0.3-SNAPSHOT-jar-with-dependencies.jar
+example_usage/lib/codeless-jar-with-dependencies.jar
 
-######################
-# Node
-######################
-/node/
-node_tmp/
-node_modules/
-npm-debug.log.*
-
-######################
-# SASS
-######################
-.sass-cache/
 
 ######################
 # Eclipse

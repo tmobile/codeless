@@ -70,7 +70,7 @@ public class WebDriverFactoryTest {
 		excelConfig.put("platform-type", "chrome");
 		excelConfig.put("webdriver.runlocal", "FALSE");
 		excelConfig.put("webdriver.platformName.chrome", "Windows");
-		excelConfig.put("webdriver.browserVersion.chrome", "90.0");
+		excelConfig.put("webdriver.browserVersion.chrome", "96.0");
 		excelConfig.put("webdriver.hub", "https://127.0.0.1");
 
 		return excelConfig;
