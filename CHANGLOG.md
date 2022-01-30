@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-## 0.2.0 (Jan 24, 2022)
+## 0.2.0 (Jan 31, 2022)
 
 ### Added
 * [copy_sources] add script into pom.xml to copy to example_usage\lib from executable_with_all_dependency.jar 
@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 * [example_usage] run bat/sh uses identical jar file(codeless-jar-with-dependencies.jar) 
 * [main] uses maven 3.8.1 
+* [test] web_drivers update 
 
 ### Removed
 * [example_usage] remove web_drivers folder
