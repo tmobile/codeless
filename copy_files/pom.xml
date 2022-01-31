@@ -70,48 +70,6 @@
                             </resources>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.coderplus.maven.plugins</groupId>
-                <artifactId>copy-rename-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-and-rename-file</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>rename</goal>
-                        </goals>
-                        <configuration>
-                            <sourceFile>./../example_usage/lib/codeless-jar-with-dependencies.jar</sourceFile>
-                            <destinationFile>./../target/codeless-${revision}.jar</destinationFile>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.coderplus.maven.plugins</groupId>
-                <artifactId>copy-rename-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-file</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <sourceFile>./../target/codeless-${revision}.jar</sourceFile>
-                            <destinationFile>./../example_usage/lib/codeless-jar-with-dependencies.jar</destinationFile>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.0.2</version>
-				<executions>
 					<execution>
 						<id>copy-resources</id>
 						<phase>process-classes</phase>
@@ -130,13 +88,35 @@
 							</resources>
 						</configuration>
 					</execution>
-				</executions>
-			</plugin>            
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>com.coderplus.maven.plugins</groupId>
                 <artifactId>copy-rename-maven-plugin</artifactId>
                 <version>1.0</version>
                 <executions>
+                    <execution>
+                        <id>copy-and-rename-file</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>rename</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>./../example_usage/lib/codeless-jar-with-dependencies.jar</sourceFile>
+                            <destinationFile>./../target/codeless-${revision}.jar</destinationFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-file</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>./../target/codeless-${revision}.jar</sourceFile>
+                            <destinationFile>./../example_usage/lib/codeless-jar-with-dependencies.jar</destinationFile>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>copy-and-rename-pom-file</id>
                         <phase>compile</phase>
