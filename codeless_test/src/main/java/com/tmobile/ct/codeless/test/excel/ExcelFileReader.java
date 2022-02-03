@@ -43,7 +43,7 @@ public class ExcelFileReader {
 		}
 		try {
 			return WorkbookFactory.create(workbookFile);
-		} catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
+		} catch (EncryptedDocumentException | IOException e) {
 			e.printStackTrace();
 			return null;
 		}
