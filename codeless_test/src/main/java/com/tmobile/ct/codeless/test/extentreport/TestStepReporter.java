@@ -19,8 +19,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aventstack.extentreports.MediaEntityBuilder;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.google.common.base.Optional;
-import com.relevantcodes.extentreports.LogStatus;
+//import com.relevantcodes.extentreports.LogStatus;
 import com.tmobile.ct.codeless.core.Result;
 import com.tmobile.ct.codeless.core.Step;
 import com.tmobile.ct.codeless.service.Call;
@@ -61,7 +64,7 @@ public class TestStepReporter {
 
 	private static void logServiceStepResult(Step step) {
 
-		LogStatus status = logStepResult(step);
+		Status status = logStepResult(step);
 		Map<String, String> testConfig = step.getTest().getConfig();
 		if (testConfig.containsKey(Config.LOGGING_DETAILS_ENABLED)) {
 			loggingEnabled = Boolean
@@ -69,16 +72,16 @@ public class TestStepReporter {
 		}
 		if (loggingEnabled) {
 			ServiceCallDTO serviceCall = ServiceLogFilter.filter((ServiceCall) step);
-			ExtentTestManager.getTest().log(status, step.getName(), getDOMResult(serviceCall));
+			ExtentTestManager.getTest().log(status, getDOMResult(serviceCall));
 		} else {
-			ExtentTestManager.getTest().log(status, step.getName(), "");
+			ExtentTestManager.getTest().log(status, step.getName());
 		}
 	}
 
 	private static void logUiStepResult(UiStep step) throws Exception {
 
 		String screenshotPath = "";
-		LogStatus status = logStepResult(step);
+		Status status = logStepResult(step);
 		if (step.getTest().getConfig().containsKey(Config.TEST_SCREENSHOT_POLICY)) {
 			 String screenShotPolicy = Optional
 					.fromNullable((String)step.getTest().getConfig().get(Config.TEST_SCREENSHOT_POLICY))
@@ -86,12 +89,12 @@ public class TestStepReporter {
 
 			String actionName = step.getAction().getClass().getSimpleName();
 
-			if (!actionName.equalsIgnoreCase("close") && status != LogStatus.SKIP) {
+			if (!actionName.equalsIgnoreCase("close") && status != Status.SKIP) {
 
 				if (screenShotPolicy.equalsIgnoreCase(Config.ALL_STEPS)) {
 					screenshotPath = WebDriverFactory.getScreenhot(step.getTest().getWebDriver(), step.getName());
 					step.setScreenShotPath(screenshotPath);
-				} else if (screenShotPolicy.equalsIgnoreCase(Config.FAILURE_ONLY) && status == LogStatus.FAIL) {
+				} else if (screenShotPolicy.equalsIgnoreCase(Config.FAILURE_ONLY) && status == Status.FAIL) {
 					screenshotPath = WebDriverFactory.getScreenhot(step.getTest().getWebDriver(), step.getName());
 					step.setScreenShotPath(screenshotPath);
 				}
@@ -100,9 +103,9 @@ public class TestStepReporter {
 
 		if (StringUtils.isNotBlank(screenshotPath)) {
 			ExtentTestManager.getTest().log(status, step.getName(),
-					ExtentTestManager.getTest().addBase64ScreenShot(screenshotPath));
+					MediaEntityBuilder.createScreenCaptureFromPath(screenshotPath).build());
 		} else {
-			ExtentTestManager.getTest().log(status, step.getName(), "");
+			ExtentTestManager.getTest().log(status, step.getName());
 		}
 	}
 
@@ -124,19 +127,19 @@ public class TestStepReporter {
 
 	}
 
-	private static LogStatus logStepResult(Step step) {
+	private static Status logStepResult(Step step) {
 		return step instanceof Call ? getLog(((Call) step).getResult()) : getLog(((UiStepImpl) step).getResult());
 
 	}
 
-	private static LogStatus getLog(Result result) {
+	private static Status getLog(Result result) {
 		switch (result) {
 		case PASS:
-			return LogStatus.PASS;
+			return Status.PASS;
 		case FAIL:
-			return LogStatus.FAIL;
+			return Status.FAIL;
 		case SKIP:
-			return LogStatus.SKIP;
+			return Status.SKIP;
 		}
 		return null;
 	}

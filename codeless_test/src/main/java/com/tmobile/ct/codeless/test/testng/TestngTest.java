@@ -164,7 +164,7 @@ public class TestngTest {
 		});
 
 		try {
-			ExtentTestManager.getTest().setDescription(test.getName());
+			ExtentTestManager.getTest().createNode(test.getName());
 			Integer stepOrder = 1;
 
 			// execute steps

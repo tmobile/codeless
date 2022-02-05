@@ -17,8 +17,13 @@ package com.tmobile.ct.codeless.test.extentreport;
 
 import java.util.HashMap;
 
-import com.relevantcodes.extentreports.ExtentReports;
-import com.relevantcodes.extentreports.ExtentTest;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+//import com.relevantcodes.extentreports.ExtentReports;
+//import com.relevantcodes.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.configuration.Theme;
 
 /**
  * The Class ExtentTestManager.
@@ -42,8 +47,14 @@ public class ExtentTestManager {
 	public synchronized static ExtentReports getReporter() {
 		if (extent == null) {
 			// Set HTML reporting file location
-			extent = new ExtentReports(System.getProperty("user.dir") + "/ExtentReport.html", true);
-
+			extent = new ExtentReports();
+			ExtentSparkReporter spark = new ExtentSparkReporter(System.getProperty("user.dir") + "/ExtentReport.html");
+			spark.config().setTheme(Theme.STANDARD);
+			//spark.config().setTimeStampFormat("MM/dd/yyyy HH:mm:ss");
+			spark.config().setReportName("Codeless Report");
+			spark.config().setEncoding("UTF-8");
+			spark.config().setTimelineEnabled(true);
+			extent.attachReporter(spark);
 		}
 		return extent;
 	}
@@ -57,7 +68,7 @@ public class ExtentTestManager {
 	 */
 	public static synchronized ExtentTest startTest(String testName, String desc) {
 		try {
-			ExtentTest test = extent.startTest(testName, desc);
+			ExtentTest test = extent.createTest(testName, desc);
 			extentTestMap.put((int) (long) (Thread.currentThread().getId()), test);
 			return test;
 		} catch (Exception e) {
@@ -80,7 +91,8 @@ public class ExtentTestManager {
 	 * End test.
 	 */
 	public static synchronized void endTest() {
-		extent.endTest((ExtentTest) extentTestMap.get((int) (long) (Thread.currentThread().getId())));
+		//extent..endTest((ExtentTest) extentTestMap.get((int) (long) (Thread.currentThread().getId())));
+		//getTest().info(MarkupHelper.createUnorderedList(extentTestMap).getMarkup());
 	}
 
 }
