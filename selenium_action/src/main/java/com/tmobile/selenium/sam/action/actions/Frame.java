@@ -40,7 +40,7 @@ public class Frame extends Action implements IAction {
 	@Override
 	public void mainAction() throws Exception{
 
-		new WebDriverWait(driver, waitTime).until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(element.get()));
+		new WebDriverWait(driver, Duration.ofSeconds(waitTime)).until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(element.get()));
 
 	}
 

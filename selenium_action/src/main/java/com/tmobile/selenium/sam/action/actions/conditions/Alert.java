@@ -35,7 +35,7 @@ public class Alert extends Condition implements ICondition {
 	@Override
 	public boolean check() {
 		try {
-			new WebDriverWait(driver, waitTime).until(ExpectedConditions.alertIsPresent()).accept();
+			new WebDriverWait(driver, Duration.ofSeconds(waitTime)).until(ExpectedConditions.alertIsPresent()).accept();
 			return true;
 		} catch (Exception e) {
 			return false;

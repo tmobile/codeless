@@ -121,21 +121,21 @@ public class Wait implements IAction{
 	 * Visible.
 	 */
 	private void visible(){
-		new WebDriverWait(driver, waitTime).until(ExpectedConditions.visibilityOf(element.get()));
+		new WebDriverWait(driver, Duration.ofSeconds(waitTime)).until(ExpectedConditions.visibilityOf(element.get()));
 	}
 	
 	/**
 	 * Clickable.
 	 */
 	private void clickable(){
-		new WebDriverWait(driver, waitTime).until(ExpectedConditions.elementToBeClickable(element.get()));
+		new WebDriverWait(driver, Duration.ofSeconds(waitTime)).until(ExpectedConditions.elementToBeClickable(element.get()));
 	}
 	
 	/**
 	 * Enabled.
 	 */
 	private void enabled(){
-		new WebDriverWait(driver, waitTime).until(
+		new WebDriverWait(driver, Duration.ofSeconds(waitTime)).until(
 				new ExpectedCondition<Boolean>() {
 					public Boolean apply(WebDriver wdriver) {
 						return element.get().isEnabled();
@@ -147,21 +147,21 @@ public class Wait implements IAction{
 	 * I frame.
 	 */
 	private void iFrame(){
-		new WebDriverWait(driver, waitTime).until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(element.get()));
+		new WebDriverWait(driver, Duration.ofSeconds(waitTime)).until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(element.get()));
 	}
 	
 	/**
 	 * Window.
 	 */
 	private void window(){
-		new WebDriverWait(driver, waitTime).until(ExpectedConditions.numberOfWindowsToBe(2));
+		new WebDriverWait(driver, Duration.ofSeconds(waitTime)).until(ExpectedConditions.numberOfWindowsToBe(2));
 	}
 	
 	/**
 	 * Not visible.
 	 */
 	private void notVisible(){
-		new WebDriverWait(driver, waitTime).until(ExpectedConditions.not(ExpectedConditions.visibilityOf(element.get())));
+		new WebDriverWait(driver, Duration.ofSeconds(waitTime)).until(ExpectedConditions.not(ExpectedConditions.visibilityOf(element.get())));
 	}
 	
 	/**
@@ -174,7 +174,7 @@ public class Wait implements IAction{
 						.equals("complete");
 			}
 		};
-		WebDriverWait wait = new WebDriverWait(driver, waitTime);
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(waitTime));
 		wait.until(pageLoadCondition);
 
 	}
