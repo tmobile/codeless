@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -232,8 +233,8 @@ public class WebDriverFactory {
 	private void initWebDriver(WebDriver driver) {
 		try {
 			driver.manage().window().maximize();
-			driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
-			driver.manage().timeouts().setScriptTimeout(30, TimeUnit.SECONDS);
+			driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+			driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(30));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

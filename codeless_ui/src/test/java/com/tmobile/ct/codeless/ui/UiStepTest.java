@@ -69,7 +69,7 @@ public class UiStepTest {
 		options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200", "--ignore-certificate-errors");
 		driver = new ChromeDriver(options);
 		when(test.getWebDriver()).thenReturn(driver);
-		driver.get("D:\\Code\\CTA\\edp-workspace\\etp_codeless_ui\\src\\test\\resources\\test_website\\login.html");
+		driver.get("https://www.atitesting.com/login");
 		
 		step.run();
 

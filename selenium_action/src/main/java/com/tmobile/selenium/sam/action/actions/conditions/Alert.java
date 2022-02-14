@@ -3,6 +3,8 @@
  */
 package com.tmobile.selenium.sam.action.actions.conditions;
 
+import java.time.Duration;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -35,7 +37,7 @@ public class Alert extends Condition implements ICondition {
 	@Override
 	public boolean check() {
 		try {
-			new WebDriverWait(driver, waitTime).until(ExpectedConditions.alertIsPresent()).accept();
+			new WebDriverWait(driver, Duration.ofSeconds(waitTime)).until(ExpectedConditions.alertIsPresent()).accept();
 			return true;
 		} catch (Exception e) {
 			return false;

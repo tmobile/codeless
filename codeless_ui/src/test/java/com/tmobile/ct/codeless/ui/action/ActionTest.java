@@ -43,7 +43,7 @@ public class ActionTest {
 		ChromeOptions options = new ChromeOptions();  
 		options.addArguments("--headless", "--disable-gpu", "--window-size=1920,1200","--ignore-certificate-errors");  
 		driver = new ChromeDriver(options);  
-		driver.get("D:\\Code\\CTA\\edp-workspace\\etp_codeless_ui\\src\\test\\resources\\test_website\\login.html");
+		driver.get("https://www.atitesting.com/login");
 		config = new ActionConfig();
 		config.clickType = ClickType.click;
 		config.waitTime = 2;

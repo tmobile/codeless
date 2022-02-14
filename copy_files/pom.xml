@@ -70,6 +70,24 @@
                             </resources>
                         </configuration>
                     </execution>
+					<execution>
+						<id>copy-resources</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>./../example_usage/lib/web_drivers</outputDirectory>
+							<resources>
+								<resource>
+									<directory>./../codeless_test/web_drivers</directory>
+									<includes>
+                                    	<include>**/*.*</include>
+                                	</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
                 </executions>
             </plugin>
             <plugin>
@@ -88,13 +106,17 @@
                             <destinationFile>./../target/codeless-${revision}.jar</destinationFile>
                         </configuration>
                     </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.coderplus.maven.plugins</groupId>
-                <artifactId>copy-rename-maven-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
+                    <execution>
+                        <id>copy-file</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>./../target/codeless-${revision}.jar</sourceFile>
+                            <destinationFile>./../example_usage/lib/codeless-jar-with-dependencies.jar</destinationFile>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>copy-and-rename-pom-file</id>
                         <phase>compile</phase>

@@ -3,6 +3,8 @@
  */
 package com.tmobile.selenium.sam.action.actions;
 
+import java.time.Duration;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -40,7 +42,7 @@ public class Frame extends Action implements IAction {
 	@Override
 	public void mainAction() throws Exception{
 
-		new WebDriverWait(driver, waitTime).until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(element.get()));
+		new WebDriverWait(driver, Duration.ofSeconds(waitTime)).until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(element.get()));
 
 	}
 
