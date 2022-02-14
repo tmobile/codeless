@@ -16,6 +16,7 @@
 package com.tmobile.selenium.sam.action.utils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Duration;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
