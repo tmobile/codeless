@@ -31,28 +31,28 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 public enum SupportedPlatform {
 
     /** The iPhone. */
-    iPhone(DesiredCapabilities.iphone(),  RemoteWebDriver.class),
+    iPhone(new DesiredCapabilities(),  RemoteWebDriver.class),
 
     /** The iPad. */
-    iPad(DesiredCapabilities.ipad(),  RemoteWebDriver.class),
+    iPad(new DesiredCapabilities(),  RemoteWebDriver.class),
 
     /** The android. */
-    android(DesiredCapabilities.android(),  RemoteWebDriver.class),
+    android(new DesiredCapabilities(),  RemoteWebDriver.class),
 
     /** The chrome. */
-    chrome(DesiredCapabilities.chrome(), RemoteWebDriver.class),
+    chrome(new DesiredCapabilities(), RemoteWebDriver.class),
 
     /** The firefox. */
-    firefox(DesiredCapabilities.firefox(), RemoteWebDriver.class),
+    firefox(new DesiredCapabilities(), RemoteWebDriver.class),
 
     /** The edge. */
-    edge(DesiredCapabilities.edge(), RemoteWebDriver.class),
+    edge(new DesiredCapabilities(), RemoteWebDriver.class),
 
     /** The opera blink. */
-    opera(DesiredCapabilities.operaBlink(),RemoteWebDriver.class),
+    opera(new DesiredCapabilities(),RemoteWebDriver.class),
 
     /** The safari. */
-    safari(DesiredCapabilities.safari(),  RemoteWebDriver.class),
+    safari(new DesiredCapabilities(),  RemoteWebDriver.class),
 
     /** The default remote. */
     defaultRemote(new DesiredCapabilities(), RemoteWebDriver.class);

@@ -12,7 +12,7 @@
 	<properties>
 		<testng.version>7.5</testng.version>
 		<junit.version>4.13.2</junit.version>
-		<selenium.version>3.141.59</selenium.version>
+		<selenium.version>4.1.2</selenium.version>
 		<appiumclient.version>7.6.0</appiumclient.version>
 		<sl4j.version>1.7.35</sl4j.version>
 		<restassured.version>4.5.0</restassured.version>
