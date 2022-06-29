@@ -17,7 +17,7 @@
 		<sl4j.version>1.7.25</sl4j.version>
 		<restassured.version>4.4.0</restassured.version>
 		<jackson.version>2.11.0</jackson.version>
-		<poi.version>3.17</poi.version>
+		<poi.version>4.1.1</poi.version>
 	</properties>
 
 	<dependencies>
