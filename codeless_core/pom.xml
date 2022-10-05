@@ -16,7 +16,7 @@
 		<appiumclient.version>7.6.0</appiumclient.version>
 		<sl4j.version>1.7.25</sl4j.version>
 		<restassured.version>4.4.0</restassured.version>
-		<jackson.version>2.11.0</jackson.version>
+		<jackson.version>2.12.6.1</jackson.version>
 		<poi.version>3.17</poi.version>
 	</properties>
 
